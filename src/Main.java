@@ -1,8 +1,7 @@
-import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
         Scanner input = new Scanner(System.in);
         int LanguageChoice;
         //select language
@@ -14,6 +13,8 @@ public class Main {
         DisplayText DT = new DisplayText(LanguageChoice);
 
         System.out.println(DT.getText(3));
+
+        LogManager.LOGGER.info("hihi");
 
         input.close();
     }

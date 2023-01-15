@@ -1,4 +1,4 @@
-import java.io.IOException;
+import java.util.logging.Level;
 
 public class DisplayText {
     private enum English
@@ -27,7 +27,7 @@ public class DisplayText {
         this.Language = Language;
     }
 
-    public String getText(int index) throws IOException {
+    public String getText(int index) {
         try {
             if (this.Language == 1)
                 return English.values()[index].toString();
@@ -38,8 +38,7 @@ public class DisplayText {
         }
         catch (ArrayIndexOutOfBoundsException e)
         {
-            //log e
-            Logger.WriteLog(e.toString());
+            LogManager.LOGGER.log(Level.SEVERE, e.getMessage());
             return "An error occurred. Please contact the bank for assistance.";
         }
     }
