@@ -4,12 +4,10 @@ import java.util.Properties;
 
 public class ConfigurationManager {
 
-    public static String GetConfig(String Key)
-    {
-        try (InputStream inputStream = ConfigurationManager.class.getClassLoader().getResourceAsStream("config.properties"))
-        {
+    public static String GetConfig(String Key) {
+        try (InputStream inputStream = ConfigurationManager.class.getClassLoader().getResourceAsStream("config.properties")) {
             Properties properties = new Properties();
-            if(inputStream != null)
+            if (inputStream != null)
                 properties.load(inputStream);
             return properties.getProperty(Key);
         } catch (IOException e) {
@@ -17,12 +15,10 @@ public class ConfigurationManager {
         }
     }
 
-    public static String GetConfig(String Name, String Key)
-    {
-        try (InputStream inputStream = ConfigurationManager.class.getClassLoader().getResourceAsStream(Name))
-        {
+    public static String GetConfig(String Name, String Key) {
+        try (InputStream inputStream = ConfigurationManager.class.getClassLoader().getResourceAsStream(Name)) {
             Properties properties = new Properties();
-            if(inputStream != null)
+            if (inputStream != null)
                 properties.load(inputStream);
             return properties.getProperty(Key);
         } catch (IOException e) {
