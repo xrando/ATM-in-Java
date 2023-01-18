@@ -14,7 +14,7 @@ public class Main {
 
         System.out.println(DT.getText(3));
 
-        LogManager.LOGGER.info("hihi");
+        LogHelper.LOGGER.info("hihi");
 
         input.close();
     }
