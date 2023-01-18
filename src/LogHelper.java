@@ -7,7 +7,6 @@ import java.util.logging.SimpleFormatter;
 
 public class LogHelper {
     public static Logger LOGGER;
-
     static {
         LOGGER = Logger.getLogger("ATM");
         try {
