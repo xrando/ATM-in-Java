@@ -19,7 +19,7 @@ public class Client {
             socket.close();
         }catch (Exception e)
         {
-            LogHelper.LOGGER.log(Level.SEVERE, e.getMessage());
+            LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -62,7 +62,7 @@ public class Client {
         }
         catch (Exception e)
         {
-            LogHelper.LOGGER.log(Level.SEVERE, e.getMessage());
+            LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 }

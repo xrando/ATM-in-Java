@@ -9,10 +9,10 @@ public class Server {
     public static void main(String[] args) {
         try
         {
-            ServerSocket serverSocket = new ServerSocket(2000);
+            ServerSocket serverSocket = new ServerSocket(Integer.parseInt(ConfigurationManager.GetConfig("Port")));
 
-            System.out.println("Connected");
-            System.out.println("Server message: " + serverSocket.getInetAddress() + " P: " + serverSocket.getLocalPort());
+            LogHelper.LOGGER.info("Server Connected");
+            LogHelper.LOGGER.info("Server IP: " + serverSocket.getInetAddress() + " Port: " + serverSocket.getLocalPort());
 
             //wait for client
             for (;;)
@@ -26,7 +26,7 @@ public class Server {
             }
         }catch (Exception e)
         {
-            LogHelper.LOGGER.log(Level.SEVERE, e.getMessage());
+            LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -42,7 +42,7 @@ public class Server {
         public void run()
         {
             super.run();
-            System.out.println("Client message: " + socket.getInetAddress() + " P: " + socket.getPort());
+            LogHelper.LOGGER.info("Server Connected: " + socket.getInetAddress() + " Port: " + socket.getPort());
 
             try
             {
@@ -70,7 +70,7 @@ public class Server {
             }
             catch (Exception e)
             {
-                LogHelper.LOGGER.log(Level.SEVERE, e.getMessage());
+                LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
             finally {
                 try
@@ -79,12 +79,11 @@ public class Server {
                 }
                 catch (Exception e)
                 {
-                    e.printStackTrace();
-                    LogHelper.LOGGER.log(Level.SEVERE, e.getStackTrace().toString());
+                    LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 }
 
             }
-            System.out.println("Client Closed: " + socket.getInetAddress() + "P: " + socket.getPort());
+            LogHelper.LOGGER.info("Client Closed: " + socket.getInetAddress() + " Port: " + socket.getPort());
         }
     }
 }
