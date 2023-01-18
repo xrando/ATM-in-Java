@@ -20,7 +20,7 @@ public class DisplayText {
             else
                 return "";
         } catch (ArrayIndexOutOfBoundsException e) {
-            LogManager.LOGGER.log(Level.SEVERE, e.getMessage());
+            LogHelper.LOGGER.log(Level.SEVERE, e.getMessage());
             return "An error occurred. Please contact the bank for assistance.";
         }
     }
