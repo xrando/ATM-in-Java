@@ -1,22 +1,54 @@
-import java.util.Currency;
+import java.util.ArrayList;
 
 public class Account {
-    private int AccountNumber;
-    private Currency Balance;
+    private String AccountName;
+    private String UID;
+    private User AccountHolder;
+    private ArrayList<Transaction> AccountTransactions;
+    //Create a new account
+    public Account(String NewAccountName, User NewAccountHolder, Bank CurrentBank)
+    {
+        //Set account name and account holder
+        this.AccountName = NewAccountName;
+        this.AccountHolder = NewAccountHolder;
 
-    public int getAccountNumber() {
-        return AccountNumber;
+        //Generate new account UID
+        this.UID = CurrentBank.generateNewAccountUID();
+
+        //Initialize transactions
+        this.AccountTransactions = new ArrayList<Transaction>();
+
     }
 
-    public void setAccountNumber(int accountNumber) {
-        AccountNumber = accountNumber;
+    public String getAccountName() {
+        return AccountName;
     }
 
-    public Currency getBalance() {
-        return Balance;
+    public void setAccountName(String accountName) {
+        AccountName = accountName;
     }
 
-    public void setBalance(Currency balance) {
-        Balance = balance;
+    public String getUID() {
+        return UID;
+    }
+
+    public void setUID(String UID) {
+        this.UID = UID;
+    }
+
+    public User getAccountHolder() {
+        return AccountHolder;
+    }
+
+    public void setAccountHolder(User accountHolder) {
+        AccountHolder = accountHolder;
+    }
+
+    public ArrayList<Transaction> getAccountTransactions() {
+        return AccountTransactions;
+    }
+
+    public void setAccountTransactions(ArrayList<Transaction> accountTransactions) {
+        AccountTransactions = accountTransactions;
     }
 }

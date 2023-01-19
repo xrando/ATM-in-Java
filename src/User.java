@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.*;
 
-public class User {
+public class User
+{
     private String UID;
     private String Username;
     private String Password;
@@ -12,51 +13,54 @@ public class User {
     private String email;
     private String phone;
     private List<Account> Accounts;
-
-    public User(String Username, String Password, String email, String phone) {
+    //Create a new user
+    public User(String Username, String Password, String email, String phone, Bank CurrentBank)
+    {
         this.Username = Username;
         this.email = email;
         this.phone = phone;
         this.Salt = generateSalt();
         this.Password = generateHash(Password, this.Salt);
-        this.UID = generateUID();
+        //modified to generate new UID from bank
+        this.UID = CurrentBank.generateNewUserUID();
         this.Accounts = new ArrayList<Account>();
+        System.out.printf("UserName: %s\nUID: %s",Username,UID);
     }
-
-    public String getUsername() {
+    //Add an account for user
+    public void AddAccount(Account NewAccount)
+    {
+        this.Accounts.add(NewAccount);
+    }
+    protected String getUsername() {
         return Username;
     }
 
-    public void setUsername(String username) {
-        Username = username;
+    protected void setUsername(String username) {
+        this.Username = username;
     }
 
-    public String getPassword() {
+    protected String getPassword() {
         return Password;
     }
 
-    public void setPassword(String password) {
+    protected void setPassword(String password) {
         Password = generateHash(password, this.Salt);
     }
 
-    public List<Account> getAccounts() {
+    protected List<Account> getAccounts() {
         return Accounts;
     }
 
-    public void setAccounts(List<Account> userAccounts) {
+    protected void setAccounts(List<Account> userAccounts) {
         Accounts = userAccounts;
     }
 
-    public String getUID() {
+    protected String getUID() {
         return UID;
     }
 
-    public void setUID() {
-        UID = generateUID();
-    }
-
     public void setSalt() {
-        Salt = generateSalt();
+        this.Salt = generateSalt();
     }
 
     public String getSalt() {
@@ -92,15 +96,6 @@ public class User {
         this.Password = generateHash(newPin, this.getSalt());
 
     }
-
-    public String generateUID() {
-        Random rand = new Random();
-        StringBuilder UID = new StringBuilder();
-        for (int i = 0; i < 10; i++) {
-            UID.append(rand.nextInt(10));
-        }
-        return UID.toString();
-    }
     public String generateSalt() {
         Random rand = new Random();
         StringBuilder Salt = new StringBuilder();
@@ -128,5 +123,12 @@ public class User {
         }
 
         return hash;
+    }
+    //Validate password before login
+    //*Issue* salt is randomized thus it cant be recreated so validating of password might have issue,
+    // maybe just use normal hash instead of adding additional salt?
+    public boolean validatePassword(String password)
+    {
+        return false;
     }
 }
