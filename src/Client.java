@@ -11,11 +11,13 @@ public class Client {
         try
         {
             socket.setSoTimeout(3000);
-            socket.connect(new InetSocketAddress(InetAddress.getLocalHost(), 2000));
-            System.out.println("Connected");
-            System.out.println("Client message: " + socket.getLocalAddress() + " P: " + socket.getLocalPort());
-            System.out.println("Server message: " + socket.getInetAddress() + "P: " + socket.getPort());
+            socket.connect(new InetSocketAddress(InetAddress.getByName(ConfigurationManager.GetConfig("Server")), 2000));
+
+            LogHelper.LOGGER.info("Local machine: " + socket.getLocalAddress() + " Port: " + socket.getLocalPort());
+            LogHelper.LOGGER.info("Connected to Server: " + socket.getInetAddress() + " Port: " + socket.getPort());
+
             todo(socket);
+
             socket.close();
         }catch (Exception e)
         {
