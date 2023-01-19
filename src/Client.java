@@ -10,6 +10,7 @@ public class Client {
         Socket socket = new Socket();
         try
         {
+            //set time out: if server no response
             socket.setSoTimeout(3000);
             socket.connect(new InetSocketAddress(InetAddress.getByName(ConfigurationManager.GetConfig("Server")), 2000));
 
@@ -29,6 +30,9 @@ public class Client {
     {
         try
         {
+            //initialize table obj
+            TableHelper tb = new TableHelper(true, true);
+
             //get client input stream
             InputStream clientInputStream = System.in;
             BufferedReader clientBufferReader = new BufferedReader(new InputStreamReader(clientInputStream));
@@ -55,7 +59,10 @@ public class Client {
                     flag = false;
                 }
                 else {
-                    System.out.println(echo);
+                    //print table
+                    tb.setHeaders("Input", "Output");
+                    tb.addRow(input, echo);
+                    tb.print(false);
                 }
             }while (flag);
 

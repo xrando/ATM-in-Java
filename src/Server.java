@@ -62,7 +62,7 @@ public class Server {
                     else
                     {
                         System.out.println(str);
-                        socketOutput.println("Return: " + str.length());
+                        socketOutput.println(str.length());
                     }
                 }while (flag);
                 socketOutput.close();
