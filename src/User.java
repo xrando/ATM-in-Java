@@ -10,7 +10,9 @@ public class User
     private String UID;
     private String Username;
     private String Password;
-    private String Salt;
+
+    // Salt is static for now, probably wont need it to be static when we read from the CSV file
+    private static String Salt;
     private String email;
     private String phone;
     private List<Account> Accounts;
@@ -20,8 +22,8 @@ public class User
         this.Username = Username;
         this.email = email;
         this.phone = phone;
-        this.Salt = generateSalt();
-        this.Password = generateHash(Password, this.Salt);
+        Salt = generateSalt();
+        this.Password = generateHash(Password, Salt);
         //modified to generate new UID from bank
         this.UID = CurrentBank.generateNewUserUID();
         this.Accounts = new ArrayList<Account>();
@@ -45,7 +47,7 @@ public class User
     }
 
     protected void setPassword(String password) {
-        Password = generateHash(password, this.Salt);
+        Password = generateHash(password, Salt);
     }
 
     protected List<Account> getAccounts() {
@@ -61,10 +63,10 @@ public class User
     }
 
     public void setSalt() {
-        this.Salt = generateSalt();
+        Salt = generateSalt();
     }
 
-    public String getSalt() {
+    public static String getSalt() {
         return Salt;
     }
 
@@ -97,14 +99,16 @@ public class User
         this.Password = generateHash(newPin, this.getSalt());
 
     }
+    // Salt is now not randomized, but generated from the username and UID of the user
+    // Salt could probably just be the username and/or UID in plaintext...
     public String generateSalt() {
-        return hash(this.Username + this.UID);
+        Salt = hash(this.Username + getUID());
+        return Salt;
     }
 
     public String generateHash(String password, String salt) {
         //MD5 hash
-        String stringToHash = password + salt;
-        return hash(stringToHash);
+        return hash(password + salt);
     }
 
     public String hash(String stringToHash){
@@ -128,8 +132,37 @@ public class User
     //Validate password before login
     //*Issue* salt is randomized thus it cant be recreated so validating of password might have issue,
     // maybe just use normal hash instead of adding additional salt?
-    public boolean validatePassword(String password)
-    {
-        return false;
+    // Salt is now generated from the username and UID of the user
+    // To remove next commit If this is fine :)
+    public boolean validatePassword(String password) {
+        String hashedPassword = generateHash(password, getSalt());
+        return hashedPassword.equals(this.Password);
+    }
+
+    // For writing to CSV TODO
+    public String[] UserToArray() {
+        return new String[]{this.UID, this.Username, this.Password, Salt, this.email, this.phone};
+    }
+
+    // For reading from CSV TODO
+    public void ArrayToUser(String[] userArray) {
+        this.UID = userArray[0];
+        this.Username = userArray[1];
+        this.Password = userArray[2];
+        Salt = userArray[3];
+        this.email = userArray[4];
+        this.phone = userArray[5];
+
+    }
+
+    // For testing
+    public static void main(String[] args){
+        User test = new User("test", "123456", "test", "test", new Bank("test"));
+        System.out.print(test.validatePassword("123456"));
+        test.changePin();
+        System.out.println("Enter new pin: ");
+        Scanner sc = new Scanner(System.in);
+        String newPin = sc.nextLine();
+        System.out.println(test.validatePassword(newPin));
     }
 }
