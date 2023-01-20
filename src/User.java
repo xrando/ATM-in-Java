@@ -3,6 +3,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Random;
 import java.util.*;
+import java.util.logging.Level;
 
 public class User
 {
@@ -97,17 +98,16 @@ public class User
 
     }
     public String generateSalt() {
-        Random rand = new Random();
-        StringBuilder Salt = new StringBuilder();
-        for (int i = 0; i < 10; i++) {
-            Salt.append(rand.nextInt(10));
-        }
-        return Salt.toString();
+        return hash(this.Username + this.UID);
     }
 
     public String generateHash(String password, String salt) {
         //MD5 hash
         String stringToHash = password + salt;
+        return hash(stringToHash);
+    }
+
+    public String hash(String stringToHash){
         String hash = "";
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -119,11 +119,12 @@ public class User
             }
             hash = sb.toString();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
-
         return hash;
+
     }
+
     //Validate password before login
     //*Issue* salt is randomized thus it cant be recreated so validating of password might have issue,
     // maybe just use normal hash instead of adding additional salt?
