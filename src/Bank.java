@@ -101,4 +101,14 @@ public class Bank
         //Return null if user not found or credentials are incorrect
         return null;
     }
+
+    public String getBankName()
+    {
+        return BankName;
+    }
+
+    public void setBankName(String bankName)
+    {
+        BankName = bankName;
+    }
 }

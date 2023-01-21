@@ -51,4 +51,45 @@ public class Account {
     public void setAccountTransactions(ArrayList<Transaction> accountTransactions) {
         AccountTransactions = accountTransactions;
     }
+    public String getAccountSummary()
+    {
+        //Calculate Account's balance
+        double balance = this.GetAccountBalance();
+
+        //Format account summary, to distinguish negative and positive balance, () will be used to display negative balance
+        if(balance<0)
+        {
+            return String.format("%s : $(%.2f) : %s",this.UID,-balance,this.AccountName);
+        }
+        else
+        {
+            return String.format("%s : $%.2f : %s",this.UID,balance,this.AccountName);
+        }
+    }
+    public double GetAccountBalance()
+    {
+        double balance =0;
+        for(Transaction transaction : this.AccountTransactions)
+        {
+            balance+=transaction.getAmount();
+        }
+        return balance;
+    }
+    //Print transaction history of the account
+    public void PrintTransactionHistory()
+    {
+        System.out.printf("\nTransaction history for account %s\n",this.UID);
+        for (int i=this.AccountTransactions.size()-1;i>=0;i--)
+        {
+            System.out.println(this.AccountTransactions.get(i).GetTransactionSummary());
+        }
+        System.out.println();
+    }
+    //Add transaction in this account
+    public void AddTransaction(double Amount, String TransactionNote)
+    {
+        //Create new transaction obj and add to list
+        Transaction NewTransaction = new Transaction(Amount,TransactionNote,this);
+        this.AccountTransactions.add(NewTransaction);
+    }
 }

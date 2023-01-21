@@ -139,6 +139,34 @@ public class User
         return hashedPassword.equals(this.Password);
     }
 
+    public void PrintAllAccountSummary()
+    {
+        System.out.printf("\n\n%s's All Account Summary\n",this.Username);
+        for(int i = 0;i<this.Accounts.size();i++)
+        {
+            System.out.printf("%d) %s\n",i+1,this.Accounts.get(i).getAccountSummary());
+        }
+        System.out.println();
+    }
+    public void PrintAccountTransactionHistory(int AccountIndex)
+    {
+        this.Accounts.get(AccountIndex).PrintTransactionHistory();
+    }
+    //Get balance of particular account
+    public double GetAccountBalance(int AccountIndex)
+    {
+        return this.Accounts.get(AccountIndex).GetAccountBalance();
+    }
+    //Get UID of particular account
+    public String GetAccountUID(int AccountIndex)
+    {
+        return this.Accounts.get(AccountIndex).getUID();
+    }
+    public void AddAccountTransaction(int AccountIndex, double Amount, String TransactionNote)
+    {
+        this.Accounts.get(AccountIndex).AddTransaction(Amount,TransactionNote);
+    }
+
     // For writing to CSV TODO
     public String[] UserToArray() {
         return new String[]{this.UID, this.Username, this.Password, Salt, this.email, this.phone};
