@@ -1,0 +1,4 @@
+steps to add new jar library to project:
+1) file -> project structure
+2) modules -> click + -> jar or directories
+3) choose jar downloaded and click checkbox to add
