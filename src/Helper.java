@@ -34,6 +34,21 @@ public class Helper
         }
 
     }
+    /*Sample message body for invoice
+    StringBuilder str = new StringBuilder();
+        str.append("Transaction Ref: " + "UID" + "\n\n");
+        str.append("Dear Sir / Madam,\n\n");
+        str.append("We refer to your Transaction dated " + "Date.Now()" + "." + " We are pleased to confirm that the transaction was completed.\n\n");
+        str.append("Date & Time: " + "DateTime.Now()" + "\n");
+        str.append("Amount: " + "$9.00" + "\n");
+        str.append("From: " + "Pure Savings Account A/C ending 1234" + "\n");
+        str.append("To: " + "Pure Savings Account A/C ending 4321" + "\n\n");
+        str.append("If unauthorised, please call our Pure hotline. To view transaction details, please login to digibank.\n\n");
+        str.append("Thank you for banking with us.\n\n\n");
+        str.append("Yours faithfully\n" +
+                "Pure Bank Ltd\n" +
+                "\n" +
+                "Please do not reply to this email as it is auto-generated.\n"); */
     public static void SendMail(String ReceiverEmail, String Subject, String Body)
     {
         Properties props = new Properties();
