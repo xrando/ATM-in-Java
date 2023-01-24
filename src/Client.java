@@ -46,6 +46,11 @@ public class Client {
             BufferedReader serverBufferReader = new BufferedReader(new InputStreamReader(serverInputStream));
 
             boolean flag = true;
+
+
+            String welcome = serverBufferReader.readLine();
+            System.out.println(welcome);
+
             do {
                 //read one line of string from system.in
                 String input = clientBufferReader.readLine();
@@ -54,15 +59,35 @@ public class Client {
 
                 //get string from server
                 String echo = serverBufferReader.readLine();
+
+
                 if("0".equalsIgnoreCase(echo))
                 {
                     flag = false;
                 }
                 else {
+                    //print output from server
+                    // Maybe can use this to print important messages from server
+                    System.out.println(echo);
+
+                    // Add condition to check login TODO
+                    if (echo.contains(", Welcome ")) { //This needs to be changed to check for login
+                        tb.setHeaders("Option", "Description");
+                        tb.addRow("1", "Check Balance");
+                        tb.addRow("2", "Deposit");
+                        tb.addRow("3", "Withdraw");
+                        tb.addRow("4", "Transfer");
+                        tb.addRow("5", "Pay Bill");
+                        tb.addRow("6", "View Transactions");
+                        tb.addRow("7", "Change Password");
+                        tb.addRow("8", "Log Out");
+                        tb.print(false);
+                    }
+
                     //print table
-                    tb.setHeaders("Input", "Output");
-                    tb.addRow(input, echo);
-                    tb.print(false);
+                    // tb.setHeaders("Input", "Output");
+                    // tb.addRow(input, echo);
+                    // tb.print(false);
                 }
             }while (flag);
 
