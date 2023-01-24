@@ -16,6 +16,7 @@ public class User
     private String email;
     private String phone;
     private List<Account> Accounts;
+    private boolean loginStatus;
     //Create a new user
     public User(String Username, String Password, String email, String phone, Bank CurrentBank)
     {
@@ -27,8 +28,10 @@ public class User
         //modified to generate new UID from bank
         this.UID = CurrentBank.generateNewUserUID();
         this.Accounts = new ArrayList<Account>();
+        this.loginStatus = false;
         System.out.printf("UserName: %s\nUID: %s",Username,UID);
     }
+
     //Add an account for user
     public void AddAccount(Account NewAccount)
     {
@@ -72,20 +75,31 @@ public class User
 
     public void changePin() {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Enter old pin: ");
+        System.out.print("\nEnter old pin (or enter '0' to cancel): ");
         String oldPin = sc.nextLine();
 
-        //Add condition to cancel
-        while (!this.getPassword().equals(generateHash(oldPin, this.getSalt()))) {
-            System.out.print("Pin does not match!\nEnter old pin: ");
+        if (oldPin.equals("0")) {
+            System.out.println("Pin change cancelled.");
+            return;
+        }
+        while (!this.getPassword().equals(generateHash(oldPin, getSalt()))) {
+            System.out.print("Pin does not match!\nEnter '0' to cancel\nEnter old pin: ");
             oldPin = sc.nextLine();
         }
 
-        System.out.print("Enter new pin: ");
+        System.out.print("Enter new pin (or enter '0' to cancel): ");
         String newPin = sc.nextLine();
+        if (newPin.equals("0")) {
+            System.out.println("Pin change cancelled.");
+            return;
+        }
 
         while(newPin.length() != 6) {
-            System.out.print("Pin must be 6 digits!\nEnter new pin: ");
+            if (newPin.equals("0")) {
+                System.out.println("Pin change cancelled.");
+                return;
+            }
+            System.out.print("Pin must be 6 digits!\nEnter new pin(or enter '0' to cancel): ");
             newPin = sc.nextLine();
         }
 
@@ -96,11 +110,10 @@ public class User
             System.out.println("Pin does not match!\nConfirm new pin: ");
             newPin2 = sc.nextLine();
         }
-        this.Password = generateHash(newPin, this.getSalt());
+        this.Password = generateHash(newPin, getSalt());
 
     }
     // Salt is now not randomized, but generated from the username and UID of the user
-    // Salt could probably just be the username and/or UID in plaintext...
     public String generateSalt() {
         Salt = hash(this.Username + getUID());
         return Salt;
@@ -118,8 +131,8 @@ public class User
             md.update(stringToHash.getBytes());
             byte[] bytes = md.digest();
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < bytes.length; i++) {
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            for (byte aByte : bytes) {
+                sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
             }
             hash = sb.toString();
         } catch (NoSuchAlgorithmException e) {
@@ -129,11 +142,6 @@ public class User
 
     }
 
-    //Validate password before login
-    //*Issue* salt is randomized thus it cant be recreated so validating of password might have issue,
-    // maybe just use normal hash instead of adding additional salt?
-    // Salt is now generated from the username and UID of the user
-    // To remove next commit If this is fine :)
     public boolean validatePassword(String password) {
         String hashedPassword = generateHash(password, getSalt());
         return hashedPassword.equals(this.Password);
@@ -167,6 +175,13 @@ public class User
         this.Accounts.get(AccountIndex).AddTransaction(Amount,TransactionNote);
     }
 
+    public boolean Login(String name, String password) {
+        if (this.Username.equals(name) && validatePassword(password)) {
+            this.loginStatus = true;
+            return true;
+        }
+        return false;
+    }
     // For writing to CSV TODO
     public String[] UserToArray() {
         return new String[]{this.UID, this.Username, this.Password, Salt, this.email, this.phone};
@@ -188,7 +203,7 @@ public class User
         User test = new User("test", "123456", "test", "test", new Bank("test"));
         System.out.print(test.validatePassword("123456"));
         test.changePin();
-        System.out.println("Enter new pin: ");
+        System.out.println("Enter pin: ");
         Scanner sc = new Scanner(System.in);
         String newPin = sc.nextLine();
         System.out.println(test.validatePassword(newPin));
