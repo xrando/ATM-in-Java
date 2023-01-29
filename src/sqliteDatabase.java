@@ -101,18 +101,36 @@ public class sqliteDatabase {
         }
     }
 
-    public void insert(String name, String password) {
+    public void insert(String username, String password, String salt, String email, String phone, boolean loginStatus) {
         String sql = "INSERT INTO users(username,password,salt,email,phone,loginStatus) VALUES(?,?,?,?,?,?)";
 
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, name);
+            pstmt.setString(1, username);
             pstmt.setString(2, password);
-            pstmt.setString(3, "salty");
-            pstmt.setString(4, "email");
-            pstmt.setString(5, "phone");
-            pstmt.setBoolean(6, false);
+            pstmt.setString(3, salt);
+            pstmt.setString(4, email);
+            pstmt.setString(5, phone);
+            pstmt.setBoolean(6, loginStatus);
             pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void selectAll() {
+        String sql = "SELECT username, email, phone FROM users";
+
+        try (Connection conn = this.connect();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            // loop through the result set
+            while (rs.next()) {
+                System.out.println(rs.getString("username") + "\t" +
+                        rs.getString("email") + "\t" +
+                        rs.getString("phone"));
+            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -123,25 +141,18 @@ public class sqliteDatabase {
         File f = new File("./Resources/db/atm.db");
         if (f.exists() && !f.isDirectory()) {
             app.connect();
-            try {
-                System.out.print("Creating Table");
-                createNewTable();
-            } finally {
-                app.insert("poonxy", "Password");
-                app.insert("woojw", "hacksOn");
-                app.insert("richie", "helpMe");
-                app.insert("benjamin", "SqlSucks");
-            }
+            app.selectAll();
         } else {
             createNewDatabase("atm.db");
             try {
                 System.out.print("Creating Table");
                 createNewTable();
             } finally {
-                app.insert("poonxy", "Password");
-                app.insert("woojw", "hacksOn");
-                app.insert("richie", "helpMe");
-                app.insert("benjamin", "SqlSucks");
+                app.insert("poonxy", "Password", "13579", "poonxy@email.com", "87654321", false);
+                app.insert("woojw", "hacksOn", "24680", "woojw@email.com", "62353535", false);
+                app.insert("richie", "helpMe", "123456", "richie@email.com", "12345678", false);
+                app.insert("benjamin", "SqlSucks", "100110", "benjamin@email.com", "98765432", false);
+                app.selectAll();
             }
         }
     }
