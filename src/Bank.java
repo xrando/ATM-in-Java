@@ -93,7 +93,7 @@ public class Bank
         for (User user : this.BankUsers)
         {
             //Check if UserId is correct
-            if (user.getUID().compareTo(UserId)==0 && user.validatePassword(password))
+            if (user.getUID().compareTo(UserId)==0 && user.validatePassword(password, user.getUID()))
             {
                 return user;
             }

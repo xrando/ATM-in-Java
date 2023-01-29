@@ -1,6 +1,7 @@
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+// Dont think we need this anymore.
 public class CSVHelper {
     private static final String CSV_SEPARATOR = ",";
     private static final String file_path = "./Resources/Database/";
@@ -79,7 +80,7 @@ public class CSVHelper {
     // Sample usage TODO
     public static void main(String[] args) throws IOException {
         User test = new User("test", "test", "test", "test", new Bank("test"));
-        writeToCSV("test.csv", test.UserToArray());
+        //writeToCSV("test.csv", test.UserToArray());
     }
 }
 

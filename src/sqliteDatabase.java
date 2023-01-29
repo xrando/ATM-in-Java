@@ -6,7 +6,8 @@ import java.sql.*;
  */
 public class sqliteDatabase {
 
-    public Connection connect() {
+    //Made this static so that I can call it from other classes
+    public static Connection connect() {
         try {
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
@@ -75,15 +76,20 @@ public class sqliteDatabase {
         }
     }
 
+    //Modified this to create the User table
     public static void createNewTable() {
         // SQLite connection string
         String url = "jdbc:sqlite:Resources/db/atm.db";
 
         // SQL statement for creating a new table
         String sql = "CREATE TABLE IF NOT EXISTS users (\n"
-                + "	id integer PRIMARY KEY,\n"
-                + "	name text NOT NULL,\n"
-                + "	password text NOT NULL\n"
+                + "	uid integer PRIMARY KEY,\n"
+                + "	username text NOT NULL,\n"
+                + "	password text NOT NULL,\n"
+                + " salt text NOT NULL,\n"
+                + " email text NOT NULL,\n"
+                + " phone text NOT NULL,\n"
+                + " loginStatus boolean NOT NULL\n"
                 + ");";
 
         try (Connection conn = DriverManager.getConnection(url);
@@ -96,12 +102,16 @@ public class sqliteDatabase {
     }
 
     public void insert(String name, String password) {
-        String sql = "INSERT INTO users(name,password) VALUES(?,?)";
+        String sql = "INSERT INTO users(username,password,salt,email,phone,loginStatus) VALUES(?,?,?,?,?,?)";
 
-        try (Connection conn = this.connect();
+        try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, name);
             pstmt.setString(2, password);
+            pstmt.setString(3, "salty");
+            pstmt.setString(4, "email");
+            pstmt.setString(5, "phone");
+            pstmt.setBoolean(6, false);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

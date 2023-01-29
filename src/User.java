@@ -1,18 +1,16 @@
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Random;
 import java.util.*;
 import java.util.logging.Level;
+import java.sql.*;
 
 public class User
 {
     private String UID;
     private String Username;
     private String Password;
-
-    // Salt is static for now, probably wont need it to be static when we read from the CSV file
-    private static String Salt;
+    private String Salt;
     private String email;
     private String phone;
     private List<Account> Accounts;
@@ -23,13 +21,17 @@ public class User
         this.Username = Username;
         this.email = email;
         this.phone = phone;
-        Salt = generateSalt();
-        this.Password = generateHash(Password, Salt);
         //modified to generate new UID from bank
         this.UID = CurrentBank.generateNewUserUID();
+        Salt = generateSalt(Username, this.UID);
+        this.Password = generateHash(Password, Salt);
         this.Accounts = new ArrayList<Account>();
         this.loginStatus = false;
         System.out.printf("UserName: %s\nUID: %s",Username,UID);
+    }
+
+    public User() {
+
     }
 
     //Add an account for user
@@ -65,12 +67,23 @@ public class User
         return UID;
     }
 
-    public void setSalt() {
-        Salt = generateSalt();
+    //public void setSalt() {
+    //    Salt = generateSalt();
+    //}
+
+    public String getSalt() {
+        return Salt;
+    }
+    public boolean getLoginStatus() {
+        return loginStatus;
     }
 
-    public static String getSalt() {
-        return Salt;
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone(){
+        return phone;
     }
 
     public void changePin() {
@@ -111,11 +124,23 @@ public class User
             newPin2 = sc.nextLine();
         }
         this.Password = generateHash(newPin, getSalt());
+        // Update Database
+        // Probably better to update the database at the end of the session
+        try {
+            Connection conn = sqliteDatabase.connect();
+            PreparedStatement ps = conn.prepareStatement("UPDATE Users SET Password = ? WHERE UID = ?");
+            ps.setString(1, this.Password);
+            ps.setString(2, this.UID);
+            ps.executeUpdate();
+            conn.close();
+        } catch (SQLException e) {
+            LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
 
     }
     // Salt is now not randomized, but generated from the username and UID of the user
-    public String generateSalt() {
-        Salt = hash(this.Username + getUID());
+    public String generateSalt(String username, String UID) {
+        Salt = hash(username + UID);
         return Salt;
     }
 
@@ -141,12 +166,6 @@ public class User
         return hash;
 
     }
-
-    public boolean validatePassword(String password) {
-        String hashedPassword = generateHash(password, getSalt());
-        return hashedPassword.equals(this.Password);
-    }
-
     public void PrintAllAccountSummary()
     {
         System.out.printf("\n\n%s's All Account Summary\n",this.Username);
@@ -175,37 +194,195 @@ public class User
         this.Accounts.get(AccountIndex).AddTransaction(Amount,TransactionNote);
     }
 
-    public boolean Login(String name, String password) {
-        if (this.Username.equals(name) && validatePassword(password)) {
-            this.loginStatus = true;
-            return true;
+    protected String[] getPasswordFromDatabase(String UID) {
+        String getPasswordQuery = "SELECT password, salt FROM users WHERE uid = ?";
+        String password = "";
+        String Salt = "";
+        //get password from database
+        try {
+            Connection conn = sqliteDatabase.connect();
+            PreparedStatement ps = conn.prepareStatement(getPasswordQuery);
+            ps.setString(1, UID);
+            ResultSet rs = ps.executeQuery();
+            password = rs.getString("password");
+            Salt = rs.getString("salt");
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
-        return false;
-    }
-    // For writing to CSV TODO
-    public String[] UserToArray() {
-        return new String[]{this.UID, this.Username, this.Password, Salt, this.email, this.phone};
+        return new String[]{password, Salt};
     }
 
-    // For reading from CSV TODO
-    public void ArrayToUser(String[] userArray) {
-        this.UID = userArray[0];
-        this.Username = userArray[1];
-        this.Password = userArray[2];
-        Salt = userArray[3];
-        this.email = userArray[4];
-        this.phone = userArray[5];
+    public boolean validatePassword(String password, String UID) {
+        String hashedPassword = generateHash(password, getPasswordFromDatabase(UID)[1]);
 
+        // get password from database
+        String[] passwordAndSalt = getPasswordFromDatabase(UID);
+        String passwordFromDatabase = passwordAndSalt[0];
+
+        return hashedPassword.equals(passwordFromDatabase);
     }
+    public String CheckUserExist(String username){
+        String sql = "SELECT UID FROM users WHERE Username = ?";
+        String UID = "";
+        try(Connection conn = sqliteDatabase.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            UID = rs.getString("UID");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        if (UID.equals("")) {
+            System.out.println("User does not exist!");
+            return null;
+        }
+        return UID;
+    }
+
+    public User Login(String username, String password) {
+        //check if user exists
+        String UID = CheckUserExist(username);
+        if (UID == null) {
+            return null;
+        }
+        System.out.println("UID: " + UID);
+        //check if password is correct
+        if (validatePassword(password, UID)) {
+            System.out.println("Login successful!");
+            //set login status to true
+            try {
+                Connection conn = sqliteDatabase.connect();
+                PreparedStatement ps = conn.prepareStatement("UPDATE Users SET loginStatus = ? WHERE UID = ?");
+                ps.setString(1, "1");
+                ps.setString(2, UID);
+                ps.executeUpdate();
+                conn.close();
+            } catch (SQLException e) {
+                LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
+            //return user object populated with data from database
+            User user = new User();
+            try{
+                Connection conn = sqliteDatabase.connect();
+                PreparedStatement ps = conn.prepareStatement("SELECT * FROM Users WHERE UID = ?");
+                ps.setString(1, UID);
+                ResultSet rs = ps.executeQuery();
+                user.UID = rs.getString("UID");
+                user.Username = rs.getString("Username");
+                user.Password = rs.getString("Password");
+                user.Salt = rs.getString("Salt");
+                user.email = rs.getString("Email");
+                user.phone = rs.getString("Phone");
+                user.loginStatus = rs.getBoolean("loginStatus");
+                conn.close();
+            } catch (SQLException e) {
+                LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
+            return user;
+
+        } else {
+            System.out.println("Incorrect password!");
+            return null;
+        }
+    }
+
+    // Create new user
+    public void CreateUser(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter username: ");
+        String username = sc.nextLine();
+        System.out.println("Enter pin: ");
+        String password = sc.nextLine();
+        while (password.length() != 6) {
+            System.out.println("Pin must be 4 digits long!");
+            System.out.println("Enter pin: ");
+            password = sc.nextLine();
+        }
+        System.out.println("Enter email: ");
+        String email = sc.nextLine();
+        System.out.println("Enter phone: ");
+        String phone = sc.nextLine();
+        User user = new User(username, password, email, phone, new Bank("testBank"));
+        insertUser(user);
+    }
+
+    // Insert user into database (New users only)
+    public static void insertUser(User user) {
+        String sql = "INSERT INTO users(UID, Username, Password, Salt, email, phone, loginStatus) VALUES(?,?,?,?,?,?,?)";
+
+        try (Connection conn = sqliteDatabase.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, user.getUID());
+            pstmt.setString(2, user.getUsername());
+            pstmt.setString(3, user.getPassword());
+            pstmt.setString(4, user.getSalt());
+            pstmt.setString(5, user.getEmail());
+            pstmt.setString(6, user.getPhone());
+            pstmt.setString(7, user.getLoginStatus() ? "1" : "0");
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // Updates user in database (Existing users only)
+    public static void updateUser(User user){
+        String sql = "UPDATE users SET Username = ?, Password = ?, Salt = ?, email = ?, phone = ?, loginStatus = ? WHERE UID = ?";
+
+        try (Connection conn = sqliteDatabase.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, user.getUsername());
+            pstmt.setString(2, user.getPassword());
+            pstmt.setString(3, user.getSalt());
+            pstmt.setString(4, user.getEmail());
+            pstmt.setString(5, user.getPhone());
+            pstmt.setString(6, user.getLoginStatus() ? "1" : "0");
+            pstmt.setString(7, user.getUID());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 
     // For testing
     public static void main(String[] args){
-        User test = new User("test", "123456", "test", "test", new Bank("test"));
-        System.out.print(test.validatePassword("123456"));
-        test.changePin();
-        System.out.println("Enter pin: ");
+        //Login test
+        //User test = new User("test", "123456", "test", "test", new Bank("test"));
+        //insertUser(test);
+
+        //test Login
         Scanner sc = new Scanner(System.in);
-        String newPin = sc.nextLine();
-        System.out.println(test.validatePassword(newPin));
+        System.out.println("Enter username: ");
+        String username = sc.nextLine();
+        System.out.println("Enter pin: ");
+        String password = sc.nextLine();
+
+        // User is initialised with data from database after login
+        User test2 = new User();
+        test2 = test2.Login(username, password);
+        System.out.println("UID: " + test2.getUID());
+        System.out.println("Username: " + test2.getUsername());
+        System.out.println("Password: " + test2.getPassword());
+        System.out.println("Salt: " + test2.getSalt());
+        System.out.println("Email: " + test2.getEmail());
+        System.out.println("Phone: " + test2.getPhone());
+        System.out.println("Login Status: " + test2.getLoginStatus());
+
+        // Outputs:
+        // UID: 338467
+        // Username: test
+        // Password: dfb7664f26448841825721cec8b151d7
+        // Salt: fbcaf11b8bbe8986ac7b78e6d9522682
+        // Email: test
+        // Phone: test
+        // Login Status: true
     }
+
+    // Notes:
+    // 1. User to login with User ID instead?
+    // 2. To add error handling for incorrect username and password
+
 }

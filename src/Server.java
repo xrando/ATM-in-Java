@@ -80,7 +80,7 @@ public class Server {
 
                             // User Login Check without database
                             User user = new User(username, password, "0", "0", new Bank("test"));
-                            login = user.Login(username, password); // Change to state
+                            login = true; //todo
 
                             //print output to user if login is successful
                             if (login) {
@@ -100,7 +100,7 @@ public class Server {
 
                             // User Login Check without database
                             User reguser = new User(username, password, "0", "0", new Bank("test"));
-                            login = reguser.Login(username, password); // Change to state
+                            login = true; //todo
 
                             //print output to user if login is successful
                             if (login) {
