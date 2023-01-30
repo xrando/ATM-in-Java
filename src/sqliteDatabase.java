@@ -81,21 +81,20 @@ public class sqliteDatabase {
         // SQLite connection string
         String url = "jdbc:sqlite:Resources/db/atm.db";
 
-        // SQL statement for creating a new table
-        String sql = "CREATE TABLE IF NOT EXISTS users (\n"
-                + "	uid integer PRIMARY KEY,\n"
-                + "	username text NOT NULL,\n"
-                + "	password text NOT NULL,\n"
-                + " salt text NOT NULL,\n"
-                + " email text NOT NULL,\n"
-                + " phone text NOT NULL,\n"
-                + " loginStatus boolean NOT NULL\n"
-                + ");";
+        String[] sqlArray = {
+                "CREATE TABLE IF NOT EXISTS users(userID integer PRIMARY KEY, username text NOT NULL, password text NOT NULL, salt text NOT NULL, email text NOT NULL, phone text NOT NULL, loginStatus boolean NOT NULL)",
+                "CREATE TABLE IF NOT EXISTS accounts(accountID integer PRIMARY KEY, accountHolder integer NOT NULL, userID integer NOT NULL, FOREIGN KEY(userID) REFERENCES users(userID))",
+                "CREATE TABLE IF NOT EXISTS transactions(transactionID integer PRIMARY KEY, amount integer NOT NULL, timeStamp text NOT NULL, transactionNote text NULL, date text NOT NULL, accountID text NOT NULL, FOREIGN KEY(accountID) REFERENCES accounts(accountID))"
+                //"CREATE TABLE IF NOT EXIST bank(bankUser integer PRIMARY KEY,bankName text NOT NULL,bankAccounts text NOT NULL)",
+
+        };
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
             // create a new table
-            stmt.execute(sql);
+            for (String sqlStatement : sqlArray) {
+                stmt.execute(sqlStatement);
+            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -141,18 +140,14 @@ public class sqliteDatabase {
         File f = new File("./Resources/db/atm.db");
         if (f.exists() && !f.isDirectory()) {
             app.connect();
-            app.selectAll();
+            createNewTable();
         } else {
             createNewDatabase("atm.db");
             try {
                 System.out.print("Creating Table");
                 createNewTable();
             } finally {
-                app.insert("poonxy", "Password", "13579", "poonxy@email.com", "87654321", false);
-                app.insert("woojw", "hacksOn", "24680", "woojw@email.com", "62353535", false);
-                app.insert("richie", "helpMe", "123456", "richie@email.com", "12345678", false);
-                app.insert("benjamin", "SqlSucks", "100110", "benjamin@email.com", "98765432", false);
-                app.selectAll();
+                //app.selectAll();
             }
         }
     }
