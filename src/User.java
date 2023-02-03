@@ -21,16 +21,28 @@ public class User
         this.Username = Username;
         this.email = email;
         this.phone = phone;
-        //modified to generate new UID from bank
         this.UID = CurrentBank.generateNewUserUID();
-        Salt = generateSalt(Username, this.UID);
+        this.Salt = generateSalt(Username, this.UID);
         this.Password = generateHash(Password, Salt);
         this.Accounts = new ArrayList<Account>();
         this.loginStatus = false;
         System.out.printf("UserName: %s\nUID: %s",Username,UID);
     }
 
-    public User() {
+    public User(String username, String password, String email, String phone){
+        Bank CurrentBank = new Bank("Bank of Testing");
+        this.Username = username;
+        this.email = email;
+        this.phone = phone;
+        this.UID = CurrentBank.generateNewUserUID();
+        this.Salt = generateSalt(username, this.UID);
+        this.Password = generateHash(password, Salt);
+        this.Accounts = new ArrayList<Account>();
+        this.loginStatus = false;
+
+    }
+
+    public User(){
 
     }
 
@@ -64,7 +76,7 @@ public class User
     }
 
     protected String getUID() {
-        return UID;
+        return this.UID;
     }
 
     //public void setSalt() {
@@ -72,7 +84,7 @@ public class User
     //}
 
     public String getSalt() {
-        return Salt;
+        return this.Salt;
     }
     public boolean getLoginStatus() {
         return loginStatus;
@@ -140,7 +152,7 @@ public class User
     }
     // Salt is now not randomized, but generated from the username and UID of the user
     public String generateSalt(String username, String UID) {
-        Salt = hash(username + UID);
+        String Salt = hash(username + UID);
         return Salt;
     }
 
@@ -214,11 +226,13 @@ public class User
     }
 
     public boolean validatePassword(String password, String UID) {
-        String hashedPassword = generateHash(password, getPasswordFromDatabase(UID)[1]);
-
-        // get password from database
+        // get password and Salt from database
         String[] passwordAndSalt = getPasswordFromDatabase(UID);
+        String hashedPassword = generateHash(password, passwordAndSalt[1]);
+        System.out.println("Hashed Password: " + hashedPassword);
+
         String passwordFromDatabase = passwordAndSalt[0];
+        System.out.println("Password from DB:" + passwordFromDatabase);
 
         return hashedPassword.equals(passwordFromDatabase);
     }
@@ -241,13 +255,27 @@ public class User
         return UID;
     }
 
+    public boolean checkUsername(String username){
+        String sql = "SELECT Username FROM users WHERE Username = ?";
+        String Username = "";
+        try(Connection conn = sqliteDatabase.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            Username = rs.getString("Username");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return !Username.equals("");
+    }
+
     public User Login(String username, String password) {
         //check if user exists
         String UID = CheckUserExist(username);
         if (UID == null) {
             return null;
         }
-        System.out.println("UID: " + UID);
         //check if password is correct
         if (validatePassword(password, UID)) {
             System.out.println("Login successful!");
@@ -290,22 +318,50 @@ public class User
 
     // Create new user
     public void CreateUser(){
+        System.out.println("New User Registration");
         Scanner sc = new Scanner(System.in);
-        System.out.println("Enter username: ");
+
+        //Username
+        System.out.println("Enter username (Max 10 Alphanumeric Characters Only): ");
         String username = sc.nextLine();
-        System.out.println("Enter pin: ");
+        while (checkUsername(username) || !username.matches("[a-zA-Z0-9]+") || username.length() > 10 || username.length() < 1) {
+            System.out.println("Invalid username!");
+            System.out.println("Enter username (Max 10 Alphanumeric Characters Only): ");
+            username = sc.nextLine();
+        }
+
+        //Pin
+        System.out.println("Enter pin (6 digit NUMBERS only): ");
         String password = sc.nextLine();
-        while (password.length() != 6) {
-            System.out.println("Pin must be 4 digits long!");
+        while (password.length() != 6 || !password.matches("[0-9]+") || password.length() < 1 || password.length() > 6) {
+            System.out.println("Pin must be 6 digits long!");
             System.out.println("Enter pin: ");
             password = sc.nextLine();
         }
-        System.out.println("Enter email: ");
+
+        //Email
+        System.out.println("Enter a valid email (abc123@abc.com): ");
         String email = sc.nextLine();
-        System.out.println("Enter phone: ");
+        while (!email.matches("[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+") || email.length() < 1) {
+            System.out.println("Invalid email!");
+            System.out.println("Enter a valid email (abc123@abc.com): ");
+            email = sc.nextLine();
+        }
+
+        //Phone
+        System.out.println("Enter phone number: ");
         String phone = sc.nextLine();
-        User user = new User(username, password, email, phone, new Bank("testBank"));
+        // Check for Singapore Phone number starting from 8 or 9 and 8 digits long
+        while (!phone.matches("^[89][0-9]{7}$") || phone.length() < 1) {
+            System.out.println("Invalid phone number!");
+            System.out.println("Enter phone number: ");
+            phone = sc.nextLine();
+        }
+
+        User user = new User(username, password, email, phone);
+
         insertUser(user);
+        System.out.println("User created!\n Proceed to login!");
     }
 
     // Insert user into database (New users only)
@@ -320,7 +376,7 @@ public class User
             pstmt.setString(4, user.getSalt());
             pstmt.setString(5, user.getEmail());
             pstmt.setString(6, user.getPhone());
-            pstmt.setString(7, user.getLoginStatus() ? "1" : "0");
+            pstmt.setString(7, "0");
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -349,6 +405,9 @@ public class User
 
     // For testing
     public static void main(String[] args){
+        User newUser = new User();
+        newUser.CreateUser();
+
         //Login test
         //User test = new User("test", "123456", "test", "test", new Bank("test"));
         //insertUser(test);
@@ -379,6 +438,10 @@ public class User
         // Email: test
         // Phone: test
         // Login Status: true
+
+        // Test User
+        // Username: test
+        // Password: 123123
     }
 
     // Notes:
