@@ -138,16 +138,16 @@ public class User
         this.Password = generateHash(newPin, getSalt());
         // Update Database
         // Probably better to update the database at the end of the session
-        try {
-            Connection conn = sqliteDatabase.connect();
-            PreparedStatement ps = conn.prepareStatement("UPDATE Users SET Password = ? WHERE UID = ?");
-            ps.setString(1, this.Password);
-            ps.setString(2, this.UID);
-            ps.executeUpdate();
-            conn.close();
-        } catch (SQLException e) {
-            LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
-        }
+        //try {
+        //    Connection conn = sqliteDatabase.connect();
+        //    PreparedStatement ps = conn.prepareStatement("UPDATE Users SET Password = ? WHERE UID = ?");
+        //    ps.setString(1, this.Password);
+        //    ps.setString(2, this.UID);
+        //    ps.executeUpdate();
+        //    conn.close();
+        //} catch (SQLException e) {
+        //    LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        //}
 
     }
     // Salt is now not randomized, but generated from the username and UID of the user
@@ -274,6 +274,7 @@ public class User
         //check if user exists
         String UID = CheckUserExist(username);
         if (UID == null) {
+            LogHelper.LOGGER.log(Level.SEVERE, "Failed Login attempt, Attempted Username: " + username);
             return null;
         }
         //check if password is correct
@@ -317,6 +318,12 @@ public class User
     }
 
     // Create new user
+    // Create User with username: 10 alphanumeric characters only
+    // Create User with pin: 6 digit numbers only
+    // Create User with email: Validated email address
+    // Create User with phone: 8 digit (Singapore) numbers only
+    // Update database with new user
+    // Created User will proceed with Login
     public void CreateUser(){
         System.out.println("New User Registration");
         Scanner sc = new Scanner(System.in);
@@ -402,6 +409,7 @@ public class User
         }
     }
 
+    //Logout Function
     public void logout(){
         this.setLoginStatus(false);
         updateUser(this);
@@ -439,6 +447,10 @@ public class User
         System.out.println("Phone: " + test2.getPhone());
         System.out.println("Login Status: " + test2.getLoginStatus());
 
+        test2.changePin();
+        System.out.println("Login Status: " + test2.getLoginStatus());
+
+        System.out.println("logging out");
         test2.logout();
         System.out.println("Login Status: " + test2.getLoginStatus());
 
@@ -455,9 +467,5 @@ public class User
         // Username: test
         // Password: 123123
     }
-
-    // Notes:
-    // 1. User to login with User ID instead?
-    // 2. To add error handling for incorrect username and password
 
 }
