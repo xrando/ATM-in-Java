@@ -402,11 +402,20 @@ public class User
         }
     }
 
+    public void logout(){
+        this.setLoginStatus(false);
+        updateUser(this);
+    }
+
+    private void setLoginStatus(boolean b) {
+        this.loginStatus = b;
+    }
+
 
     // For testing
     public static void main(String[] args){
-        User newUser = new User();
-        newUser.CreateUser();
+        //User newUser = new User();
+        //newUser.CreateUser();
 
         //Login test
         //User test = new User("test", "123456", "test", "test", new Bank("test"));
@@ -428,6 +437,9 @@ public class User
         System.out.println("Salt: " + test2.getSalt());
         System.out.println("Email: " + test2.getEmail());
         System.out.println("Phone: " + test2.getPhone());
+        System.out.println("Login Status: " + test2.getLoginStatus());
+
+        test2.logout();
         System.out.println("Login Status: " + test2.getLoginStatus());
 
         // Outputs:
