@@ -1,30 +1,33 @@
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Scanner;
-
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Calendar;
 public class Transaction {
     private double Amount;
     private Date TimeStamp;
     private String TransactionNote;
-    private Account TransactionAccount;
+    private String TransactionAccount;
 
     //Create a new transaction
-    public Transaction(double NewAmount, Account NewTransactionAccount) {
+    public Transaction(double NewAmount, String NewTransactionNote, String NewTransactionAccount) {
+        //Set new transaction Amount
         this.Amount = NewAmount;
-        this.TransactionAccount = NewTransactionAccount;
-        this.TimeStamp = new Date();
-        this.TransactionNote = "";
-    }
-
-    //Create a new transaction
-    public Transaction(double NewAmount, String NewTransactionNote, Account NewTransactionAccount) {
-        //Call constructor with 2 arguments
-        this(NewAmount, NewTransactionAccount);
-
         //Set new transaction note
         this.TransactionNote = NewTransactionNote;
-
+        this.TransactionAccount = NewTransactionAccount;
     }
 
+    public Transaction(){
+        this.Amount=0;
+        //Set new transaction note
+        this.TransactionNote = "NewTransactionNote";
+        this.TransactionAccount = null;
+    }
     public double getAmount() {
         return Amount;
     }
@@ -33,8 +36,18 @@ public class Transaction {
         Amount = amount;
     }
 
-    public Date getTimeStamp() {
-        return TimeStamp;
+    public String getTimeStamp() {
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
+        String strTime = dateFormat.format(date);
+        return strTime;
+    }
+
+    public String getDate() {
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String strDate = dateFormat.format(date);
+        return strDate;
     }
 
     public void setTimeStamp(Date timeStamp) {
@@ -49,11 +62,11 @@ public class Transaction {
         TransactionNote = transactionNote;
     }
 
-    public Account getTransactionAccount() {
+    public String getTransactionAccount() {
         return TransactionAccount;
     }
 
-    public void setTransactionAccount(Account transactionAccount) {
+    public void setTransactionAccount(String transactionAccount) {
         TransactionAccount = transactionAccount;
     }
 
@@ -66,13 +79,30 @@ public class Transaction {
         }
     }
 
-    public void GetChoice() {
+    public void AddTransactionToSQL(Account account,Transaction transactionDetails){
+        String sql = "INSERT INTO transactions( amount, timeStamp, transactionNote, date, accountID) VALUES(?,?,?,?,?)";
+
+        try (Connection conn = sqliteDatabase.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setDouble(1, transactionDetails.Amount);
+            pstmt.setString(2, getTimeStamp());
+            pstmt.setString(3, transactionDetails.TransactionNote);
+            pstmt.setString(4, getDate());
+            pstmt.setString(5, account.getAccountID());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void GetChoice(Account TransactionAccount) {
         double TAmount;
         String TNote;
         System.out.println("");
         System.out.println("Please select mode of transaction:");
         System.out.println("1. Deposit");
         System.out.println("2. Withdrawal");
+        System.out.println("3. Transaction Summary");
         Scanner sc = new Scanner(System.in);
         int choice = sc.nextInt();
         switch (choice) {
@@ -83,8 +113,8 @@ public class Transaction {
                 TAmount = sc.nextDouble();
                 System.out.println("Enter a Transaction Note");
                 TNote = sc.next();
-                new Transaction(TAmount, TNote, this.TransactionAccount);
-                this.TransactionAccount.AddTransaction(TAmount, TNote);
+                Transaction deposit = new Transaction(TAmount, TNote,TransactionAccount.getAccountID());
+                deposit.AddTransactionToSQL(TransactionAccount,deposit);
                 System.out.printf("Deposit of %.2f Completed", TAmount);
                 break;
             case 2:
@@ -94,8 +124,8 @@ public class Transaction {
                 TAmount = sc.nextDouble();
                 System.out.println("Enter a Transaction Note");
                 TNote = sc.next();
-                new Transaction(-TAmount, TNote, this.TransactionAccount);
-                this.TransactionAccount.AddTransaction(TAmount, TNote);
+                Transaction withdraw = new Transaction(-TAmount, TNote,TransactionAccount.getAccountID());
+                withdraw.AddTransactionToSQL(TransactionAccount,withdraw);
                 System.out.printf("Withdrawal of %.2f Completed", TAmount);
                 break;
             default:
@@ -104,12 +134,29 @@ public class Transaction {
     }
 
     public static void main(String[] args) {
-        Account TransactionAccount = new Account("James", new User("james", "password", "james@email.com", "87654321", new Bank("OCBC")), new Bank("OCBC"));
-        Transaction transaction = new Transaction(0, TransactionAccount);
+        //test Login
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter username: ");
+        String username = sc.nextLine();
+        System.out.println("Enter pin: ");
+        String password = sc.nextLine();
+        //login
+        User test2 = new User();
+        test2 = test2.Login(username, password);
+        System.out.println("UID: " + test2.getUID());
+        System.out.println("Username: " + test2.getUsername());
+        System.out.println("Password: " + test2.getPassword());
+        System.out.println("Salt: " + test2.getSalt());
+        System.out.println("Email: " + test2.getEmail());
+        System.out.println("Phone: " + test2.getPhone());
+        System.out.println("Login Status: " + test2.getLoginStatus());
+
+        Account TransactionAccount = new Account();
+        TransactionAccount = TransactionAccount.getAccount((test2.getUID()));
+        Transaction transaction = new Transaction();
         while (true) {
-            transaction.GetChoice();
-            System.out.println("I am here");
-            TransactionAccount.PrintTransactionHistory();
+            transaction.GetChoice(TransactionAccount);
+            //TransactionAccount.PrintTransactionHistory();
         }
     }
 }
