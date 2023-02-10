@@ -439,7 +439,7 @@ public class User
         System.out.println("Phone: " + test2.getPhone());
         System.out.println("Login Status: " + test2.getLoginStatus());
 
-        test2.logout();
+        //test2.logout();
         System.out.println("Login Status: " + test2.getLoginStatus());
 
         // Outputs:

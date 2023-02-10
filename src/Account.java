@@ -1,9 +1,13 @@
+import java.sql.*;
 import java.util.ArrayList;
 
 public class Account {
     private String AccountName;
     private String UID;
     private User AccountHolder;
+    private String accountHolder;
+    private String userID;
+    private String accountID;
     private ArrayList<Transaction> AccountTransactions;
     //Create a new account
     public Account(String NewAccountName, User NewAccountHolder, Bank CurrentBank)
@@ -17,6 +21,10 @@ public class Account {
 
         //Initialize transactions
         this.AccountTransactions = new ArrayList<Transaction>();
+
+    }
+
+    public Account(){
 
     }
 
@@ -36,8 +44,12 @@ public class Account {
         this.UID = UID;
     }
 
-    public User getAccountHolder() {
-        return AccountHolder;
+    public String getAccountHolder() {
+        return this.accountHolder;
+    }
+
+    public String getAccountID() {
+        return this.accountID;
     }
 
     public void setAccountHolder(User accountHolder) {
@@ -89,7 +101,25 @@ public class Account {
     public void AddTransaction(double Amount, String TransactionNote)
     {
         //Create new transaction obj and add to list
-        Transaction NewTransaction = new Transaction(Amount,TransactionNote,this);
+        Transaction NewTransaction = new Transaction(Amount,TransactionNote,this.accountID);
         this.AccountTransactions.add(NewTransaction);
+    }
+
+    public Account getAccount(String userID) {
+        Account account = new Account();
+        try{
+            Connection conn = sqliteDatabase.connect();
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM accounts WHERE userID = ?");
+            ps.setString(1, userID);
+            ResultSet rs = ps.executeQuery();
+            account.accountHolder = rs.getString("accountHolder");
+            account.userID = rs.getString("userID");
+            account.accountID = rs.getString("accountID");
+            conn.close();
+            return account;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 }
