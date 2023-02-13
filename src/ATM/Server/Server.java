@@ -21,8 +21,9 @@ public class Server {
                     while (true) {
                         /*once server receives a client request, it MUST respond to the client to continue*/
                         String clientInput = socket.read(); //receive client request as String
+                        System.out.println("Received: " + clientInput);
                         //Sample below:
-                        if(clientInput.equals("Exit")){
+                        if(clientInput.equals("Exit")){ //need an exit code to safely end the connection
                             socket.write(clientInput); //response to client
                             break;
                         }

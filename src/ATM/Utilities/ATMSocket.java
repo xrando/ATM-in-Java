@@ -23,8 +23,10 @@ public class ATMSocket extends Socket {
         StringBuilder a = new StringBuilder();
         while ((b = this.getInputStream().read(buf)) != -1){
             String temp = new String(buf, 0, b);
-            if(temp.equals(EOF))
+            if(temp.endsWith(EOF)){
+                a.append(temp, 0, temp.length() - EOF.length());
                 break;
+            }
             else
                 a.append(temp);
         }
@@ -36,6 +38,7 @@ public class ATMSocket extends Socket {
     public void write(String s) throws IOException {
         super.getOutputStream().write(s.getBytes());
         super.getOutputStream().write(EOF.getBytes());
+        super.getOutputStream().flush();
     }
 
 }

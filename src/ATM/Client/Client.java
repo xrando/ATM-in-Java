@@ -5,22 +5,21 @@ import ATM.Utilities.ConfigurationManager;
 import java.io.IOException;
 
 public class Client {
-    public void listen(String input) throws IOException {
+    private final ATMSocket socket;
+    public Client() throws IOException {
         //get configurations from external config file
-        final String HOST = ConfigurationManager.GetConfig("Server");
-        final int PORT = Integer.parseInt(ConfigurationManager.GetConfig("Port"));
+        String HOST = ConfigurationManager.GetConfig("Server");
+        int PORT = Integer.parseInt(ConfigurationManager.GetConfig("Port"));
+        socket = new ATMSocket(HOST, PORT); //start new instance of client socket
+    }
 
-        ATMSocket socket = new ATMSocket(HOST, PORT); //start new instance of client socket
+    public String listen(String input) throws IOException {
+        this.socket.write(input);
+        return socket.read();
+    }
 
-        while (true){
-            /*The client sends a request to the server, and will wait for the server response.
-            * TODO: add timeout*/
-            socket.write(input); //send input to server
-            String msg = socket.read(); //get server response
-            System.out.println(msg); //for debugging
-            if(msg.equals("Exit")) //exit needed to break loop
-                break;
-        }
-        socket.close(); //closing socket will close the streams within automatically
+    public void close() throws IOException {
+        this.socket.write("Exit");
+        this.socket.close();
     }
 }
