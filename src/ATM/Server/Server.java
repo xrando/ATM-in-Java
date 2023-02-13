@@ -2,6 +2,7 @@ package ATM.Server;
 
 import ATM.Utilities.ATMServerSocket;
 import ATM.Utilities.ATMSocket;
+import ATM.Utilities.ConfigurationManager;
 import ATM.Utilities.LogHelper;
 
 import java.io.*;
@@ -10,7 +11,8 @@ import java.util.logging.Level;
 public class Server {
     public void listen() throws IOException {
         //start new instance of serversocket. This need not be recreated as it uses multi-threading to handle different client sockets
-        ATMServerSocket ss = new ATMServerSocket(10000);
+        final int PORT = Integer.parseInt(ConfigurationManager.GetConfig("Port"));
+        ATMServerSocket ss = new ATMServerSocket(PORT);
 
         while (true){ //server should run non-stop
             ATMSocket socket = ss.accept(); //accept new client sockets and
