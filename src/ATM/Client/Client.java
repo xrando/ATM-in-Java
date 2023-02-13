@@ -8,7 +8,7 @@ public class Client {
     public void listen(String input) throws IOException {
         //get configurations from external config file
         final String HOST = ConfigurationManager.GetConfig("Server");
-        final int PORT = Integer.parseInt(ConfigurationManager.GetConfig("port"));
+        final int PORT = Integer.parseInt(ConfigurationManager.GetConfig("Port"));
 
         ATMSocket socket = new ATMSocket(HOST, PORT); //start new instance of client socket
 
