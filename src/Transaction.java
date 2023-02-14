@@ -1,5 +1,7 @@
+import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Scanner;
@@ -28,6 +30,15 @@ public class Transaction {
         this.TransactionNote = "NewTransactionNote";
         this.TransactionAccount = null;
     }
+
+    // Perhaps Transaction constructor can add a date and time stamp so that we don't have to access the database to get it for each transaction
+    // Add a transaction ID as well
+    public Transaction(double amount, String transactionNote, String date, String timeStamp, String accountID) {
+        this.Amount = amount;
+        this.TransactionNote = transactionNote;
+        this.TransactionAccount = accountID;
+    }
+
     public double getAmount() {
         return Amount;
     }
@@ -42,8 +53,26 @@ public class Transaction {
         String strTime = dateFormat.format(date);
         return strTime;
     }
+    public String getDate(){
+        String sql = "Select date, timeStamp from transactions where transactionID = ?";
+        String dateTime = null;
+        try{
+            Connection conn = sqliteDatabase.connect();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, "3"); // To update this to the transaction ID todo
+            ResultSet rs = ps.executeQuery();
+            //Add to AccountTransactions
+            //System.out.print(rs.getString("date"));
+            //System.out.print(rs.getString("timeStamp"));
+            dateTime = rs.getString("date") + " " + rs.getString("timeStamp");
 
-    public String getDate() {
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return dateTime;
+    }
+
+    public String getCurrentDate() {
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String strDate = dateFormat.format(date);
@@ -87,7 +116,7 @@ public class Transaction {
             pstmt.setDouble(1, transactionDetails.Amount);
             pstmt.setString(2, getTimeStamp());
             pstmt.setString(3, transactionDetails.TransactionNote);
-            pstmt.setString(4, getDate());
+            pstmt.setString(4, getCurrentDate());
             pstmt.setString(5, account.getAccountID());
             pstmt.executeUpdate();
         } catch (SQLException e) {
