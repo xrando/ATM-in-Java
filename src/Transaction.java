@@ -97,22 +97,26 @@ public class Transaction {
     }
 
     //Get transaction summary
-    public void GetTransactionHistory() {
-        String sql = "SELECT * FROM transactions";
+    public void GetTransactionHistory(Account TransactionAccount) {
         TableHelper tb = new TableHelper(true, true);
+        String accID = TransactionAccount.getAccountID();
         try (Connection conn = sqliteDatabase.connect();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            tb.setHeaders("Transaction ID", "Amount", "Time Stamp", "Transaction Note", "Date");
-            // loop through the result set
-            while (rs.next()) {
-                tb.addRow( rs.getString("transactionID"),
-                                 rs.getString("amount"),
-                                 rs.getString("timeStamp"),
-                                 rs.getString("transactionNote"),
-                                 rs.getString("date"));
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM transactions WHERE accountID = ?")) {
+            ps.setString(1, accID);
+            try (ResultSet rs = ps.executeQuery()) {
+                tb.setHeaders("Transaction ID", "Amount", "Time Stamp", "Transaction Note", "Date");
+                // loop through the result set
+                while (rs.next()) {
+                    tb.addRow(rs.getString("transactionID"),
+                            rs.getString("amount"),
+                            rs.getString("timeStamp"),
+                            rs.getString("transactionNote"),
+                            rs.getString("date"));
+                }
+                tb.print(false);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
             }
-            tb.print(false);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -170,7 +174,7 @@ public class Transaction {
                 System.out.printf("Withdrawal of %.2f Completed", TAmount);
                 break;
             case 3:
-                GetTransactionHistory();
+                GetTransactionHistory(TransactionAccount);
             default:
                 System.out.println("Please key in a valid option");
         }
@@ -199,7 +203,6 @@ public class Transaction {
         Transaction transaction = new Transaction();
         while (true) {
             transaction.GetChoice(TransactionAccount);
-            //TransactionAccount.PrintTransactionHistory();
         }
     }
 }
