@@ -125,12 +125,12 @@ public class Account {
     //Print transaction history of the account
     public void PrintTransactionHistory()
     {
-        System.out.printf("\nTransaction history for account %s\n",this.UID);
-        for (int i=this.AccountTransactions.size()-1;i>=0;i--)
-        {
-            System.out.println(this.AccountTransactions.get(i).GetTransactionSummary());
-        }
-        System.out.println();
+//        System.out.printf("\nTransaction history for account %s\n",this.UID);
+//        for (int i=this.AccountTransactions.size()-1;i>=0;i--)
+//        {
+//            System.out.println(this.AccountTransactions.get(i).GetTransactionSummary());
+//        }
+//        System.out.println();
     }
     //Add transaction in this account
     public void AddTransaction(double Amount, String TransactionNote)

@@ -1,8 +1,5 @@
 import javax.xml.transform.Result;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Date;
 import java.util.Scanner;
 import java.text.DateFormat;
@@ -100,11 +97,24 @@ public class Transaction {
     }
 
     //Get transaction summary
-    public String GetTransactionSummary() {
-        if (this.Amount < 0) {
-            return String.format("%s : $(%.2f) : %s", this.TimeStamp.toString(), -this.Amount, this.TransactionNote);
-        } else {
-            return String.format("%s : $%.2f : %s", this.TimeStamp.toString(), this.Amount, this.TransactionNote);
+    public void GetTransactionHistory() {
+        String sql = "SELECT * FROM transactions";
+        TableHelper tb = new TableHelper(true, true);
+        try (Connection conn = sqliteDatabase.connect();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            tb.setHeaders("Transaction ID", "Amount", "Time Stamp", "Transaction Note", "Date");
+            // loop through the result set
+            while (rs.next()) {
+                tb.addRow( rs.getString("transactionID"),
+                                 rs.getString("amount"),
+                                 rs.getString("timeStamp"),
+                                 rs.getString("transactionNote"),
+                                 rs.getString("date"));
+            }
+            tb.print(false);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -140,8 +150,9 @@ public class Transaction {
                 System.out.println("You have selected to deposit.");
                 System.out.println("Please key in the amount you wish to deposit E.g. 500.00");
                 TAmount = sc.nextDouble();
+                sc.nextLine();
                 System.out.println("Enter a Transaction Note");
-                TNote = sc.next();
+                TNote = sc.nextLine();
                 Transaction deposit = new Transaction(TAmount, TNote,TransactionAccount.getAccountID());
                 deposit.AddTransactionToSQL(TransactionAccount,deposit);
                 System.out.printf("Deposit of %.2f Completed", TAmount);
@@ -151,12 +162,15 @@ public class Transaction {
                 System.out.println("You have selected to withdraw.");
                 System.out.println("Please key in the amount you wish to withdraw E.g. 500.00");
                 TAmount = sc.nextDouble();
+                sc.nextLine();
                 System.out.println("Enter a Transaction Note");
-                TNote = sc.next();
+                TNote = sc.nextLine();
                 Transaction withdraw = new Transaction(-TAmount, TNote,TransactionAccount.getAccountID());
                 withdraw.AddTransactionToSQL(TransactionAccount,withdraw);
                 System.out.printf("Withdrawal of %.2f Completed", TAmount);
                 break;
+            case 3:
+                GetTransactionHistory();
             default:
                 System.out.println("Please key in a valid option");
         }
