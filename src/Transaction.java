@@ -11,6 +11,7 @@ public class Transaction {
     private Date TimeStamp;
     private String TransactionNote;
     private String TransactionAccount;
+    private static Account CurrentAccount;
 
     //Create a new transaction
     public Transaction(double NewAmount, String NewTransactionNote, String NewTransactionAccount) {
@@ -93,6 +94,10 @@ public class Transaction {
     }
 
     public void setTransactionAccount(String transactionAccount) {
+        System.out.println("Please select the account you would like to use:");
+        getTransactionAccount();
+        Scanner sc = new Scanner(System.in);
+        int choice = sc.nextInt();
         TransactionAccount = transactionAccount;
     }
 
@@ -146,6 +151,8 @@ public class Transaction {
         System.out.println("1. Deposit");
         System.out.println("2. Withdrawal");
         System.out.println("3. Transaction Summary");
+        System.out.println("4. Change Transaction Account");
+        System.out.println("5. Create New Transaction Account");
         Scanner sc = new Scanner(System.in);
         int choice = sc.nextInt();
         switch (choice) {
@@ -175,6 +182,13 @@ public class Transaction {
                 break;
             case 3:
                 GetTransactionHistory(TransactionAccount);
+                break;
+            case 4:
+                CurrentAccount = TransactionAccount.setTransactionAccount(TransactionAccount.getUID());
+                break;
+            case 5:
+                TransactionAccount.createAccount(TransactionAccount.getUID());
+                break;
             default:
                 System.out.println("Please key in a valid option");
         }
@@ -199,10 +213,12 @@ public class Transaction {
         System.out.println("Login Status: " + test2.getLoginStatus());
 
         Account TransactionAccount = new Account();
-        TransactionAccount = TransactionAccount.getAccount((test2.getUID()));
+        //Add in after login user to select transaction account from Accounts List PXY
+        CurrentAccount = TransactionAccount.setTransactionAccount(test2.getUID());
         Transaction transaction = new Transaction();
         while (true) {
-            transaction.GetChoice(TransactionAccount);
+            System.out.println("Before choice1: "+CurrentAccount.getAccountID());
+            transaction.GetChoice(CurrentAccount);
         }
     }
 }
