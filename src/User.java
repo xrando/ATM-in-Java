@@ -25,7 +25,7 @@ public class User
         this.phone = phone;
         this.UID = genUID();
         this.Salt = generateSalt(Username, this.UID);
-        this.Password = generateHash(Password, Salt);
+        this.Password = generatePasswordHash(Password, Salt);
         this.Accounts = new ArrayList<Account>();
         this.loginStatus = false;
         System.out.printf("UserName: %s\nUID: %s",Username,UID);
@@ -37,9 +37,23 @@ public class User
         this.phone = phone;
         this.UID = genUID();
         this.Salt = generateSalt(username, this.UID);
-        this.Password = generateHash(password, Salt);
+        this.Password = password;
+        //this.Password = generatePasswordHash(password, Salt);
         this.loginStatus = false;
         //Bank CurrentBank = new Bank("Bank of Testing");
+        this.Accounts = new ArrayList<Account>();
+
+    }
+
+    public User(String username, String password){
+        this.Username = username;
+        this.email = " ";
+        this.phone = " ";
+        //this.UID = "9999";
+        //this.Salt = generateSalt(username, this.UID);
+        //this.Password = generatePasswordHash(password, Salt);
+        this.Password = password;
+        this.loginStatus = false;
         this.Accounts = new ArrayList<Account>();
 
     }
@@ -66,7 +80,7 @@ public class User
     }
 
     protected void setPassword(String password) {
-        Password = generateHash(password, Salt);
+        Password = generatePasswordHash(password, Salt);
     }
 
     protected List<Account> getAccounts() {
@@ -110,20 +124,20 @@ public class User
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
-        return UID + 1;
+        // Increment UID
+        return String.valueOf(Integer.parseInt(UID) + 1);
     }
 
-    public void changePin() {
+    public boolean changePin() {
         Scanner sc = new Scanner(System.in);
         System.out.print("\nEnter old pin (or enter '0' to cancel): ");
         String oldPin = sc.nextLine();
 
         if (oldPin.equals("0")) {
             System.out.println("Pin change cancelled.");
-            return;
+            return false;
         }
-        while (!this.getPassword().equals(generateHash(oldPin, getSalt()))) {
+        while (!this.getPassword().equals(generatePasswordHash(oldPin, getSalt()))) {
             System.out.print("Pin does not match!\nEnter '0' to cancel\nEnter old pin: ");
             oldPin = sc.nextLine();
         }
@@ -132,13 +146,13 @@ public class User
         String newPin = sc.nextLine();
         if (newPin.equals("0")) {
             System.out.println("Pin change cancelled.");
-            return;
+            return false;
         }
 
         while(newPin.length() != 6) {
             if (newPin.equals("0")) {
                 System.out.println("Pin change cancelled.");
-                return;
+                return false;
             }
             System.out.print("Pin must be 6 digits!\nEnter new pin(or enter '0' to cancel): ");
             newPin = sc.nextLine();
@@ -151,15 +165,16 @@ public class User
             System.out.println("Pin does not match!\nConfirm new pin: ");
             newPin2 = sc.nextLine();
         }
-        this.Password = generateHash(newPin, getSalt());
+        this.Password = generatePasswordHash(newPin, getSalt());
 
+        return true;
     }
     public String generateSalt(String username, String UID) {
         String Salt = hash(username + UID);
         return Salt;
     }
 
-    public String generateHash(String password, String salt) {
+    public String generatePasswordHash(String password, String salt) {
         //MD5 hash
         return hash(password + salt);
     }
@@ -229,7 +244,7 @@ public class User
         return Accounts;
     }
 
-    protected String[] getPasswordFromDatabase(String UID) {
+    public String[] getPasswordFromDatabase(String UID) {
         String getPasswordQuery = "SELECT password, salt FROM users WHERE uid = ?";
         String password = "";
         String Salt = "";
@@ -251,13 +266,13 @@ public class User
     public boolean validatePassword(String password, String UID) {
         // get password and Salt from database
         String[] passwordAndSalt = getPasswordFromDatabase(UID);
-        String hashedPassword = generateHash(password, passwordAndSalt[1]);
-        //System.out.println("Hashed Password: " + hashedPassword);
+        String hashedPassword = generatePasswordHash(password, passwordAndSalt[1]);
+        System.out.println("Hashed Password: " + hashedPassword);
 
         String passwordFromDatabase = passwordAndSalt[0];
-        //System.out.println("Password from DB:" + passwordFromDatabase);
+        System.out.println("Password from DB:" + passwordFromDatabase);
 
-        return hashedPassword.equals(passwordFromDatabase);
+        return hashedPassword.equalsIgnoreCase(passwordFromDatabase);
     }
     public String CheckUserExist(String username){
         String sql = "SELECT UID FROM users WHERE Username = ?";
@@ -293,12 +308,44 @@ public class User
         return !Username.equals("");
     }
 
-    public User Login(String username, String password) {
+    public boolean Login(){
+        //check if user exists
+        this.UID = CheckUserExist(this.Username);
+        if (UID == null) {
+            LogHelper.LOGGER.log(Level.SEVERE, "Failed Login attempt, Attempted Username: " + this.Username);
+            return false;
+        }
+        //check if password is correct
+        //this.Password = generatePasswordHash(this.Password, generateSalt(this.Username, this.UID));
+        //System.out.print("Password: " + this.Password);
+        //System.out.println("UID: " + this.UID);
+        if (validatePassword(this.Password, this.UID)) {
+            System.out.println("Login successful!");
+            //set login status to true
+            try {
+                Connection conn = sqliteDatabase.connect();
+                PreparedStatement ps = conn.prepareStatement("UPDATE Users SET loginStatus = ? WHERE UID = ?");
+                ps.setString(1, "1");
+                ps.setString(2, UID);
+                ps.executeUpdate();
+                conn.close();
+            } catch (SQLException e) {
+                LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
+            return true;
+        }
+        else {
+            System.out.println("Login failed!");
+            return false;
+        }
+    }
+
+    public boolean Login(String username, String password) {
         //check if user exists
         String UID = CheckUserExist(username);
         if (UID == null) {
             LogHelper.LOGGER.log(Level.SEVERE, "Failed Login attempt, Attempted Username: " + username);
-            return null;
+            //return null;
         }
         //check if password is correct
         if (validatePassword(password, UID)) {
@@ -328,18 +375,27 @@ public class User
                 user.email = rs.getString("Email");
                 user.phone = rs.getString("Phone");
                 user.loginStatus = rs.getBoolean("loginStatus");
+                this.UID = rs.getString("UID");
+                this.Username = rs.getString("Username");
+                this.Password = rs.getString("Password");
+                this.Salt = rs.getString("Salt");
+                this.email = rs.getString("Email");
+                this.phone = rs.getString("Phone");
+                this.loginStatus = rs.getBoolean("loginStatus");
                 conn.close();
             } catch (SQLException e) {
                 LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
 
             user.Accounts = user.getAccountsFromDatabase(user.UID);
+            return true;
             //System.out.println("User Accounts: " + user.Accounts);
-            return user;
+            //return user;
 
         } else {
             System.out.println("Incorrect password!");
-            return null;
+            //return null;
+            return false;
         }
     }
 
@@ -350,7 +406,7 @@ public class User
     // Create User with phone: 8 digit (Singapore) numbers only
     // Update database with new user
     // Created User will proceed with Login
-    public void CreateUser(){
+    public boolean CreateUserSeq(){
         System.out.println("New User Registration");
         Scanner sc = new Scanner(System.in);
 
@@ -392,13 +448,33 @@ public class User
         }
 
         User user = new User(username, password, email, phone);
-
         insertUser(user);
         System.out.println("User created!\n Proceed to login!");
+        return true;
+    }
+
+    public boolean CreateUser(String username, String password, String email, String phone){
+        User user = new User(username, password, email, phone);
+        insertUser(user);
+        System.out.println("User created!\n Proceed to login!");
+        return true;
+    }
+
+    public boolean CreateUser(String username, String password){
+        User user = new User(username, password);
+        insertUser(user);
+        System.out.println("User created!\n Proceed to login!");
+        return true;
+    }
+
+    // Create new user with current user object
+    public boolean CreateUser(){
+        insertUser(this);
+        return true;
     }
 
     // Insert user into database (New users only)
-    public static void insertUser(User user) {
+    public void insertUser(User user) {
         String sql = "INSERT INTO users(UID, Username, Password, Salt, email, phone, loginStatus) VALUES(?,?,?,?,?,?,?)";
 
         try (Connection conn = sqliteDatabase.connect();
@@ -417,7 +493,7 @@ public class User
     }
 
     // Updates user in database (Existing users only)
-    public static void updateUser(User user){
+    public boolean updateUser(User user){
         String sql = "UPDATE users SET Username = ?, Password = ?, Salt = ?, email = ?, phone = ?, loginStatus = ? WHERE UID = ?";
 
         try (Connection conn = sqliteDatabase.connect();
@@ -432,16 +508,35 @@ public class User
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            return false;
         }
+        return true;
     }
 
     //Logout Function
-    public void logout(){
-        this.setLoginStatus(false);
-        updateUser(this);
+    public boolean logout(){
+        try {
+            this.setLoginStatus(false);
+            updateUser(this);
+        } catch (Exception e){
+            LogHelper.LOGGER.log(Level.SEVERE, e.getMessage());
+            return false;
+        }
+        return true;
     }
 
-    private void setLoginStatus(boolean b) {
+    public boolean logout(User user){
+        try {
+            user.setLoginStatus(false);
+            updateUser(user);
+        } catch (Exception e){
+            LogHelper.LOGGER.log(Level.SEVERE, e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    protected void setLoginStatus(boolean b) {
         this.loginStatus = b;
     }
 
@@ -464,7 +559,15 @@ public class User
 
         // User is initialised with data from database after login
         User test2 = new User();
-        test2 = test2.Login("test", "123123");
+        User test3 = new User("test3", "123456");
+        test3.Login();
+
+        //test3.CreateUser();
+
+        boolean a = test2.Login("test", "123123");
+        System.out.print(a);
+
+
         // To access User Data
         //System.out.println("UID: " + test2.getUID());
         //System.out.println("Username: " + test2.getUsername());
@@ -487,7 +590,7 @@ public class User
         //System.out.println("test2 accounts size" + accounts.size());
         //System.out.println("test2 accounts get(0)" + accounts.get(0));
 
-        System.out.println("test2 UID: " + test2.getUID());
+        System.out.println("test2 UID: " + test3.getUID());
         List <Account> accounts = test2.getAccounts();
         int tCount = 0; // To remove when transaction ID is implemented
         // Accessing of accounts and transactions

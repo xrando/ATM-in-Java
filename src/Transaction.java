@@ -205,14 +205,14 @@ public class Transaction {
         String password = sc.nextLine();
         //login
         User test2 = new User();
-        test2 = test2.Login(username, password);
-        System.out.println("UID: " + test2.getUID());
-        System.out.println("Username: " + test2.getUsername());
-        System.out.println("Password: " + test2.getPassword());
-        System.out.println("Salt: " + test2.getSalt());
-        System.out.println("Email: " + test2.getEmail());
-        System.out.println("Phone: " + test2.getPhone());
-        System.out.println("Login Status: " + test2.getLoginStatus());
+        test2.Login(username, password);
+        //System.out.println("UID: " + test2.getUID());
+        //System.out.println("Username: " + test2.getUsername());
+        //System.out.println("Password: " + test2.getPassword());
+        //System.out.println("Salt: " + test2.getSalt());
+        //System.out.println("Email: " + test2.getEmail());
+        //System.out.println("Phone: " + test2.getPhone());
+        //System.out.println("Login Status: " + test2.getLoginStatus());
 
         Account TransactionAccount = new Account();
         //Add in after login user to select transaction account from Accounts List PXY
