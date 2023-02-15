@@ -53,6 +53,8 @@ public class GUI {
     private JTextField txtTransferTo;
     private JTextField txtTransferAmount;
     private JButton btnTransfer;
+    private JTextField txtWithdrawalNote;
+    private JTextField txtDepositNote;
 
     public GUI()
     {
@@ -63,7 +65,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                //On successful login, show main menu
+                //Get user input from textboxs and on successful login, show main menu
                 if (txtUsername.getText().equals(user)&&txtPassword.getText().equals(pw))
                 {
                     txtUsername.setText("");
@@ -73,10 +75,7 @@ public class GUI {
                     //set welcome msg
                     lblWelcomeMessage.setText("Welcome back " + user);
                     //attach main menu screen
-                    base.removeAll();
-                    base.add(main);
-                    base.repaint();
-                    base.revalidate();
+                    setScreen(base,main);
                 }
                 else if (!txtUsername.getText().equals(user))
                 {
@@ -97,10 +96,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 //re-attach login screen
-                base.removeAll();
-                base.add(login);
-                base.repaint();
-                base.revalidate();
+                setScreen(base,login);
             }
         });
         //Create event listener for back button
@@ -110,10 +106,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 //re-attach main menu
-                screen.removeAll();
-                screen.add(menu);
-                screen.repaint();
-                screen.revalidate();
+                setScreen(screen,menu);
             }
         });
         //Create event listener for view transactions button
@@ -123,10 +116,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 //attach view transaction screen
-                screen.removeAll();
-                screen.add(ViewTransactions);
-                screen.repaint();
-                screen.revalidate();
+                setScreen(screen,ViewTransactions);
             }
         });
         //Create event listener for withdrawal button
@@ -136,11 +126,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 //attach withdrawal screen
-                screen.removeAll();
-                screen.add(Withdrawal);
-                screen.repaint();
-                screen.revalidate();
-
+                setScreen(screen,Withdrawal);
                 //TODO: populate accounts ddl with accounts linked with current user
 
             }
@@ -152,10 +138,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 //attach deposit screen
-                screen.removeAll();
-                screen.add(Deposit);
-                screen.repaint();
-                screen.revalidate();
+                setScreen(screen,Deposit);
             }
         });
         //Create event listener for bank transfer button
@@ -165,10 +148,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 //attach bank transfer screen
-                screen.removeAll();
-                screen.add(BankTransfer);
-                screen.repaint();
-                screen.revalidate();
+                setScreen(screen,BankTransfer);
             }
         });
         //Create event listener for settings button
@@ -178,10 +158,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 //attach settings screen
-                screen.removeAll();
-                screen.add(Settings);
-                screen.repaint();
-                screen.revalidate();
+                setScreen(screen,Settings);
             }
         });
         //Create event listener for change password button
@@ -191,10 +168,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 //attach change password screen
-                screen.removeAll();
-                screen.add(ChangePassword);
-                screen.repaint();
-                screen.revalidate();
+                setScreen(screen,ChangePassword);
             }
         });
         //Create event listener for update password button
@@ -204,10 +178,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 //attach settings screen
-                screen.removeAll();
-                screen.add(Settings);
-                screen.repaint();
-                screen.revalidate();
+                setScreen(screen,Settings);
             }
         });
         //Create event listener for save changes button
@@ -241,12 +212,27 @@ public class GUI {
         });
     }
 
-    public static void main(String[] args)
+    protected JPanel getBase()
     {
+        return base;
+    }
+
+    protected void setScreen(JPanel cardLayoutBase, JPanel screenName)
+    {
+        //attach screen
+        cardLayoutBase.removeAll();
+        cardLayoutBase.add(screenName);
+        cardLayoutBase.repaint();
+        cardLayoutBase.revalidate();
+    }
+    //sample codes to run Gui in any main
+    /*public static void main(String[] args)
+    {
+        GUI UI = new GUI();
         JFrame frame = new JFrame("Pure ATM");
-        frame.setContentPane(new GUI().base);
+        frame.setContentPane(UI.getBase());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-    }
+    }*/
 }
