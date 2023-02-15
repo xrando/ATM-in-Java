@@ -11,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
+//remove this when deploying client
 public class ATMServerSocket implements AutoCloseable {
     SSLServerSocket sslServerSocket;
 

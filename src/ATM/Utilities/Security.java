@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.security.*;
 import java.security.cert.CertificateException;
 
-
+//https://github.com/square/okhttp/blob/master/samples/static-server/src/main/java/okhttp3/sample/SampleServer.java#L118
 public abstract class Security {
     public static SSLContext sslContext(String keyStorePath, String keyStorePass) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException, KeyManagementException {
         KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
