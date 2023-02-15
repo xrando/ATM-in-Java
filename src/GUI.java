@@ -53,6 +53,8 @@ public class GUI {
     private JTextField txtTransferTo;
     private JTextField txtTransferAmount;
     private JButton btnTransfer;
+    private JTextField txtWithdrawalNote;
+    private JTextField txtDepositNote;
 
     public GUI()
     {
