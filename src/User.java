@@ -21,7 +21,7 @@ public class User
         this.Username = Username;
         this.email = email;
         this.phone = phone;
-        this.UID = CurrentBank.generateNewUserUID();
+        this.UID = genUID();
         this.Salt = generateSalt(Username, this.UID);
         this.Password = generateHash(Password, Salt);
         this.Accounts = new ArrayList<Account>();
@@ -30,15 +30,15 @@ public class User
     }
 
     public User(String username, String password, String email, String phone){
-        Bank CurrentBank = new Bank("Bank of Testing");
         this.Username = username;
         this.email = email;
         this.phone = phone;
-        this.UID = CurrentBank.generateNewUserUID();
+        this.UID = genUID();
         this.Salt = generateSalt(username, this.UID);
         this.Password = generateHash(password, Salt);
-        this.Accounts = new ArrayList<Account>();
         this.loginStatus = false;
+        //Bank CurrentBank = new Bank("Bank of Testing");
+        this.Accounts = new ArrayList<Account>();
 
     }
 
@@ -79,10 +79,6 @@ public class User
         return this.UID;
     }
 
-    //public void setSalt() {
-    //    Salt = generateSalt();
-    //}
-
     public String getSalt() {
         return this.Salt;
     }
@@ -96,6 +92,24 @@ public class User
 
     public String getPhone(){
         return phone;
+    }
+
+    // Returns a incremented UID
+    public String genUID(){
+        String UID = "";
+        String query = "Select max(UID) as MAXUID from users";
+
+        try {
+            Connection conn = sqliteDatabase.connect();
+            PreparedStatement ps = conn.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            UID = rs.getString("MAXUID");
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return UID + 1;
     }
 
     public void changePin() {
@@ -136,21 +150,8 @@ public class User
             newPin2 = sc.nextLine();
         }
         this.Password = generateHash(newPin, getSalt());
-        // Update Database
-        // Probably better to update the database at the end of the session
-        //try {
-        //    Connection conn = sqliteDatabase.connect();
-        //    PreparedStatement ps = conn.prepareStatement("UPDATE Users SET Password = ? WHERE UID = ?");
-        //    ps.setString(1, this.Password);
-        //    ps.setString(2, this.UID);
-        //    ps.executeUpdate();
-        //    conn.close();
-        //} catch (SQLException e) {
-        //    LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
-        //}
 
     }
-    // Salt is now not randomized, but generated from the username and UID of the user
     public String generateSalt(String username, String UID) {
         String Salt = hash(username + UID);
         return Salt;
@@ -206,6 +207,26 @@ public class User
         this.Accounts.get(AccountIndex).AddTransaction(Amount,TransactionNote);
     }
 
+    public List<Account> getAccountsFromDatabase(String UID){
+        List<Account> Accounts = new ArrayList<>();
+        try{
+            Connection conn = sqliteDatabase.connect();
+            PreparedStatement ps = conn.prepareStatement("SELECT accountID FROM accounts WHERE userID = ?");
+            ps.setString(1, this.UID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                System.out.println(rs.getInt("accountID"));
+                //Add to AccountTransactions
+                Accounts.add(new Account(rs.getInt("accountID")));
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        this.Accounts = Accounts;
+        return Accounts;
+    }
+
     protected String[] getPasswordFromDatabase(String UID) {
         String getPasswordQuery = "SELECT password, salt FROM users WHERE uid = ?";
         String password = "";
@@ -229,10 +250,10 @@ public class User
         // get password and Salt from database
         String[] passwordAndSalt = getPasswordFromDatabase(UID);
         String hashedPassword = generateHash(password, passwordAndSalt[1]);
-        System.out.println("Hashed Password: " + hashedPassword);
+        //System.out.println("Hashed Password: " + hashedPassword);
 
         String passwordFromDatabase = passwordAndSalt[0];
-        System.out.println("Password from DB:" + passwordFromDatabase);
+        //System.out.println("Password from DB:" + passwordFromDatabase);
 
         return hashedPassword.equals(passwordFromDatabase);
     }
@@ -309,6 +330,9 @@ public class User
             } catch (SQLException e) {
                 LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
+
+            user.Accounts = user.getAccountsFromDatabase(user.UID);
+            //System.out.println("User Accounts: " + user.Accounts);
             return user;
 
         } else {
@@ -422,40 +446,66 @@ public class User
 
     // For testing
     public static void main(String[] args){
+        // To create new user
         //User newUser = new User();
         //newUser.CreateUser();
 
-        //Login test
         //User test = new User("test", "123456", "test", "test", new Bank("test"));
         //insertUser(test);
 
-        //test Login
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter username: ");
-        String username = sc.nextLine();
-        System.out.println("Enter pin: ");
-        String password = sc.nextLine();
+        //To Login
+        //Scanner sc = new Scanner(System.in);
+        //System.out.println("Enter username: ");
+        //String username = sc.nextLine();
+        //System.out.println("Enter pin: ");
+        //String password = sc.nextLine();
 
         // User is initialised with data from database after login
         User test2 = new User();
-        test2 = test2.Login(username, password);
-        System.out.println("UID: " + test2.getUID());
-        System.out.println("Username: " + test2.getUsername());
-        System.out.println("Password: " + test2.getPassword());
-        System.out.println("Salt: " + test2.getSalt());
-        System.out.println("Email: " + test2.getEmail());
-        System.out.println("Phone: " + test2.getPhone());
-        System.out.println("Login Status: " + test2.getLoginStatus());
+        test2 = test2.Login("test", "123123");
+        // To access User Data
+        //System.out.println("UID: " + test2.getUID());
+        //System.out.println("Username: " + test2.getUsername());
+        //System.out.println("Password: " + test2.getPassword());
+        //System.out.println("Salt: " + test2.getSalt());
+        //System.out.println("Email: " + test2.getEmail());
+        //System.out.println("Phone: " + test2.getPhone());
+        //System.out.println("Login Status: " + test2.getLoginStatus());
 
-        test2.changePin();
-        System.out.println("Login Status: " + test2.getLoginStatus());
+        // Change Pin
+        //test2.changePin();
+        //System.out.println("Login Status: " + test2.getLoginStatus());
 
-        System.out.println("logging out");
-        test2.logout();
-        System.out.println("Login Status: " + test2.getLoginStatus());
+        // Logout
+        //System.out.println("logging out");
+        //test2.logout();
+        //System.out.println("Login Status: " + test2.getLoginStatus());
+
+        //System.out.println("test2 accounts" + accounts);
+        //System.out.println("test2 accounts size" + accounts.size());
+        //System.out.println("test2 accounts get(0)" + accounts.get(0));
+
+        System.out.println("test2 UID: " + test2.getUID());
+        List <Account> accounts = test2.getAccounts();
+        int tCount = 0; // To remove when transaction ID is implemented
+        // Accessing of accounts and transactions
+        // This is assuming that the user has 1 and only 1 account
+        for (Account account : accounts) {
+            System.out.println("Account Name: " + account.getAccountName() + "\n");
+            System.out.println("Account Balance: " + account.GetAccountBalance());
+            List<Transaction> transactions = account.getAccountTransactions();
+            for (Transaction transaction : transactions) {
+                System.out.print("Transaction Number\n");
+                System.out.println("Transaction ID: " + tCount);
+                System.out.println("Transaction Amount: " + transaction.getAmount());
+                System.out.println("Transaction Date: " + transaction.getDate());
+                System.out.println("Transaction Note: " + transaction.getTransactionNote());
+                tCount++; // To remove when transaction ID is implemented
+            }
+        }
 
         // Outputs:
-        // UID: 338467
+        // UID: 1
         // Username: test
         // Password: dfb7664f26448841825721cec8b151d7
         // Salt: fbcaf11b8bbe8986ac7b78e6d9522682
@@ -466,6 +516,30 @@ public class User
         // Test User
         // Username: test
         // Password: 123123
+        
+        // Transactions and Accounts Output
+        //Connection to SQLite has been established.
+        //Account Balance: 901.3499999999999
+        //Connection to SQLite has been established.
+        //Transaction Number
+        //Transaction ID: 0
+        //Transaction Amount: 300.45
+        //Connection to SQLite has been established.
+        //Transaction Date: 2023-02-10 03:01:10
+        //Transaction Note: Salary
+        //Transaction Number
+        //Transaction ID: 1
+        //Transaction Amount: 300.45
+        //Connection to SQLite has been established.
+        //Transaction Date: 2023-02-10 03:01:10
+        //Transaction Note: Salary
+        //Transaction Number
+        //Transaction ID: 2
+        //Transaction Amount: 300.45
+        //Connection to SQLite has been established.
+        //Transaction Date: 2023-02-10 03:01:10
+        //Transaction Note: Salary
+
     }
 
 }

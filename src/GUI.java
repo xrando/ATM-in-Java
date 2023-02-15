@@ -43,9 +43,20 @@ public class GUI {
     private JTextField txtWithdrawalAmount;
     private JLabel lblWithdrawalAmountValidator;
     private JButton btnConfirmWithdrawal;
+    private JComboBox ddlAccount;
+    private JTextField txtDepositAmount;
+    private JLabel lblAccountbalance;
+    private JButton btnConfirmDeposit;
+    private JLabel lblWelcomeMessage;
+    private JComboBox ddlaccount;
+    private JLabel lblAccBalance;
+    private JTextField txtTransferTo;
+    private JTextField txtTransferAmount;
+    private JButton btnTransfer;
 
     public GUI()
     {
+        String user = "ben", pw = "1234";
         //Create event listener for login button
         btnLogin.addActionListener(new ActionListener()
         {
@@ -53,23 +64,26 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 //On successful login, show main menu
-                if (txtUsername.getText().equals("ben")&&txtPassword.getText().equals("1234"))
+                if (txtUsername.getText().equals(user)&&txtPassword.getText().equals(pw))
                 {
                     txtUsername.setText("");
                     txtPassword.setText("");
                     lblUsernameValidator.setText("");
                     lblPasswordValidator.setText("");
+                    //set welcome msg
+                    lblWelcomeMessage.setText("Welcome back " + user);
+                    //attach main menu screen
                     base.removeAll();
                     base.add(main);
                     base.repaint();
                     base.revalidate();
                 }
-                else if (!txtUsername.getText().equals("ben"))
+                else if (!txtUsername.getText().equals(user))
                 {
                     lblPasswordValidator.setText("");
                     lblUsernameValidator.setText("Wrong username");
                 }
-                else if (!txtPassword.getText().equals("1234"))
+                else if (!txtPassword.getText().equals(pw))
                 {
                     lblUsernameValidator.setText("");
                     lblPasswordValidator.setText("Wrong password");

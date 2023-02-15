@@ -1,6 +1,5 @@
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import javax.xml.transform.Result;
+import java.sql.*;
 import java.util.Date;
 import java.util.Scanner;
 import java.text.DateFormat;
@@ -28,6 +27,15 @@ public class Transaction {
         this.TransactionNote = "NewTransactionNote";
         this.TransactionAccount = null;
     }
+
+    // Perhaps Transaction constructor can add a date and time stamp so that we don't have to access the database to get it for each transaction
+    // Add a transaction ID as well
+    public Transaction(double amount, String transactionNote, String date, String timeStamp, String accountID) {
+        this.Amount = amount;
+        this.TransactionNote = transactionNote;
+        this.TransactionAccount = accountID;
+    }
+
     public double getAmount() {
         return Amount;
     }
@@ -42,8 +50,26 @@ public class Transaction {
         String strTime = dateFormat.format(date);
         return strTime;
     }
+    public String getDate(){
+        String sql = "Select date, timeStamp from transactions where transactionID = ?";
+        String dateTime = null;
+        try{
+            Connection conn = sqliteDatabase.connect();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, "3"); // To update this to the transaction ID todo
+            ResultSet rs = ps.executeQuery();
+            //Add to AccountTransactions
+            //System.out.print(rs.getString("date"));
+            //System.out.print(rs.getString("timeStamp"));
+            dateTime = rs.getString("date") + " " + rs.getString("timeStamp");
 
-    public String getDate() {
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return dateTime;
+    }
+
+    public String getCurrentDate() {
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String strDate = dateFormat.format(date);
@@ -71,11 +97,28 @@ public class Transaction {
     }
 
     //Get transaction summary
-    public String GetTransactionSummary() {
-        if (this.Amount < 0) {
-            return String.format("%s : $(%.2f) : %s", this.TimeStamp.toString(), -this.Amount, this.TransactionNote);
-        } else {
-            return String.format("%s : $%.2f : %s", this.TimeStamp.toString(), this.Amount, this.TransactionNote);
+    public void GetTransactionHistory(Account TransactionAccount) {
+        TableHelper tb = new TableHelper(true, true);
+        String accID = TransactionAccount.getAccountID();
+        try (Connection conn = sqliteDatabase.connect();
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM transactions WHERE accountID = ?")) {
+            ps.setString(1, accID);
+            try (ResultSet rs = ps.executeQuery()) {
+                tb.setHeaders("Transaction ID", "Amount", "Time Stamp", "Transaction Note", "Date");
+                // loop through the result set
+                while (rs.next()) {
+                    tb.addRow(rs.getString("transactionID"),
+                            rs.getString("amount"),
+                            rs.getString("timeStamp"),
+                            rs.getString("transactionNote"),
+                            rs.getString("date"));
+                }
+                tb.print(false);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -87,7 +130,7 @@ public class Transaction {
             pstmt.setDouble(1, transactionDetails.Amount);
             pstmt.setString(2, getTimeStamp());
             pstmt.setString(3, transactionDetails.TransactionNote);
-            pstmt.setString(4, getDate());
+            pstmt.setString(4, getCurrentDate());
             pstmt.setString(5, account.getAccountID());
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -111,8 +154,9 @@ public class Transaction {
                 System.out.println("You have selected to deposit.");
                 System.out.println("Please key in the amount you wish to deposit E.g. 500.00");
                 TAmount = sc.nextDouble();
+                sc.nextLine();
                 System.out.println("Enter a Transaction Note");
-                TNote = sc.next();
+                TNote = sc.nextLine();
                 Transaction deposit = new Transaction(TAmount, TNote,TransactionAccount.getAccountID());
                 deposit.AddTransactionToSQL(TransactionAccount,deposit);
                 System.out.printf("Deposit of %.2f Completed", TAmount);
@@ -122,12 +166,15 @@ public class Transaction {
                 System.out.println("You have selected to withdraw.");
                 System.out.println("Please key in the amount you wish to withdraw E.g. 500.00");
                 TAmount = sc.nextDouble();
+                sc.nextLine();
                 System.out.println("Enter a Transaction Note");
-                TNote = sc.next();
+                TNote = sc.nextLine();
                 Transaction withdraw = new Transaction(-TAmount, TNote,TransactionAccount.getAccountID());
                 withdraw.AddTransactionToSQL(TransactionAccount,withdraw);
                 System.out.printf("Withdrawal of %.2f Completed", TAmount);
                 break;
+            case 3:
+                GetTransactionHistory(TransactionAccount);
             default:
                 System.out.println("Please key in a valid option");
         }
@@ -156,7 +203,6 @@ public class Transaction {
         Transaction transaction = new Transaction();
         while (true) {
             transaction.GetChoice(TransactionAccount);
-            //TransactionAccount.PrintTransactionHistory();
         }
     }
 }

@@ -1,14 +1,15 @@
+//mail
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.swing.text.Document;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
-
+//file
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-
+//TTS
 import java.util.Locale;
 import javax.speech.Central;
 import javax.speech.synthesis.Synthesizer;
@@ -35,7 +36,7 @@ public class Helper
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            System.out.println("IO exception caught: "+e.getMessage());
         }
 
     }
@@ -54,7 +55,7 @@ public class Helper
                 "Pure Bank Ltd\n" +
                 "\n" +
                 "Please do not reply to this email as it is auto-generated.\n"); */
-    public static void SendMail(String ReceiverEmail, String Subject, String Body)
+    public static void SendMail(String ReceiverEmail, String Subject, String Body) 
     {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -101,11 +102,19 @@ public class Helper
             System.out.println("Email sent successfully!");
 
         }
-        catch (Exception e)
+        catch (AddressException e)
         {
-            System.out.printf("Error due to : %s",e.getCause());
-            e.printStackTrace();
+            System.out.println("Address exception caught: "+e.getMessage());
         }
+        catch (MessagingException e)
+        {
+            System.out.println("Messaging exception caught: "+e.getMessage());
+        }
+        catch (IOException e)
+        {
+            System.out.println("IO exception caught: "+e.getMessage());
+        }
+
     }
     //sample
     //TextToSpeech.TTS("Hi my name is benjamin");
@@ -129,9 +138,17 @@ public class Helper
             //deallocating the Synthesizer
             synthesizer.deallocate();
         }
-        catch (Exception e)
+        catch (AudioException e)
         {
-            e.printStackTrace();
+            System.out.println("Audio exception caught: "+e.getMessage());
+        }
+        catch (EngineException e)
+        {
+            System.out.println("Engine exception caught: "+e.getMessage());
+        }
+        catch (InterruptedException e)
+        {
+            System.out.println("Interrupted exception caught: "+e.getMessage());
         }
     }
 }

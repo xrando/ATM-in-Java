@@ -27,6 +27,22 @@ public class Account {
     public Account(){
 
     }
+    public Account(int accountID){ //Created a new constructor to accept accountID
+        this.AccountName = "Default";
+        this.accountID = Integer.toString(accountID);
+
+    }
+    public Account(String NewAccountName, User NewAccountHolder)
+    {
+        //Set account name and account holder
+        this.AccountName = NewAccountName;
+        this.AccountHolder = NewAccountHolder;
+        //Generate new account UID
+        //this.UID = CurrentBank.generateNewAccountUID();
+        //Initialize transactions
+        this.AccountTransactions = new ArrayList<Transaction>();
+    }
+
 
     public String getAccountName() {
         return AccountName;
@@ -57,6 +73,23 @@ public class Account {
     }
 
     public ArrayList<Transaction> getAccountTransactions() {
+        ArrayList <Transaction> AccountTransactions = new ArrayList<Transaction>();
+        try{
+            Connection conn = sqliteDatabase.connect();
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM transactions WHERE accountID = ?");
+            ps.setString(1, this.accountID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                //Add to AccountTransactions
+                //System.out.print(rs.getString("accountID"));
+                //System.out.print(rs.getString("amount"));
+                AccountTransactions.add(new Transaction(rs.getDouble("amount"), rs.getString("transactionNote"), rs.getString("date"), rs.getString("timeStamp"), rs.getString("accountID")));
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        this.AccountTransactions = AccountTransactions;
         return AccountTransactions;
     }
 
@@ -81,7 +114,9 @@ public class Account {
     public double GetAccountBalance()
     {
         double balance =0;
-        for(Transaction transaction : this.AccountTransactions)
+        ArrayList <Transaction> AccountTransactions = new ArrayList<Transaction>();
+        AccountTransactions = this.getAccountTransactions();
+        for(Transaction transaction : AccountTransactions)
         {
             balance+=transaction.getAmount();
         }
@@ -90,12 +125,12 @@ public class Account {
     //Print transaction history of the account
     public void PrintTransactionHistory()
     {
-        System.out.printf("\nTransaction history for account %s\n",this.UID);
-        for (int i=this.AccountTransactions.size()-1;i>=0;i--)
-        {
-            System.out.println(this.AccountTransactions.get(i).GetTransactionSummary());
-        }
-        System.out.println();
+//        System.out.printf("\nTransaction history for account %s\n",this.UID);
+//        for (int i=this.AccountTransactions.size()-1;i>=0;i--)
+//        {
+//            System.out.println(this.AccountTransactions.get(i).GetTransactionSummary());
+//        }
+//        System.out.println();
     }
     //Add transaction in this account
     public void AddTransaction(double Amount, String TransactionNote)
