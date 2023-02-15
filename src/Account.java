@@ -1,6 +1,7 @@
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+import ATM.Utilities.TableHelper;
 
 public class Account {
     private String AccountName;
@@ -169,7 +170,6 @@ public class Account {
         return TransactionAccount;
     }
 
-    //WIP to create new savings and current account PXY
     public void createAccount(String userID) {
         String createType ="";
         TableHelper tb = new TableHelper();
