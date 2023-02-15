@@ -1,6 +1,8 @@
-//mail
+package ATM.Utilities;//mail
 import javax.mail.*;
 import javax.mail.internet.*;
+import javax.speech.AudioException;
+import javax.speech.EngineException;
 import javax.swing.text.Document;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

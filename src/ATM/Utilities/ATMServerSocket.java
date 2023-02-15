@@ -1,24 +1,30 @@
 package ATM.Utilities;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.SocketException;
-import java.net.SocketImpl;
+import ATM.Constants.Constants;
 
-public class ATMServerSocket extends ServerSocket {
-    public ATMServerSocket(int port) throws IOException {
-        super(port);
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLSocket;
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+
+//remove this when deploying client
+public class ATMServerSocket implements AutoCloseable {
+    SSLServerSocket sslServerSocket;
+
+    public ATMServerSocket() throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, KeyManagementException {
+        sslServerSocket = (SSLServerSocket) Security.sslContext(Constants.SSL.KEYSTORE, Constants.SSL.KEYSTOREPASS).getServerSocketFactory().createServerSocket(Constants.Socket.PORT);
     }
 
-    /*added new method to return custom ATMSocket for accept() method*/
     public ATMSocket accept() throws IOException {
-        if (isClosed())
-            throw new SocketException("Socket is closed");
-        if (!isBound())
-            throw new SocketException("Socket is not bound yet");
-        ATMSocket s = new ATMSocket((SocketImpl) null);
-        implAccept(s);
-        return s;
+        SSLSocket sslSocket = (SSLSocket) sslServerSocket.accept();
+        return new ATMSocket(sslSocket);
+    }
+
+    public void close() throws Exception {
+        this.sslServerSocket.close();
     }
 }
-

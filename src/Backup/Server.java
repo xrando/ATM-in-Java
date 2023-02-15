@@ -1,8 +1,9 @@
-package ATM.Server;
+package Backup;
 
-import ATM.Constants.Constants;
-import ATM.Utilities.ATMServerSocket;
-import ATM.Utilities.ATMSocket;
+import ATM.Constants.Constants.Socket;
+import ATM.Constants.Constants.Stream;
+import Backup.ATMServerSocket;
+import Backup.ATMSocket;
 import ATM.Utilities.LogHelper;
 
 import java.io.IOException;
@@ -13,19 +14,25 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.logging.Level;
 
+//to be removed
 public class Server {
-    public void listen() throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, KeyManagementException {
-        ATMServerSocket ss = new ATMServerSocket();
-        while (true) {
-            ATMSocket socket = ss.accept();
-            new Thread(() -> {
+    public void listen() throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+        //start new instance of serversocket. This need not be recreated as it uses multi-threading to handle different client sockets
+
+
+        ATMServerSocket ss = new ATMServerSocket(Socket.PORT);
+        //SSLServerSocket ss = (SSLServerSocket) Security.sslContext(SSL.KEYSTORE, SSL.KEYSTOREPASS).getServerSocketFactory().createServerSocket(Socket.PORT);
+
+        while (true) { //server should run non-stop
+            ATMSocket socket = ss.accept(); //accept new client sockets and
+            new Thread(() -> { //start new thread to handle each client sockets
                 try (socket) { //autocloseable
                     while (true) {
                         /*once server receives a client request, it MUST respond to the client to continue*/
                         String clientInput = socket.read(); //receive client request as String
                         System.out.println("Received: " + clientInput);
                         //Sample below:
-                        if (clientInput.equals(Constants.Stream.EOS)) { //need an exit code to safely end the connection
+                        if (clientInput.equals(Stream.EOS)) { //need an exit code to safely end the connection
                             socket.write(clientInput); //response to client
                             break;
                         } else
@@ -35,8 +42,6 @@ public class Server {
                     }
                 } catch (IOException e) {
                     LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
                 }
             }).start();
         }

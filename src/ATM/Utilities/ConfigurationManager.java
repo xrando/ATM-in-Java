@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class ConfigurationManager {
+public abstract class ConfigurationManager {
     public static String GetConfig(String Key) {
         try (InputStream inputStream = ConfigurationManager.class.getClassLoader().getResourceAsStream("config.properties")) {
             Properties properties = new Properties();
