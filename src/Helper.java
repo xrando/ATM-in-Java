@@ -36,7 +36,7 @@ public class Helper
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            System.out.println("IO exception caught: "+e.getMessage());
         }
 
     }
