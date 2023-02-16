@@ -31,8 +31,8 @@ public class GUI {
     private JTextField txtEmailAddress;
     private JTextField txtPhoneNumber;
     private JButton btnChangePassword;
-    private JTextField txtChangePassword;
-    private JTextField txtConfirmPassword;
+    private JTextField txtOldPassword;
+    private JTextField txtNewPassword;
     private JButton btnUpdatePassword;
     private JLabel lblConfirmPasswordValidator;
     private JPanel ChangePassword;
@@ -55,6 +55,8 @@ public class GUI {
     private JButton btnTransfer;
     private JTextField txtWithdrawalNote;
     private JTextField txtDepositNote;
+    private JLabel lblOldPasswordValidator;
+    private JTextField txtConfirmPassword;
 
     public GUI()
     {
