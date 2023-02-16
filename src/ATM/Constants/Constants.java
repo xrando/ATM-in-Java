@@ -12,6 +12,7 @@ public abstract class Constants {
     public abstract static class Stream {
         public final static String EOF = "over";
         public final static String EOS = "exit";
+        public final static String RES = "Response";
     }
 
     public abstract static class Socket {
