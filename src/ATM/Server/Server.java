@@ -43,9 +43,17 @@ public class Server {
                             case Constants.User.Login -> {
                                 user = new User(request.getString(Constants.User.Username), request.getString(Constants.User.Password));
                                 socket.write(user.Login()); //now socket.write() can receive boolean. String "true" or "false" will be sent
+                                user.getUserFromDatabase();
                             }
                             case Constants.User.Logout -> socket.write(user.logout());
                             //TODO: complete the cases
+                            case Constants.User.ChangePin -> {
+                                socket.write(user.changePin(request.getString(Constants.User.oldPin), request.getString(Constants.User.newPin)));
+                            }
+                            case Constants.User.CreateUser -> {
+                                User tmpuser = new User();
+                                socket.write(tmpuser.CreateUser(request.getString(Constants.User.Username), request.getString(Constants.User.Password)));
+                            }
                         }
                         //Sample below:
 /*                        if (clientInput.equals(Constants.Stream.EOS)) { //need an exit code to safely end the connection

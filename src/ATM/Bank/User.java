@@ -104,6 +104,22 @@ public class User
         return loginStatus;
     }
 
+    public boolean getLoginStatusFromDB(String username) {
+        String query = "Select loginStatus from users where username = ?";
+        boolean loginStatus = false;
+        try {
+            Connection conn = sqliteDatabase.connect();
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            loginStatus = rs.getBoolean("loginStatus");
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return loginStatus;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -171,6 +187,34 @@ public class User
 
         return true;
     }
+
+    public boolean changePin(String oldPin, String newPin) {
+        // Get user Info from DB
+        // If user is not logged in, return false
+        if (!this.getLoginStatusFromDB(this.getUsername())){
+            return false;
+        }
+
+        // If old pin is not correct, return false
+        if (!this.getPassword().equals(generatePasswordHash(oldPin, this.Salt))) {
+            System.out.println(getSalt());
+            System.out.println(this.Salt);
+            System.out.println(generatePasswordHash(oldPin, this.Salt));
+            System.out.println(this.getPassword());
+            return false;
+        }
+
+        // If new pin is not 6 digits, return false
+        if(newPin.length() != 6) {
+            return false;
+        }
+
+        this.Password = generatePasswordHash(newPin, getSalt());
+
+        return true;
+    }
+
+
     public String generateSalt(String username, String UID) {
         String Salt = hash(username + UID);
         return Salt;
@@ -342,6 +386,27 @@ public class User
         }
     }
 
+    public void getUserFromDatabase(){
+        String UID = this.UID;
+
+        String sql = "SELECT * FROM users WHERE UID = ?";
+        User user = null;
+        try(Connection conn = sqliteDatabase.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1, UID);
+            ResultSet rs = pstmt.executeQuery();
+            this.Username = rs.getString("Username");
+            this.Password = rs.getString("Password");
+            this.Salt = rs.getString("Salt");
+            this.UID = rs.getString("UID");
+            this.loginStatus = rs.getBoolean("loginStatus");
+            this.email = rs.getString("email");
+            this.phone = rs.getString("phone");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public boolean Login(String username, String password) {
         //check if user exists
         String UID = CheckUserExist(username);
@@ -364,19 +429,19 @@ public class User
                 LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
             //return user object populated with data from database
-            User user = new User();
+            //User user = new User();
             try{
                 Connection conn = sqliteDatabase.connect();
                 PreparedStatement ps = conn.prepareStatement("SELECT * FROM Users WHERE UID = ?");
                 ps.setString(1, UID);
                 ResultSet rs = ps.executeQuery();
-                user.UID = rs.getString("UID");
-                user.Username = rs.getString("Username");
-                user.Password = rs.getString("Password");
-                user.Salt = rs.getString("Salt");
-                user.email = rs.getString("Email");
-                user.phone = rs.getString("Phone");
-                user.loginStatus = rs.getBoolean("loginStatus");
+                //user.UID = rs.getString("UID");
+                //user.Username = rs.getString("Username");
+                //user.Password = rs.getString("Password");
+                //user.Salt = rs.getString("Salt");
+                //user.email = rs.getString("Email");
+                //user.phone = rs.getString("Phone");
+                //user.loginStatus = rs.getBoolean("loginStatus");
                 this.UID = rs.getString("UID");
                 this.Username = rs.getString("Username");
                 this.Password = rs.getString("Password");
@@ -389,7 +454,7 @@ public class User
                 LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
 
-            user.Accounts = user.getAccountsFromDatabase(user.UID);
+            //user.Accounts = user.getAccountsFromDatabase(user.UID);
             return true;
             //System.out.println("ATM.ATM.Bank.Bank.User Accounts: " + user.Accounts);
             //return user;
@@ -464,8 +529,11 @@ public class User
 
     public boolean CreateUser(String username, String password){
         User user = new User(username, password);
+        user.UID = user.genUID();
+        user.Salt = user.generateSalt(username, user.UID);
+        user.Password = user.generatePasswordHash(password, user.Salt);
         insertUser(user);
-        System.out.println("ATM.ATM.Bank.Bank.User created!\n Proceed to login!");
+        System.out.println("User created!\n Proceed to login!");
         return true;
     }
 
@@ -514,17 +582,30 @@ public class User
         }
         return true;
     }
+    public void updateUser(){
+        String sql = "UPDATE users SET Username = ?, Password = ?, Salt = ?, email = ?, phone = ?, loginStatus = ? WHERE UID = ?";
+
+        try (Connection conn = sqliteDatabase.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, this.Username);
+            pstmt.setString(2, this.Password);
+            pstmt.setString(3, this.Salt);
+            pstmt.setString(4, this.email);
+            pstmt.setString(5, this.phone);
+            pstmt.setString(6, this.loginStatus ? "1" : "0");
+            pstmt.setString(7, this.UID);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            LogHelper.LOGGER.log(Level.SEVERE, e.getMessage());
+        }
+    }
 
     //Logout Function
     public boolean logout(){
-        try {
-            this.setLoginStatus(false);
-            updateUser(this);
-        } catch (Exception e){
-            LogHelper.LOGGER.log(Level.SEVERE, e.getMessage());
-            return false;
-        }
-        return true;
+        this.setLoginStatus(false);
+        this.updateUser();
+
+        return !this.loginStatus;
     }
 
     public boolean logout(User user){

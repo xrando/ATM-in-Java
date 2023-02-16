@@ -37,6 +37,11 @@ public abstract class Constants {
         public static final String Username = "Username";
         public static final String Password = "Password";
         public static final String LoginStatus = "LoginStatus";
+
+        public static final String CreateUser = "CreateUser";
+        public static final String ChangePin = "ChangePin";
+        public static final String oldPin = "oldPin";
+        public static final String newPin = "newPin";
     }
 
     public abstract static class userFunctions {
