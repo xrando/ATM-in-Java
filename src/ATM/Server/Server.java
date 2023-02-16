@@ -45,17 +45,19 @@ public class Server {
                             case Constants.User.Login -> {
                                 user = new User(request.getString(Constants.User.Username), request.getString(Constants.User.Password));
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.User.LoginStatus, user.Login()).toString()); //now socket.write() can receive boolean. String "true" or "false" will be sent
-                                socket.write(user.Login()); //now socket.write() can receive boolean. String "true" or "false" will be sent
+                                //socket.write(user.Login()); //now socket.write() can receive boolean. String "true" or "false" will be sent
                                 user.getUserFromDatabase();
                             }
                             case Constants.User.Logout -> socket.write(new JSON(Constants.Stream.RES).add(Constants.User.LoginStatus, user.logout()).toString());
                             //TODO: complete the cases
                             case Constants.User.ChangePin -> {
-                                socket.write(user.changePin(request.getString(Constants.User.oldPin), request.getString(Constants.User.newPin)));
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.User.ChangePin, user.changePin(request.getString(Constants.User.oldPin), request.getString(Constants.User.newPin))).toString());
+                                //socket.write(user.changePin(request.getString(Constants.User.oldPin), request.getString(Constants.User.newPin)));
                             }
                             case Constants.User.CreateUser -> {
                                 User tmpuser = new User();
-                                socket.write(tmpuser.CreateUser(request.getString(Constants.User.Username), request.getString(Constants.User.Password)));
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.User.CreateUser, tmpuser.CreateUser(request.getString(Constants.User.Username), request.getString(Constants.User.Password))).toString());
+                                //socket.write(tmpuser.CreateUser(request.getString(Constants.User.Username), request.getString(Constants.User.Password)));
                             }
                         }
                         //Sample below:

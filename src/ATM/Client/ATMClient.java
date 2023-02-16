@@ -17,12 +17,12 @@ public class ATMClient {
 
         //These codes are for testing, actual implementation will be with UI
 
-        User user = new User();
+        //User user = new User();
 
         // Create a new user
         //user.CreateUser();
 
-        System.out.print(client.listen(new JSON(Constants.User.CreateUser).add(Constants.User.Username, "abc").add(Constants.User.Password, "123123").toString()));
+        System.out.print(client.listen(new JSON(Constants.User.CreateUser).add(Constants.User.Username, "abcd").add(Constants.User.Password, "123123").toString()));
 
         //login
         //System.out.print(client.listen(new JSON(Constants.User.Login).add(Constants.User.Username, "test").add(Constants.User.Password, "123123").toString()));
