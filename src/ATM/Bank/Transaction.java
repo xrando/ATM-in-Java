@@ -1,11 +1,12 @@
+package ATM.Bank;
+
 import ATM.Utilities.TableHelper;
-import javax.xml.transform.Result;
+
 import java.sql.*;
 import java.util.Date;
 import java.util.Scanner;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Calendar;
 
 public class Transaction {
@@ -31,7 +32,7 @@ public class Transaction {
         this.TransactionAccount = null;
     }
 
-    // Perhaps Transaction constructor can add a date and time stamp so that we don't have to access the database to get it for each transaction
+    // Perhaps ATM.ATM.Bank.Bank.Transaction constructor can add a date and time stamp so that we don't have to access the database to get it for each transaction
     // Add a transaction ID as well
     public Transaction(double amount, String transactionNote, String date, String timeStamp, String accountID) {
         this.Amount = amount;
@@ -91,7 +92,7 @@ public class Transaction {
              PreparedStatement ps = conn.prepareStatement("SELECT * FROM transactions WHERE accountID = ?")) {
             ps.setString(1, accID);
             try (ResultSet rs = ps.executeQuery()) {
-                tb.setHeaders("Transaction ID", "Amount", "Time Stamp", "Transaction Note", "Date");
+                tb.setHeaders("ATM.ATM.Bank.Bank.Transaction ID", "Amount", "Time Stamp", "ATM.ATM.Bank.Bank.Transaction Note", "Date");
                 // loop through the result set
                 while (rs.next()) {
                     tb.addRow(rs.getString("transactionID"),
@@ -109,7 +110,7 @@ public class Transaction {
         }
     }
 
-    public boolean AddTransactionToSQL(Account account,Transaction transactionDetails){
+    public boolean AddTransactionToSQL(Account account, Transaction transactionDetails){
         String sql = "INSERT INTO transactions( amount, timeStamp, transactionNote, date, accountID) VALUES(?,?,?,?,?)";
 
         try (Connection conn = sqliteDatabase.connect();
@@ -134,9 +135,9 @@ public class Transaction {
         System.out.println("Please select mode of transaction:");
         System.out.println("1. Deposit");
         System.out.println("2. Withdrawal");
-        System.out.println("3. Transaction Summary");
-        System.out.println("4. Change Transaction Account");
-        System.out.println("5. Create New Transaction Account");
+        System.out.println("3. ATM.ATM.Bank.Bank.Transaction Summary");
+        System.out.println("4. Change ATM.ATM.Bank.Bank.Transaction ATM.ATM.Bank.Bank.Account");
+        System.out.println("5. Create New ATM.ATM.Bank.Bank.Transaction ATM.ATM.Bank.Bank.Account");
         Scanner sc = new Scanner(System.in);
         int choice = sc.nextInt();
         switch (choice) {
@@ -146,7 +147,7 @@ public class Transaction {
                 System.out.println("Please key in the amount you wish to deposit E.g. 500.00");
                 TAmount = sc.nextDouble();
                 sc.nextLine();
-                System.out.println("Enter a Transaction Note");
+                System.out.println("Enter a ATM.ATM.Bank.Bank.Transaction Note");
                 TNote = sc.nextLine();
                 Transaction deposit = new Transaction(TAmount, TNote,TransactionAccount.getAccountID());
                 deposit.AddTransactionToSQL(TransactionAccount,deposit);
@@ -158,7 +159,7 @@ public class Transaction {
                 System.out.println("Please key in the amount you wish to withdraw E.g. 500.00");
                 TAmount = sc.nextDouble();
                 sc.nextLine();
-                System.out.println("Enter a Transaction Note");
+                System.out.println("Enter a ATM.ATM.Bank.Bank.Transaction Note");
                 TNote = sc.nextLine();
                 Transaction withdraw = new Transaction(-TAmount, TNote,TransactionAccount.getAccountID());
                 withdraw.AddTransactionToSQL(TransactionAccount,withdraw);

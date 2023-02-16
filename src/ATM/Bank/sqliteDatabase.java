@@ -1,3 +1,5 @@
+package ATM.Bank;
+
 import java.io.File;
 import java.sql.*;
 
@@ -76,7 +78,7 @@ public class sqliteDatabase {
         }
     }
 
-    //Modified this to create the User table
+    //Modified this to create the ATM.ATM.Bank.Bank.User table
     public static void createNewTable() {
         // SQLite connection string
         String url = "jdbc:sqlite:Resources/db/atm.db";

@@ -21,8 +21,7 @@ public class ATMSocket implements AutoCloseable {
         this.sslSocket = sslSocket;
     }
 
-    /*read the input stream until hits the EOF constant
-     * TODO: add decryption*/
+    //read the input stream until hits the EOF constant
     public String read() throws IOException {
         byte[] buf = new byte[1024];
         int b;
@@ -38,15 +37,19 @@ public class ATMSocket implements AutoCloseable {
         return a.toString();
     }
 
-    /*push the String to outputstream and add EOF
-     * TODO: add encryption*/
+    //push the String to outputstream and add EOF
     public void write(String s) throws IOException {
         this.sslSocket.getOutputStream().write(s.getBytes());
         this.sslSocket.getOutputStream().write(Constants.Stream.EOF.getBytes());
         this.sslSocket.getOutputStream().flush();
     }
 
-    @Override
+    public void write(boolean b) throws IOException {
+        this.sslSocket.getOutputStream().write((b?"true":"false").getBytes());
+        this.sslSocket.getOutputStream().write(Constants.Stream.EOF.getBytes());
+        this.sslSocket.getOutputStream().flush();
+    }
+
     public void close() throws Exception {
         this.sslSocket.close();
     }

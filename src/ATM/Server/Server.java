@@ -1,5 +1,6 @@
 package ATM.Server;
 
+import ATM.Bank.User;
 import ATM.Constants.Constants;
 import ATM.Utilities.ATMServerSocket;
 import ATM.Utilities.ATMSocket;
@@ -19,24 +20,44 @@ public class Server {
         while (true) {
             ATMSocket socket = ss.accept();
             new Thread(() -> {
+                User user = null;
                 try (socket) { //autocloseable
                     while (true) {
                         /*once server receives a client request, it MUST respond to the client to continue*/
                         String clientInput = socket.read(); //receive client request as String
+
+                        //for debugging:
                         System.out.println("Received: " + clientInput);
+
+                        //exit code to safely end the connection
+                        if (clientInput.equals(Constants.Stream.EOS))
+                            break;
+
+                        //request[0] is the request type, the rest are the parameters if applicable (can have no parameter)
+                        String[] request = clientInput.split(Constants.RequestBuilder.Separator);
+
+                        switch (request[0]){
+                            case Constants.User.Login -> {
+                                user = new User(request[1], request[2]);
+                                socket.write(user.Login()); //now socket.write() can receive boolean. String "true" or "false" will be sent
+                            }
+                            case Constants.User.Logout -> socket.write(user.logout());
+                            //TODO: complete the cases
+                        }
                         //Sample below:
-                        if (clientInput.equals(Constants.Stream.EOS)) { //need an exit code to safely end the connection
+/*                        if (clientInput.equals(Constants.Stream.EOS)) { //need an exit code to safely end the connection
                             socket.write(clientInput); //response to client
                             break;
                         } else
-                            socket.write("You sent: " + clientInput);
+                            socket.write("You sent: " + clientInput);*/
                         //End of sample
-                        //TODO: (replace the sample codes) switch statement to handle different requests
                     }
                 } catch (IOException e) {
                     LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                } catch (NullPointerException e) {
+                    LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 }
             }).start();
         }

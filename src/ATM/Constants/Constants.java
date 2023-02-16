@@ -1,7 +1,11 @@
 package ATM.Constants;
 
+import ATM.Bank.Account;
+import ATM.Bank.Transaction;
 import ATM.Utilities.ConfigurationManager;
 
+import java.lang.module.FindException;
+import java.net.StandardSocketOptions;
 import java.util.ArrayList;
 
 public abstract class Constants {
@@ -23,6 +27,15 @@ public abstract class Constants {
         public static final String TRUSTSTOREPASS = "123456";
     }
 
+    public abstract static class RequestBuilder {
+        public static final String Separator = ";#";
+    }
+
+    public abstract static class User { //return bool
+        public static final String Login = "Login";
+        public static final String Logout = "Logout";
+    }
+
     public abstract static class userFunctions {
         // Takes in username and password
         // Returns true if login is successful, Logs and returns false if login is unsuccessful
@@ -35,15 +48,15 @@ public abstract class Constants {
         public abstract boolean logout();
 
         // same logout but with user object
-        //public abstract boolean logout(User user);
+        //public abstract boolean logout(ATM.ATM.Bank.Bank.User user);
 
         // Actual Creation of user
         public abstract boolean CreateUser(String username, String password, String email, String phone);
 
-        // User Creation with 2 fields only, email and phone will be set to " "
+        // ATM.ATM.Bank.Bank.User Creation with 2 fields only, email and phone will be set to " "
         public abstract boolean CreateUser(String username, String password);
 
-        //Create User Sequence for Client, with Input Sanitization
+        //Create ATM.ATM.Bank.Bank.User Sequence for Client, with Input Sanitization
         public abstract boolean CreateUserSeq();
 
         // Change Pin Sequence
@@ -71,11 +84,11 @@ public abstract class Constants {
         // For user creation
         public abstract boolean checkUsername(String username);
 
-        //insert User, For user creation
-        //public abstract void insertUser(User user);
+        //insert ATM.ATM.Bank.Bank.User, For user creation
+        //public abstract void insertUser(ATM.ATM.Bank.Bank.User user);
 
-        // Update User
-        //public abstract void updateUser(User user);
+        // Update ATM.ATM.Bank.Bank.User
+        //public abstract void updateUser(ATM.ATM.Bank.Bank.User user);
 
         // Generate salt with username and UID, requires hash function
         public abstract String generateSalt(String username, String UID);
@@ -91,7 +104,9 @@ public abstract class Constants {
 
     public abstract static class accountsFunctions {
         //Retrieve account type from account constructor
-        public String getAccountType(){ return accountType;}
+        public String getAccountType(){
+            String accountType = null;
+            return accountType;}
 
         //Retrieve userID from account constructor
         public abstract String getUID();
@@ -138,7 +153,7 @@ public abstract class Constants {
         //Return current date in dd:MM:yyyy in string to be used in creating transaction entries
         public abstract String getCurrentDate();
 
-        //Return the Transaction Date and TimeStamp of transactions based on transactionID
+        //Return the ATM.ATM.Bank.Bank.Transaction Date and TimeStamp of transactions based on transactionID
         public abstract String getTransactionDate();
 
         //Get transaction summary

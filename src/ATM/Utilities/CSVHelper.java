@@ -1,3 +1,8 @@
+package ATM.Utilities;
+
+import ATM.Bank.Bank;
+import ATM.Bank.User;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
@@ -5,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 public class CSVHelper {
     private static final String CSV_SEPARATOR = ",";
     private static final String file_path = "./Resources/Database/";
-    private static final String bank_file = "Bank.csv";
+    private static final String bank_file = "ATM.Bank.Bank.csv";
     private static final String Account_file = "Accounts.csv";
 
     //Declare Headers Here TODO

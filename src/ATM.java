@@ -1,4 +1,6 @@
-import com.sun.source.tree.WhileLoopTree;
+import ATM.Bank.Account;
+import ATM.Bank.Bank;
+import ATM.Bank.User;
 
 import java.util.Scanner;
 
@@ -10,7 +12,7 @@ public class ATM
         Scanner scanner = new Scanner(System.in);
 
         //Initialize bank
-        Bank BankObj = new Bank("Test Bank");
+        Bank BankObj = new Bank("Test ATM.Bank.Bank");
 
         //Add user, which also creates a savings account
         User NewUser = BankObj.addBankUser("Ben","1234","Test1234@gmail.com","98765432");
@@ -20,7 +22,7 @@ public class ATM
         NewUser.AddAccount(NewAccount);
         BankObj.AddAccount(NewAccount);
 
-        //Current User
+        //Current ATM.ATM.Bank.Bank.User
         User CurrentUser;
         while(true)
         {
@@ -53,7 +55,7 @@ public class ATM
                 System.out.println("Incorrect UID/password combination. Please try again");
             }
         }
-        //continue looping till User login successfully
+        //continue looping till ATM.ATM.Bank.Bank.User login successfully
         while (AuthorizedUser==null);
         return AuthorizedUser;
     }
@@ -66,7 +68,7 @@ public class ATM
         //Initialize
         int choice;
 
-        //User menu
+        //ATM.ATM.Bank.Bank.User menu
         do
         {
             System.out.printf("Welcome %s, what would you like to do?\n",NewUser.getUsername());
@@ -74,7 +76,7 @@ public class ATM
             System.out.println("2)Withdraw Money");
             System.out.println("3)Deposit Money");
             System.out.println("4)Transfer Money");
-            System.out.println("5)Account Settings");
+            System.out.println("5)ATM.ATM.Bank.Bank.Account Settings");
             System.out.println("6)Quit\n");
             System.out.print("Select Option: ");
             choice = scanner.nextInt();
@@ -100,7 +102,7 @@ public class ATM
                 ATM.TransferMoney(NewUser,scanner);
                 break;
             case 5:
-                //Account settings, change password/name etc
+                //ATM.ATM.Bank.Bank.Account settings, change password/name etc
                 ATM.UserSettings(NewUser,scanner);
                 break;
             case 6:
@@ -165,7 +167,7 @@ public class ATM
         //Get amount to transfer
         do
         {
-            System.out.printf("Enter the amount to transfer (Account Balance: $%.2f): $",AccountBalance);
+            System.out.printf("Enter the amount to transfer (ATM.ATM.Bank.Bank.Account Balance: $%.2f): $",AccountBalance);
             Amount = scanner.nextDouble();
             if (Amount<0)
             {
@@ -173,7 +175,7 @@ public class ATM
             }
             else if (Amount>AccountBalance)
             {
-                System.out.printf("There is insufficient money in this account (Account Balance: $%.2f). Please enter a valid amount.",AccountBalance);
+                System.out.printf("There is insufficient money in this account (ATM.ATM.Bank.Bank.Account Balance: $%.2f). Please enter a valid amount.",AccountBalance);
             }
         } while (Amount<0 || Amount>AccountBalance);
 
@@ -204,7 +206,7 @@ public class ATM
         //Get amount to withdraw
         do
         {
-            System.out.printf("Enter the amount to withdraw (Account Balance: $%.2f): $",AccountBalance);
+            System.out.printf("Enter the amount to withdraw (ATM.ATM.Bank.Bank.Account Balance: $%.2f): $",AccountBalance);
             Amount = scanner.nextDouble();
             if (Amount<0)
             {
@@ -212,7 +214,7 @@ public class ATM
             }
             else if (Amount>AccountBalance)
             {
-                System.out.printf("There is insufficient money in this account (Account Balance: $%.2f). Please enter a valid amount.",AccountBalance);
+                System.out.printf("There is insufficient money in this account (ATM.ATM.Bank.Bank.Account Balance: $%.2f). Please enter a valid amount.",AccountBalance);
             }
             else if (Amount>50000)
             {
@@ -276,7 +278,7 @@ public class ATM
         //Withdraw money
         NewUser.AddAccountTransaction(DepositTo, Amount, TransactionNote);
     }
-    //User settings
+    //ATM.ATM.Bank.Bank.User settings
     public static void UserSettings(User NewUser, Scanner scanner)
     {
         //reset password

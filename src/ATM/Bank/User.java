@@ -1,3 +1,5 @@
+package ATM.Bank;
+
 import ATM.Utilities.LogHelper;
 
 import java.security.MessageDigest;
@@ -40,7 +42,7 @@ public class User
         this.Password = password;
         //this.Password = generatePasswordHash(password, Salt);
         this.loginStatus = false;
-        //Bank CurrentBank = new Bank("Bank of Testing");
+        //ATM.Bank.Bank CurrentBank = new ATM.Bank.Bank("ATM.Bank.Bank of Testing");
         this.Accounts = new ArrayList<Account>();
 
     }
@@ -67,7 +69,7 @@ public class User
     {
         this.Accounts.add(NewAccount);
     }
-    protected String getUsername() {
+    public String getUsername() {
         return Username;
     }
 
@@ -83,7 +85,7 @@ public class User
         Password = generatePasswordHash(password, Salt);
     }
 
-    protected List<Account> getAccounts() {
+    public List<Account> getAccounts() {
         return Accounts;
     }
 
@@ -198,7 +200,7 @@ public class User
     }
     public void PrintAllAccountSummary()
     {
-        System.out.printf("\n\n%s's All Account Summary\n",this.Username);
+        System.out.printf("\n\n%s's All ATM.ATM.Bank.Bank.Account Summary\n",this.Username);
         for(int i = 0;i<this.Accounts.size();i++)
         {
             System.out.printf("%d) %s\n",i+1,this.Accounts.get(i).getAccountSummary());
@@ -287,7 +289,7 @@ public class User
             System.out.println(e.getMessage());
         }
         if (UID.equals("")) {
-            System.out.println("User does not exist!");
+            System.out.println("ATM.ATM.Bank.Bank.User does not exist!");
             return null;
         }
         return UID;
@@ -389,7 +391,7 @@ public class User
 
             user.Accounts = user.getAccountsFromDatabase(user.UID);
             return true;
-            //System.out.println("User Accounts: " + user.Accounts);
+            //System.out.println("ATM.ATM.Bank.Bank.User Accounts: " + user.Accounts);
             //return user;
 
         } else {
@@ -400,14 +402,14 @@ public class User
     }
 
     // Create new user
-    // Create User with username: 10 alphanumeric characters only
-    // Create User with pin: 6 digit numbers only
-    // Create User with email: Validated email address
-    // Create User with phone: 8 digit (Singapore) numbers only
+    // Create ATM.ATM.Bank.Bank.User with username: 10 alphanumeric characters only
+    // Create ATM.ATM.Bank.Bank.User with pin: 6 digit numbers only
+    // Create ATM.ATM.Bank.Bank.User with email: Validated email address
+    // Create ATM.ATM.Bank.Bank.User with phone: 8 digit (Singapore) numbers only
     // Update database with new user
-    // Created User will proceed with Login
+    // Created ATM.ATM.Bank.Bank.User will proceed with Login
     public boolean CreateUserSeq(){
-        System.out.println("New User Registration");
+        System.out.println("New ATM.ATM.Bank.Bank.User Registration");
         Scanner sc = new Scanner(System.in);
 
         //Username
@@ -449,21 +451,21 @@ public class User
 
         User user = new User(username, password, email, phone);
         insertUser(user);
-        System.out.println("User created!\n Proceed to login!");
+        System.out.println("ATM.ATM.Bank.Bank.User created!\n Proceed to login!");
         return true;
     }
 
     public boolean CreateUser(String username, String password, String email, String phone){
         User user = new User(username, password, email, phone);
         insertUser(user);
-        System.out.println("User created!\n Proceed to login!");
+        System.out.println("ATM.ATM.Bank.Bank.User created!\n Proceed to login!");
         return true;
     }
 
     public boolean CreateUser(String username, String password){
         User user = new User(username, password);
         insertUser(user);
-        System.out.println("User created!\n Proceed to login!");
+        System.out.println("ATM.ATM.Bank.Bank.User created!\n Proceed to login!");
         return true;
     }
 
@@ -544,10 +546,10 @@ public class User
     // For testing
     public static void main(String[] args){
         // To create new user
-        //User newUser = new User();
+        //ATM.ATM.Bank.Bank.User newUser = new ATM.ATM.Bank.Bank.User();
         //newUser.CreateUser();
 
-        //User test = new User("test", "123456", "test", "test", new Bank("test"));
+        //ATM.ATM.Bank.Bank.User test = new ATM.ATM.Bank.Bank.User("test", "123456", "test", "test", new ATM.Bank.Bank("test"));
         //insertUser(test);
 
         //To Login
@@ -557,7 +559,7 @@ public class User
         //System.out.println("Enter pin: ");
         //String password = sc.nextLine();
 
-        // User is initialised with data from database after login
+        // ATM.ATM.Bank.Bank.User is initialised with data from database after login
         User test2 = new User();
         User test3 = new User("test3", "123456");
         test3.Login();
@@ -568,7 +570,7 @@ public class User
         System.out.print(a);
 
 
-        // To access User Data
+        // To access ATM.ATM.Bank.Bank.User Data
         //System.out.println("UID: " + test2.getUID());
         //System.out.println("Username: " + test2.getUsername());
         //System.out.println("Password: " + test2.getPassword());
@@ -596,15 +598,15 @@ public class User
         // Accessing of accounts and transactions
         // This is assuming that the user has 1 and only 1 account
         for (Account account : accounts) {
-            System.out.println("Account Name: " + account.getAccountName() + "\n");
-            System.out.println("Account Balance: " + account.GetAccountBalance());
+            System.out.println("ATM.ATM.Bank.Bank.Account Name: " + account.getAccountName() + "\n");
+            System.out.println("ATM.ATM.Bank.Bank.Account Balance: " + account.GetAccountBalance());
             List<Transaction> transactions = account.getAccountTransactions();
             for (Transaction transaction : transactions) {
-                System.out.print("Transaction Number\n");
-                System.out.println("Transaction ID: " + tCount);
-                System.out.println("Transaction Amount: " + transaction.getAmount());
-                System.out.println("Transaction Date: " + transaction.getTransactionDate());
-                System.out.println("Transaction Note: " + transaction.getTransactionNote());
+                System.out.print("ATM.ATM.Bank.Bank.Transaction Number\n");
+                System.out.println("ATM.ATM.Bank.Bank.Transaction ID: " + tCount);
+                System.out.println("ATM.ATM.Bank.Bank.Transaction Amount: " + transaction.getAmount());
+                System.out.println("ATM.ATM.Bank.Bank.Transaction Date: " + transaction.getTransactionDate());
+                System.out.println("ATM.ATM.Bank.Bank.Transaction Note: " + transaction.getTransactionNote());
                 tCount++; // To remove when transaction ID is implemented
             }
         }
@@ -618,32 +620,32 @@ public class User
         // Phone: test
         // Login Status: true
 
-        // Test User
+        // Test ATM.ATM.Bank.Bank.User
         // Username: test
         // Password: 123123
         
         // Transactions and Accounts Output
         //Connection to SQLite has been established.
-        //Account Balance: 901.3499999999999
+        //ATM.ATM.Bank.Bank.Account Balance: 901.3499999999999
         //Connection to SQLite has been established.
-        //Transaction Number
-        //Transaction ID: 0
-        //Transaction Amount: 300.45
+        //ATM.ATM.Bank.Bank.Transaction Number
+        //ATM.ATM.Bank.Bank.Transaction ID: 0
+        //ATM.ATM.Bank.Bank.Transaction Amount: 300.45
         //Connection to SQLite has been established.
-        //Transaction Date: 2023-02-10 03:01:10
-        //Transaction Note: Salary
-        //Transaction Number
-        //Transaction ID: 1
-        //Transaction Amount: 300.45
+        //ATM.ATM.Bank.Bank.Transaction Date: 2023-02-10 03:01:10
+        //ATM.ATM.Bank.Bank.Transaction Note: Salary
+        //ATM.ATM.Bank.Bank.Transaction Number
+        //ATM.ATM.Bank.Bank.Transaction ID: 1
+        //ATM.ATM.Bank.Bank.Transaction Amount: 300.45
         //Connection to SQLite has been established.
-        //Transaction Date: 2023-02-10 03:01:10
-        //Transaction Note: Salary
-        //Transaction Number
-        //Transaction ID: 2
-        //Transaction Amount: 300.45
+        //ATM.ATM.Bank.Bank.Transaction Date: 2023-02-10 03:01:10
+        //ATM.ATM.Bank.Bank.Transaction Note: Salary
+        //ATM.ATM.Bank.Bank.Transaction Number
+        //ATM.ATM.Bank.Bank.Transaction ID: 2
+        //ATM.ATM.Bank.Bank.Transaction Amount: 300.45
         //Connection to SQLite has been established.
-        //Transaction Date: 2023-02-10 03:01:10
-        //Transaction Note: Salary
+        //ATM.ATM.Bank.Bank.Transaction Date: 2023-02-10 03:01:10
+        //ATM.ATM.Bank.Bank.Transaction Note: Salary
 
     }
 

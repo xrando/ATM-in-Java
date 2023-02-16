@@ -1,6 +1,9 @@
+package ATM.Bank;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+
 import ATM.Utilities.TableHelper;
 
 public class Account {
@@ -46,6 +49,9 @@ public class Account {
         this.AccountTransactions = new ArrayList<Transaction>();
     }
 
+    public Account(String savings, User newUser, Bank bank) {
+    }
+
 
     public String getAccountName() {
         return AccountName;
@@ -89,7 +95,7 @@ public class Account {
 
     public String getAccountSummary()
     {
-        //Calculate Account's balance
+        //Calculate ATM.ATM.Bank.Bank.Account's balance
         double balance = this.GetAccountBalance();
 
         //Format account summary, to distinguish negative and positive balance, () will be used to display negative balance
@@ -149,7 +155,7 @@ public class Account {
             System.out.println(e.getMessage());
         }
         TableHelper tb = new TableHelper();
-        tb.setHeaders("No.","Account ID", "Account Type", "User ID");
+        tb.setHeaders("No.","ATM.ATM.Bank.Bank.Account ID", "ATM.ATM.Bank.Bank.Account Type", "ATM.ATM.Bank.Bank.User ID");
         for(int i =0; accountList.size()>i;i++){
             tb.addRow(String.valueOf(i+1),
                       String.valueOf(accountList.get(i).accountID),
@@ -169,7 +175,7 @@ public class Account {
     public void createAccount(String userID) {
         String createType ="";
         TableHelper tb = new TableHelper();
-        tb.setHeaders("No","Account Type");
+        tb.setHeaders("No","ATM.ATM.Bank.Bank.Account Type");
         tb.addRow("1","Savings");
         tb.addRow("2","Current");
         tb.print(false);
