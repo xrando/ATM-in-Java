@@ -2,6 +2,8 @@ package ATM.Constants;
 
 import ATM.Utilities.ConfigurationManager;
 
+import java.util.ArrayList;
+
 public abstract class Constants {
     public abstract static class Stream {
         public final static String EOF = "over";
@@ -84,6 +86,73 @@ public abstract class Constants {
         // Generate Password Hash
         // Returns the password hash
         public abstract String generatePasswordHash(String password, String salt);
+
+    }
+
+    public abstract static class accountsFunctions {
+        //Retrieve account type from account constructor
+        public String getAccountType(){ return accountType;}
+
+        //Retrieve userID from account constructor
+        public abstract String getUID();
+
+        //Retrieve accountID from account constructor
+        public abstract String getAccountID();
+
+        //Retrieve list of transactions based of accountID
+        public abstract ArrayList<Transaction> getAccountTransactions();
+
+        //Return string with formatted type of balance for printing (+/-)
+        public abstract String getAccountSummary();
+
+        //Return double of total balance of account by adding amounts
+        public abstract double GetAccountBalance();
+
+        //Add retrieved transactions to arraylist
+        public abstract boolean AddTransaction(double Amount, String TransactionNote);
+
+        //Return selected account from arraylist
+        public abstract Account setTransactionAccount(String userID);
+
+        //Create new entry of accounts for user
+        public abstract void createAccount(String userID);
+
+        ////////////////////////////////////////////////////////////////////////////////
+        // Methods below may not be needed
+        ////////////////////////////////////////////////////////////////////////////////
+
+        //return string of transaction history of account(empty function)
+        public abstract String PrintTransactionHistory();
+    }
+
+    public abstract static class transactionFunctions {
+        //Retrieve amount in transaction constructor
+        public abstract double getAmount();
+
+        //Retrieve transaction note in transaction constructor
+        public abstract String getTransactionNote();
+
+        //Return current time in hh:mm:ss in string to be used in creating transaction entries
+        public abstract String getTimeStamp();
+
+        //Return current date in dd:MM:yyyy in string to be used in creating transaction entries
+        public abstract String getCurrentDate();
+
+        //Return the Transaction Date and TimeStamp of transactions based on transactionID
+        public abstract String getTransactionDate();
+
+        //Get transaction summary
+        public abstract String GetTransactionHistory(Account TransactionAccount);
+
+        //Execute SQL statement to push transaction into database, true if success,false if fail
+        public abstract boolean AddTransactionToSQL(Account account, Transaction transactionDetails);
+
+        ////////////////////////////////////////////////////////////////////////////////
+        // Methods below may not be needed
+        ////////////////////////////////////////////////////////////////////////////////
+
+        //Menu function get user to select switch case menu
+        public abstract boolean GetChoice(Account TransactionAccount);
 
     }
 

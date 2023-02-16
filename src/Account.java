@@ -6,19 +6,16 @@ import ATM.Utilities.TableHelper;
 public class Account {
     private String AccountName;
     private String UID;
-    private User AccountHolder;
-    private String accountHolder;
     private String accountType;
     private String userID;
     private String accountID;
     private ArrayList<Transaction> AccountTransactions;
     private Account currentAccount;
     //Create a new account
-    public Account(String NewAccountName, User NewAccountHolder, Bank CurrentBank)
+    public Account(String NewAccountName, Bank CurrentBank)
     {
         //Set account name and account holder
         this.AccountName = NewAccountName;
-        this.AccountHolder = NewAccountHolder;
 
         //Generate new account UID
         this.UID = CurrentBank.generateNewAccountUID();
@@ -54,6 +51,8 @@ public class Account {
         return AccountName;
     }
 
+    public String getAccountType(){ return accountType;}
+
     public String getUID() {
         return this.userID;
     }
@@ -86,10 +85,6 @@ public class Account {
         }
         this.AccountTransactions = AccountTransactions;
         return AccountTransactions;
-    }
-
-    public void setAccountTransactions(ArrayList<Transaction> accountTransactions) {
-        AccountTransactions = accountTransactions;
     }
 
     public String getAccountSummary()
@@ -129,11 +124,12 @@ public class Account {
 //        System.out.println();
     }
     //Add transaction in this account
-    public void AddTransaction(double Amount, String TransactionNote)
+    public boolean AddTransaction(double Amount, String TransactionNote)
     {
         //Create new transaction obj and add to list
         Transaction NewTransaction = new Transaction(Amount,TransactionNote,this.accountID);
         this.AccountTransactions.add(NewTransaction);
+        return true;
     }
 
     public Account setTransactionAccount(String userID){

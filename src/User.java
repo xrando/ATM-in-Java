@@ -603,7 +603,7 @@ public class User
                 System.out.print("Transaction Number\n");
                 System.out.println("Transaction ID: " + tCount);
                 System.out.println("Transaction Amount: " + transaction.getAmount());
-                System.out.println("Transaction Date: " + transaction.getDate());
+                System.out.println("Transaction Date: " + transaction.getTransactionDate());
                 System.out.println("Transaction Note: " + transaction.getTransactionNote());
                 tCount++; // To remove when transaction ID is implemented
             }

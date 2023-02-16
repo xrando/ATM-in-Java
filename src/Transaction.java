@@ -1,5 +1,4 @@
 import ATM.Utilities.TableHelper;
-
 import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.Date;
@@ -8,6 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Calendar;
+
 public class Transaction {
     private double Amount;
     private Date TimeStamp;
@@ -49,11 +49,11 @@ public class Transaction {
 
     public String getTimeStamp() {
         Date date = Calendar.getInstance().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         String strTime = dateFormat.format(date);
         return strTime;
     }
-    public String getDate(){
+    public String getTransactionDate(){
         String sql = "Select date, timeStamp from transactions where transactionID = ?";
         String dateTime = null;
         try{
@@ -79,28 +79,8 @@ public class Transaction {
         return strDate;
     }
 
-    public void setTimeStamp(Date timeStamp) {
-        TimeStamp = timeStamp;
-    }
-
     public String getTransactionNote() {
         return TransactionNote;
-    }
-
-    public void setTransactionNote(String transactionNote) {
-        TransactionNote = transactionNote;
-    }
-
-    public String getTransactionAccount() {
-        return TransactionAccount;
-    }
-
-    public void setTransactionAccount(String transactionAccount) {
-        System.out.println("Please select the account you would like to use:");
-        getTransactionAccount();
-        Scanner sc = new Scanner(System.in);
-        int choice = sc.nextInt();
-        TransactionAccount = transactionAccount;
     }
 
     //Get transaction summary
@@ -129,7 +109,7 @@ public class Transaction {
         }
     }
 
-    public void AddTransactionToSQL(Account account,Transaction transactionDetails){
+    public boolean AddTransactionToSQL(Account account,Transaction transactionDetails){
         String sql = "INSERT INTO transactions( amount, timeStamp, transactionNote, date, accountID) VALUES(?,?,?,?,?)";
 
         try (Connection conn = sqliteDatabase.connect();
@@ -140,12 +120,14 @@ public class Transaction {
             pstmt.setString(4, getCurrentDate());
             pstmt.setString(5, account.getAccountID());
             pstmt.executeUpdate();
+            return true;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            return false;
         }
     }
 
-    public void GetChoice(Account TransactionAccount) {
+    public boolean GetChoice(Account TransactionAccount) {
         double TAmount;
         String TNote;
         System.out.println("");
@@ -194,6 +176,7 @@ public class Transaction {
             default:
                 System.out.println("Please key in a valid option");
         }
+        return true;
     }
 
     public static void main(String[] args) {
