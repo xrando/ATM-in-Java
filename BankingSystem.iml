@@ -29,7 +29,7 @@
       </library>
     </orderEntry>
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Resources/db/sqlite-jdbc-3.7.2.jar!/" />
@@ -38,6 +38,15 @@
         <SOURCES>
           <root url="jar://$MODULE_DIR$/Resources/db/sqlite-jdbc-3.7.2.jar!/" />
         </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/External Libraries/json-20220924.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
       </library>
     </orderEntry>
   </component>

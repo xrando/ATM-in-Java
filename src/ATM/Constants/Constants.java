@@ -27,13 +27,16 @@ public abstract class Constants {
         public static final String TRUSTSTOREPASS = "123456";
     }
 
-    public abstract static class RequestBuilder {
-        public static final String Separator = ";#";
+    public abstract static class JSON {
+        public static final String Type = "Type";
     }
 
     public abstract static class User { //return bool
         public static final String Login = "Login";
         public static final String Logout = "Logout";
+        public static final String Username = "Username";
+        public static final String Password = "Password";
+        public static final String LoginStatus = "LoginStatus";
     }
 
     public abstract static class userFunctions {

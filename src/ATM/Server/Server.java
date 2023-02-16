@@ -5,6 +5,8 @@ import ATM.Constants.Constants;
 import ATM.Utilities.ATMServerSocket;
 import ATM.Utilities.ATMSocket;
 import ATM.Utilities.LogHelper;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.security.KeyManagementException;
@@ -34,11 +36,12 @@ public class Server {
                             break;
 
                         //request[0] is the request type, the rest are the parameters if applicable (can have no parameter)
-                        String[] request = clientInput.split(Constants.RequestBuilder.Separator);
+                        //String[] request = clientInput.split(Constants.RequestBuilder.Separator);
+                        JSONObject request = new JSONObject(clientInput);
 
-                        switch (request[0]){
+                        switch (request.getString(Constants.JSON.Type)){
                             case Constants.User.Login -> {
-                                user = new User(request[1], request[2]);
+                                user = new User(request.getString(Constants.User.Username), request.getString(Constants.User.Password));
                                 socket.write(user.Login()); //now socket.write() can receive boolean. String "true" or "false" will be sent
                             }
                             case Constants.User.Logout -> socket.write(user.logout());
