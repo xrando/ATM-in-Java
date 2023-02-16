@@ -4,8 +4,10 @@ import ATM.Bank.User;
 import ATM.Constants.Constants;
 import ATM.Utilities.ATMServerSocket;
 import ATM.Utilities.ATMSocket;
+import ATM.Utilities.JSON;
 import ATM.Utilities.LogHelper;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -42,9 +44,9 @@ public class Server {
                         switch (request.getString(Constants.JSON.Type)){
                             case Constants.User.Login -> {
                                 user = new User(request.getString(Constants.User.Username), request.getString(Constants.User.Password));
-                                socket.write(user.Login()); //now socket.write() can receive boolean. String "true" or "false" will be sent
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.User.LoginStatus, user.Login()).toString()); //now socket.write() can receive boolean. String "true" or "false" will be sent
                             }
-                            case Constants.User.Logout -> socket.write(user.logout());
+                            case Constants.User.Logout -> socket.write(new JSON(Constants.Stream.RES).add(Constants.User.LoginStatus, user.logout()).toString());
                             //TODO: complete the cases
                         }
                         //Sample below:
@@ -59,7 +61,9 @@ public class Server {
                     LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 } catch (NullPointerException e) {
                     LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
-                } catch (Exception e) {
+                } catch (JSONException e ) {
+                    LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                } catch(Exception e) {
                     LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 }
             }).start();

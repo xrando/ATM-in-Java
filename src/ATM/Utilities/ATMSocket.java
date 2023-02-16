@@ -44,12 +44,6 @@ public class ATMSocket implements AutoCloseable {
         this.sslSocket.getOutputStream().flush();
     }
 
-    public void write(boolean b) throws IOException {
-        this.sslSocket.getOutputStream().write((b?"true":"false").getBytes());
-        this.sslSocket.getOutputStream().write(Constants.Stream.EOF.getBytes());
-        this.sslSocket.getOutputStream().flush();
-    }
-
     public void close() throws Exception {
         this.sslSocket.close();
     }

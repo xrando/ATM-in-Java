@@ -18,7 +18,7 @@ public class ATMClient {
         //These codes are for testing, actual implementation will be with UI
 
         //login
-        System.out.print(client.listen(new JSON(Constants.User.Login).add(Constants.User.Username, "test").add(Constants.User.Password, "123123").toString()));
+        System.out.print(client.listen(new JSON(Constants.User.Login).add(Constants.User.Password, "123123").add(Constants.User.Username, "test").toString()));
         //System.out.println(client.listen(new ATMRequestBuilder(Constants.User.Login).add("test").add("123123").toString()));
 
 
