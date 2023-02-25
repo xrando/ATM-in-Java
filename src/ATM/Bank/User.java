@@ -237,7 +237,7 @@ public class User
             }
             hash = sb.toString();
         } catch (NoSuchAlgorithmException e) {
-            LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LogHelper.log(Level.SEVERE, e.getMessage(), e);
         }
         return hash;
 
@@ -358,7 +358,7 @@ public class User
         //check if user exists
         this.UID = CheckUserExist(this.Username);
         if (UID == null) {
-            LogHelper.LOGGER.log(Level.SEVERE, "Failed Login attempt, Attempted Username: " + this.Username);
+            LogHelper.log(Level.SEVERE, "Failed Login attempt, Attempted Username: " + this.Username);
             return false;
         }
         //check if password is correct
@@ -376,7 +376,7 @@ public class User
                 ps.executeUpdate();
                 conn.close();
             } catch (SQLException e) {
-                LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LogHelper.log(Level.SEVERE, e.getMessage(), e);
             }
             return true;
         }
@@ -411,7 +411,7 @@ public class User
         //check if user exists
         String UID = CheckUserExist(username);
         if (UID == null) {
-            LogHelper.LOGGER.log(Level.SEVERE, "Failed Login attempt, Attempted Username: " + username);
+            LogHelper.log(Level.SEVERE, "Failed Login attempt, Attempted Username: " + username);
             //return null;
         }
         //check if password is correct
@@ -426,7 +426,7 @@ public class User
                 ps.executeUpdate();
                 conn.close();
             } catch (SQLException e) {
-                LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LogHelper.log(Level.SEVERE, e.getMessage(), e);
             }
             //return user object populated with data from database
             //User user = new User();
@@ -451,7 +451,7 @@ public class User
                 this.loginStatus = rs.getBoolean("loginStatus");
                 conn.close();
             } catch (SQLException e) {
-                LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LogHelper.log(Level.SEVERE, e.getMessage(), e);
             }
 
             //user.Accounts = user.getAccountsFromDatabase(user.UID);
@@ -596,7 +596,7 @@ public class User
             pstmt.setString(7, this.UID);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            LogHelper.LOGGER.log(Level.SEVERE, e.getMessage());
+            LogHelper.log(Level.SEVERE, e.getMessage());
         }
     }
 
@@ -613,7 +613,7 @@ public class User
             user.setLoginStatus(false);
             updateUser(user);
         } catch (Exception e){
-            LogHelper.LOGGER.log(Level.SEVERE, e.getMessage());
+            LogHelper.log(Level.SEVERE, e.getMessage());
             return false;
         }
         return true;
