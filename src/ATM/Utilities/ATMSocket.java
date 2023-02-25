@@ -4,17 +4,17 @@ import ATM.Constants.Constants;
 
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
+import java.util.logging.Level;
 
-public class ATMSocket implements AutoCloseable {
-    private final SSLSocket sslSocket;
+public class ATMSocket {
+    private SSLSocket sslSocket;
 
-    public ATMSocket() throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, KeyManagementException {
-        sslSocket = (SSLSocket) Security.sslContext(Constants.SSL.TRUSTSTORE, Constants.SSL.TRUSTSTOREPASS).getSocketFactory().createSocket(Constants.Socket.HOST, Constants.Socket.PORT);
+    public ATMSocket() {
+        try {
+            sslSocket = (SSLSocket) Security.sslContext(Constants.SSL.TRUSTSTORE, Constants.SSL.TRUSTSTOREPASS).getSocketFactory().createSocket(Constants.Socket.HOST, Constants.Socket.PORT);
+        } catch (IOException e) {
+            LogHelper.log(Level.SEVERE, "Check host IP or port number.", e);
+        }
     }
 
     public ATMSocket(SSLSocket sslSocket) {
@@ -22,29 +22,41 @@ public class ATMSocket implements AutoCloseable {
     }
 
     //read the input stream until hits the EOF constant
-    public String read() throws IOException {
+    public String read() {
         byte[] buf = new byte[1024];
         int b;
         StringBuilder a = new StringBuilder();
-        while ((b = this.sslSocket.getInputStream().read(buf)) != -1) {
-            String temp = new String(buf, 0, b);
-            if (temp.endsWith(Constants.Stream.EOF)) {
-                a.append(temp, 0, temp.length() - Constants.Stream.EOF.length());
-                break;
-            } else
-                a.append(temp);
+        try {
+            while ((b = this.sslSocket.getInputStream().read(buf)) != -1) {
+                String temp = new String(buf, 0, b);
+                if (temp.endsWith(Constants.Stream.EOF)) {
+                    a.append(temp, 0, temp.length() - Constants.Stream.EOF.length());
+                    break;
+                } else
+                    a.append(temp);
+            }
+        } catch (IOException e) {
+            LogHelper.log(Level.SEVERE, "If there are no bytes buffered on the socket, or all buffered bytes have been consumed by read.", e);
         }
         return a.toString();
     }
 
     //push the String to outputstream and add EOF
-    public void write(String s) throws IOException {
-        this.sslSocket.getOutputStream().write(s.getBytes());
-        this.sslSocket.getOutputStream().write(Constants.Stream.EOF.getBytes());
-        this.sslSocket.getOutputStream().flush();
+    public void write(String s) {
+        try {
+            this.sslSocket.getOutputStream().write(s.getBytes());
+            this.sslSocket.getOutputStream().write(Constants.Stream.EOF.getBytes());
+            this.sslSocket.getOutputStream().flush();
+        } catch (IOException e) {
+            LogHelper.log(Level.SEVERE, "I/O error occurs when creating the output stream or the socket is not connected.", e);
+        }
     }
 
-    public void close() throws Exception {
-        this.sslSocket.close();
+    public void close() {
+        try {
+            this.sslSocket.close();
+        } catch (IOException e) {
+            LogHelper.log(Level.SEVERE, "I/O error occurs when closing this socket.", e);
+        }
     }
 }

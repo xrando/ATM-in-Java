@@ -5,7 +5,7 @@ import ATM.Utilities.JSON;
 import org.json.JSONObject;
 
 public class ATMClient {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args){
         Client client = new Client();
         //can have multiple listen events here
         //each listen event will return a string from server

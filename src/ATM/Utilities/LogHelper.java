@@ -4,11 +4,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 public abstract class LogHelper {
-    public static Logger LOGGER;
+    private final static Logger LOGGER;
 
     static {
         LOGGER = Logger.getLogger("ATM");
@@ -22,5 +23,12 @@ public abstract class LogHelper {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    public static void log(Level lv, String msg, Exception e){
+        LOGGER.log(lv,msg,e);
+    }
+    public static void log(Level lv, String msg){
+        LOGGER.log(lv,msg);
     }
 }

@@ -5,27 +5,15 @@ import ATM.Constants.Constants;
 import ATM.Utilities.ATMServerSocket;
 import ATM.Utilities.ATMSocket;
 import ATM.Utilities.JSON;
-import ATM.Utilities.LogHelper;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.util.logging.Level;
-
 public class Server {
-    public void listen() throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, KeyManagementException {
+    public void listen() {
         ATMServerSocket ss = new ATMServerSocket();
         while (true) {
             ATMSocket socket = ss.accept();
             new Thread(() -> {
                 User user = null;
-                try (socket) { //autocloseable
                     while (true) {
                         /*once server receives a client request, it MUST respond to the client to continue*/
                         String clientInput = socket.read(); //receive client request as String
@@ -50,33 +38,14 @@ public class Server {
                             }
                             case Constants.User.Logout -> socket.write(new JSON(Constants.Stream.RES).add(Constants.User.LoginStatus, user.logout()).toString());
                             //TODO: complete the cases
-                            case Constants.User.ChangePin -> {
-                                socket.write(new JSON(Constants.Stream.RES).add(Constants.User.ChangePin, user.changePin(request.getString(Constants.User.oldPin), request.getString(Constants.User.newPin))).toString());
-                                //socket.write(user.changePin(request.getString(Constants.User.oldPin), request.getString(Constants.User.newPin)));
-                            }
+                            case Constants.User.ChangePin -> socket.write(new JSON(Constants.Stream.RES).add(Constants.User.ChangePin, user.changePin(request.getString(Constants.User.oldPin), request.getString(Constants.User.newPin))).toString());
                             case Constants.User.CreateUser -> {
                                 User tmpuser = new User();
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.User.CreateUser, tmpuser.CreateUser(request.getString(Constants.User.Username), request.getString(Constants.User.Password))).toString());
-                                //socket.write(tmpuser.CreateUser(request.getString(Constants.User.Username), request.getString(Constants.User.Password)));
                             }
                         }
-                        //Sample below:
-/*                        if (clientInput.equals(Constants.Stream.EOS)) { //need an exit code to safely end the connection
-                            socket.write(clientInput); //response to client
-                            break;
-                        } else
-                            socket.write("You sent: " + clientInput);*/
-                        //End of sample
                     }
-                } catch (IOException e) {
-                    LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
-                } catch (NullPointerException e) {
-                    LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
-                } catch (JSONException e ) {
-                    LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
-                } catch(Exception e) {
-                    LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
-                }
+                    socket.close();
             }).start();
         }
     }

@@ -5,26 +5,36 @@ import ATM.Constants.Constants;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
+import java.util.logging.Level;
 
 //remove this when deploying client
-public class ATMServerSocket implements AutoCloseable {
+public class ATMServerSocket {
     SSLServerSocket sslServerSocket;
 
-    public ATMServerSocket() throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, KeyManagementException {
-        sslServerSocket = (SSLServerSocket) Security.sslContext(Constants.SSL.KEYSTORE, Constants.SSL.KEYSTOREPASS).getServerSocketFactory().createServerSocket(Constants.Socket.PORT);
+    public ATMServerSocket() {
+        try {
+            sslServerSocket = (SSLServerSocket) Security.sslContext(Constants.SSL.KEYSTORE, Constants.SSL.KEYSTOREPASS).getServerSocketFactory().createServerSocket(Constants.Socket.PORT);
+        } catch (IOException e) {
+            LogHelper.log(Level.SEVERE, "Check port number.", e);
+        }
     }
 
-    public ATMSocket accept() throws IOException {
-        SSLSocket sslSocket = (SSLSocket) sslServerSocket.accept();
-        return new ATMSocket(sslSocket);
+    public ATMSocket accept() {
+        ATMSocket atmSocket = null;
+        try {
+            SSLSocket sslSocket = (SSLSocket) sslServerSocket.accept();
+            atmSocket = new ATMSocket(sslSocket);
+        } catch (IOException e) {
+            LogHelper.log(Level.SEVERE, "I/O error occurred while waiting for connection.", e);
+        }
+        return atmSocket;
     }
 
-    public void close() throws Exception {
-        this.sslServerSocket.close();
+    public void close() {
+        try {
+            this.sslServerSocket.close();
+        } catch (IOException e) {
+            LogHelper.log(Level.SEVERE, "Unable to close the server socket or the socket already closed.", e);
+        }
     }
 }
