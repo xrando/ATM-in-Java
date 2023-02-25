@@ -1,6 +1,12 @@
+import ATM.Client.Client;
+import ATM.Constants.Constants;
+import ATM.Utilities.JSON;
+import org.json.JSONObject;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.Map;
 
 import static java.util.Map.entry;
@@ -17,7 +23,7 @@ public class GUI {
     private JTextField txtPassword;
     private JButton btnLogin;
     private JLabel lblUsernameValidator;
-    private JLabel lblPasswordValidator;
+    private JLabel lblLoginValidator;
     private JPanel menu;
     private JButton btnViewTransactions;
     private JButton btnWithdrawal;
@@ -90,6 +96,18 @@ public class GUI {
     private JLabel lblnewPassword;
     private JLabel lblconfirmPassword;
     private JLabel lblchooseLang;
+    private JButton btnViewAccountSummary;
+    private JPanel ViewAccountSummary;
+    private JLabel lblViewAccountSummary;
+    private JTextArea AccountSummary;
+    private JButton btnNewUser;
+    private JPanel NewUser;
+    private JLabel lblCreateNewUser;
+    private JTextField txtNewUsername;
+    private JTextField txtNewUserPassword;
+    private JLabel lblNewUsername;
+    private JButton btnCreateNewUser;
+    private JButton btnNewUserBack;
     private Map<String, String> English = Map.ofEntries(
             entry("0", "Username:"),
             entry("1", "Password:"),
@@ -184,8 +202,11 @@ public class GUI {
             entry("43", "中文")
     );
 
-    public GUI()
+    public GUI() throws Exception
     {
+        //init client object
+        Client client = new Client();
+        //init json object to store replies from server
         String user = "ben", pw = "1234";
         //Create event listener for login button
         btnLogin.addActionListener(new ActionListener()
@@ -193,27 +214,31 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                //Get user input from textboxs and on successful login, show main menu
-                if (txtUsername.getText().equals(user)&&txtPassword.getText().equals(pw))
+                try
                 {
-                    txtUsername.setText("");
-                    txtPassword.setText("");
-                    lblUsernameValidator.setText("");
-                    lblPasswordValidator.setText("");
-                    //set welcome msg
-                    lblWelcomeMessage.setText(lblWelcomeMessage.getText() + user);
-                    //attach main menu screen
-                    setScreen(base,main);
+                    //test account username: test, pw:123123
+                    //init json object to store replies from server
+                    JSONObject jo = new JSONObject(client.listen(new JSON(Constants.User.Login).add(Constants.User.Password, txtPassword.getText()).add(Constants.User.Username, txtUsername.getText()).toString()));
+
+                    //Get user input from textboxs and on successful login, show main menu
+                    if (jo.get(Constants.User.LoginStatus).toString().toLowerCase().equals("true"))
+                    {
+                        txtUsername.setText("");
+                        txtPassword.setText("");
+                        lblLoginValidator.setText("");
+                        //set welcome msg
+                        lblWelcomeMessage.setText("Welcome " + user);
+                        //attach main menu screen
+                        setScreen(base,main);
+                    }
+                    else
+                    {
+                        lblLoginValidator.setText("Wrong credentials");
+                    }
                 }
-                else if (!txtUsername.getText().equals(user))
+                catch (IOException ex)
                 {
-                    lblPasswordValidator.setText("");
-                    lblUsernameValidator.setText("Wrong username");
-                }
-                else if (!txtPassword.getText().equals(pw))
-                {
-                    lblUsernameValidator.setText("");
-                    lblPasswordValidator.setText("Wrong password");
+                    throw new RuntimeException(ex);
                 }
             }
         });
@@ -307,8 +332,28 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                //attach settings screen
-                setScreen(screen,Settings);
+                try
+                {
+                    if(txtNewPassword.getText().equals(txtConfirmPassword.getText()))
+                    {
+                        //send request to server for password change
+                        JSONObject jo = new JSONObject(client.listen(new JSON(Constants.User.ChangePin).add(Constants.User.oldPin, txtOldPassword.getText()).add(Constants.User.newPin, txtNewPassword.getText()).toString()));
+                    }
+                    else
+                    {
+                        lblConfirmPasswordValidator.setText("Ensure that new password and confirm password entered are the same");
+                    }
+
+
+
+                    //attach settings screen
+                    setScreen(screen,Settings);
+                }
+                catch (IOException ex)
+                {
+                    throw new RuntimeException(ex);
+                }
+
             }
         });
         //Create event listener for save changes button
@@ -367,6 +412,56 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 setLanguage(English);
+                setScreen(base,login);
+            }
+        });
+        //view account summary
+        btnViewAccountSummary.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                //attach view account summary screen
+                setScreen(screen,ViewAccountSummary);
+            }
+        });
+        //go to create new user page
+        btnNewUser.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                //attach create new user screen
+                setScreen(base,NewUser);
+            }
+        });
+        //submit create new user request
+        btnCreateNewUser.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                try
+                {
+                    //send request to create new user to server
+                    JSONObject jo = new JSONObject(client.listen(new JSON(Constants.User.CreateUser).add(Constants.User.Username, txtNewUsername.getText()).add(Constants.User.Password, txtNewUserPassword.getText()).toString()));
+                    //attach login screen and set label to notify successful user creation
+                    setScreen(base,login);
+                }
+                catch (IOException ex)
+                {
+                    throw new RuntimeException(ex);
+                }
+
+
+            }
+        });
+        //back to login screen
+        btnNewUserBack.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
                 setScreen(base,login);
             }
         });
@@ -442,14 +537,13 @@ public class GUI {
         cardLayoutBase.repaint();
         cardLayoutBase.revalidate();
     }
-    //sample codes to run Gui in any main
-    /*public static void main(String[] args)
-    {
+
+    public static void main(String[] args) throws Exception {
         GUI UI = new GUI();
         JFrame frame = new JFrame("Pure ATM");
         frame.setContentPane(UI.getBase());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-    }*/
+    }
 }
