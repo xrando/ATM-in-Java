@@ -1,8 +1,9 @@
 import ATM.Client.Client;
 import ATM.Constants.Constants;
 import ATM.Utilities.JSON;
+import ATM.Utilities.LogHelper;
 import org.json.JSONObject;
-
+import java.util.logging.Level;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -108,6 +109,8 @@ public class GUI {
     private JLabel lblNewUsername;
     private JButton btnCreateNewUser;
     private JButton btnNewUserBack;
+    private JLabel lblNewUserpw;
+    private JLabel lblTransferAmountValidator;
     private Map<String, String> English = Map.ofEntries(
             entry("0", "Username:"),
             entry("1", "Password:"),
@@ -152,7 +155,9 @@ public class GUI {
             entry("40", "Update Password"),
             entry("41", "Choose Language"),
             entry("42", "English"),
-            entry("43", "Chinese")
+            entry("43", "Chinese"),
+            entry("44", "Create New User"),
+            entry("45", "View Account Summary")
     );
 
     private Map<String, String> Chinese = Map.ofEntries(
@@ -199,46 +204,47 @@ public class GUI {
             entry("40", "更新密码"),
             entry("41", "选择语言"),
             entry("42", "英语"),
-            entry("43", "中文")
+            entry("43", "中文"),
+            entry("44", "创建新用户"),
+            entry("45", "查看帐户摘要")
     );
 
     public GUI() throws Exception
     {
+        final String[] language = new String[]{"eng"};
         //init client object
         Client client = new Client();
         //init json object to store replies from server
-        String user = "ben", pw = "1234";
         //Create event listener for login button
         btnLogin.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                try
-                {
-                    //test account username: test, pw:123123
-                    //init json object to store replies from server
-                    JSONObject jo = new JSONObject(client.listen(new JSON(Constants.User.Login).add(Constants.User.Password, txtPassword.getText()).add(Constants.User.Username, txtUsername.getText()).toString()));
+                //test account username: test, pw:123123
+                //init json object to store replies from server
+                JSONObject jo = new JSONObject(client.listen(new JSON(Constants.User.Login).add(Constants.User.Password, txtPassword.getText()).add(Constants.User.Username, txtUsername.getText()).toString()));
 
-                    //Get user input from textboxs and on successful login, show main menu
-                    if (jo.get(Constants.User.LoginStatus).toString().toLowerCase().equals("true"))
+                //Get user input from textboxs and on successful login, show main menu
+                if (jo.get(Constants.User.LoginStatus).toString().toLowerCase().equals("true"))
+                {
+                    lblLoginValidator.setText("");
+                    if(language[0].equals("eng"))
                     {
-                        txtUsername.setText("");
-                        txtPassword.setText("");
-                        lblLoginValidator.setText("");
                         //set welcome msg
-                        lblWelcomeMessage.setText("Welcome " + user);
-                        //attach main menu screen
-                        setScreen(base,main);
+                        lblWelcomeMessage.setText("Welcome " + txtUsername.getText());
                     }
                     else
                     {
-                        lblLoginValidator.setText("Wrong credentials");
+                        //set welcome msg
+                        lblWelcomeMessage.setText("欢迎 " + txtUsername.getText());
                     }
+                    //attach main menu screen
+                    setScreen(base,main);
                 }
-                catch (IOException ex)
+                else
                 {
-                    throw new RuntimeException(ex);
+                    lblLoginValidator.setText("Wrong credentials");
                 }
             }
         });
@@ -248,6 +254,8 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                txtUsername.setText("");
+                txtPassword.setText("");
                 //re-attach login screen
                 setScreen(base,login);
                 //set screen to main
@@ -332,27 +340,20 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                try
+                if(txtNewPassword.getText().equals(txtConfirmPassword.getText()))
                 {
-                    if(txtNewPassword.getText().equals(txtConfirmPassword.getText()))
-                    {
-                        //send request to server for password change
-                        JSONObject jo = new JSONObject(client.listen(new JSON(Constants.User.ChangePin).add(Constants.User.oldPin, txtOldPassword.getText()).add(Constants.User.newPin, txtNewPassword.getText()).toString()));
-                    }
-                    else
-                    {
-                        lblConfirmPasswordValidator.setText("Ensure that new password and confirm password entered are the same");
-                    }
-
-
-
-                    //attach settings screen
-                    setScreen(screen,Settings);
+                    //send request to server for password change
+                    JSONObject jo = new JSONObject(client.listen(new JSON(Constants.User.ChangePin).add(Constants.User.oldPin, txtOldPassword.getText()).add(Constants.User.newPin, txtNewPassword.getText()).toString()));
                 }
-                catch (IOException ex)
+                else
                 {
-                    throw new RuntimeException(ex);
+                    lblConfirmPasswordValidator.setText("Ensure that new password and confirm password entered are the same");
                 }
+
+
+
+                //attach settings screen
+                setScreen(screen,Settings);
 
             }
         });
@@ -363,12 +364,32 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 //TODO: call setter methods to update user objects fields
+                //if phone number entered is not integer (incorrect format)
+                try
+                {
+                    Integer.parseInt(txtPhoneNumber.getText());
 
-                //if changes found to particulars
-                //loop
-                //display updated message if changes found
-                lblChangeSuccessful.setText("Particulars updated!");
 
+                    //if changes found to particulars
+                    //loop
+                    //display updated message if changes found
+                    //lblChangeSuccessful.setText("Particulars updated!");
+
+                }
+                catch (NumberFormatException ex)
+                {
+                    //log
+                    LogHelper.log(Level.SEVERE, "Phone number must be an integer.", ex);
+                    //validator label
+                    if(language[0].equals("eng"))
+                    {
+                        lblChangeSuccessful.setText("Phone number must be an integer.");
+                    }
+                    else
+                    {
+                        lblChangeSuccessful.setText("电话号码必须是整数.");
+                    }
+                }
             }
         });
         //Create event listener for confirm withdrawal button
@@ -378,11 +399,29 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 //TODO: compute account balance after withdrawal
-                //if account balance is negative after subtracting amount entered, set lblWithdrawalAmountValidator with error msg
+                //if amount entered is not integer (incorrect format)
+                try
+                {
+                    Integer.parseInt(txtWithdrawalAmount.getText());
+                    //create new transaction entry
+                    //update lblAccountBalance with updated account balance
 
+                }
+                catch (NumberFormatException ex)
+                {
+                    //log
+                    LogHelper.log(Level.SEVERE, "Withdrawal amount must be in integer.", ex);
+                    //validator label
+                    if(language[0].equals("eng"))
+                    {
+                        lblWithdrawalAmountValidator.setText("Withdrawal amount must be in integer.");
+                    }
+                    else
+                    {
+                        lblWithdrawalAmountValidator.setText("取款金额必须为整数.");
+                    }
+                }
 
-                //else if success, create new transaction entry
-                //update lblAccountBalance with updated account balance
             }
         });
         //Create event listener for language button
@@ -401,6 +440,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                language[0] = "chi";
                 setLanguage(Chinese);
                 setScreen(base,login);
             }
@@ -411,6 +451,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                language[0] = "eng";
                 setLanguage(English);
                 setScreen(base,login);
             }
@@ -441,17 +482,10 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                try
-                {
-                    //send request to create new user to server
-                    JSONObject jo = new JSONObject(client.listen(new JSON(Constants.User.CreateUser).add(Constants.User.Username, txtNewUsername.getText()).add(Constants.User.Password, txtNewUserPassword.getText()).toString()));
-                    //attach login screen and set label to notify successful user creation
-                    setScreen(base,login);
-                }
-                catch (IOException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
+                //send request to create new user to server
+                JSONObject jo = new JSONObject(client.listen(new JSON(Constants.User.CreateUser).add(Constants.User.Username, txtNewUsername.getText()).add(Constants.User.Password, txtNewUserPassword.getText()).toString()));
+                //attach login screen and set label to notify successful user creation
+                setScreen(base,login);
 
 
             }
@@ -463,6 +497,66 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 setScreen(base,login);
+            }
+        });
+        btnConfirmDeposit.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                //TODO: compute account balance after deposit
+                //catch if amount entered is not integer (incorrect format)
+                try
+                {
+                    Integer.parseInt(txtDepositAmount.getText());
+                    //create new transaction entry
+                    //update lblAccountBalance with updated account balance
+
+                }
+                catch (NumberFormatException ex)
+                {
+                    //log
+                    LogHelper.log(Level.SEVERE, "Deposit amount must be in integer.", ex);
+                    //validator label
+                    if(language[0].equals("eng"))
+                    {
+                        lblWithdrawalAmountValidator.setText("Deposit amount must be in integer.");
+                    }
+                    else
+                    {
+                        lblWithdrawalAmountValidator.setText("入金金额必须为整数.");
+                    }
+                }
+
+            }
+        });
+        btnTransfer.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                //catch if amount entered is not integer (incorrect format)
+                try
+                {
+                    Integer.parseInt(txtTransferAmount.getText());
+                    //create new transaction entry
+                    //update lblAccountBalance with updated account balance
+
+                }
+                catch (NumberFormatException ex)
+                {
+                    //log
+                    LogHelper.log(Level.SEVERE, "Transfer amount must be in integer.", ex);
+                    //validator label
+                    if(language[0].equals("eng"))
+                    {
+                        lblTransferAmountValidator.setText("Transfer amount must be in integer.");
+                    }
+                    else
+                    {
+                        lblTransferAmountValidator.setText("转账金额必须为整数.");
+                    }
+                }
             }
         });
     }
@@ -523,6 +617,16 @@ public class GUI {
         lblchooseLang.setText(language.get("41"));
         btnEnglish.setText(language.get("42"));
         btnChinese.setText(language.get("43"));
+        //create new user
+        btnNewUser.setText(language.get("44"));
+        lblCreateNewUser.setText(language.get("44"));
+        lblNewUsername.setText(language.get("0"));
+        lblNewUserpw.setText(language.get("1"));
+        btnNewUserBack.setText(language.get("4"));
+        btnCreateNewUser.setText(language.get("44"));
+        //view account summary
+        btnViewAccountSummary.setText(language.get("45"));
+        lblViewAccountSummary.setText(language.get("45"));
     }
     protected JPanel getBase()
     {

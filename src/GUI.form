@@ -80,7 +80,7 @@
           </component>
           <component id="e703f" class="javax.swing.JButton" binding="btnNewUser">
             <constraints>
-              <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="6" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="Create New User"/>
@@ -317,7 +317,7 @@
                     </constraints>
                     <properties>
                       <foreground color="-64762"/>
-                      <text value="Label"/>
+                      <text value=""/>
                     </properties>
                   </component>
                   <component id="6a91" class="javax.swing.JButton" binding="btnConfirmWithdrawal">
@@ -443,7 +443,7 @@
                   </component>
                 </children>
               </grid>
-              <grid id="4d356" binding="BankTransfer" layout-manager="GridLayoutManager" row-count="7" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="4d356" binding="BankTransfer" layout-manager="GridLayoutManager" row-count="8" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <card name="Card5"/>
@@ -531,10 +531,19 @@
                   </component>
                   <component id="612ce" class="javax.swing.JButton" binding="btnTransfer">
                     <constraints>
-                      <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <text value="Transfer"/>
+                    </properties>
+                  </component>
+                  <component id="46dea" class="javax.swing.JLabel" binding="lblTransferAmountValidator">
+                    <constraints>
+                      <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <foreground color="-64762"/>
+                      <text value=""/>
                     </properties>
                   </component>
                 </children>
@@ -817,13 +826,13 @@
               <text value="Create New User"/>
             </properties>
           </component>
-          <component id="3bea2" class="javax.swing.JLabel">
+          <component id="3bea2" class="javax.swing.JLabel" binding="lblNewUserpw">
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <foreground color="-16777216"/>
-              <text value="Password"/>
+              <text value="Password:"/>
             </properties>
           </component>
           <component id="85c6b" class="javax.swing.JLabel" binding="lblNewUsername">
@@ -832,7 +841,7 @@
             </constraints>
             <properties>
               <foreground color="-16777216"/>
-              <text value="UserName"/>
+              <text value="Username:"/>
             </properties>
           </component>
           <component id="44249" class="javax.swing.JTextField" binding="txtNewUsername">
