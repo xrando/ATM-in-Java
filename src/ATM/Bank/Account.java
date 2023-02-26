@@ -2,6 +2,7 @@ package ATM.Bank;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import ATM.Utilities.TableHelper;
@@ -49,15 +50,15 @@ public class Account {
         this.AccountTransactions = new ArrayList<Transaction>();
     }
 
-    public Account(String savings, User newUser, Bank bank) {
+    public Account(String savings, User newUser) {
     }
 
 
-    public String getAccountName() {
-        return AccountName;
-    }
+//    public String getAccountName() {
+//        return AccountName;
+//    }
 
-    public String getAccountType(){ return accountType;}
+    public String getAccountType(){ return this.accountType;}
 
     public String getUID() {
         return this.userID;
@@ -67,10 +68,10 @@ public class Account {
         return this.accountID;
     }
 
-    public Account getAccount() {
-        System.out.println("I am here:"+this.currentAccount);
-        return this.currentAccount;
-    }
+//    public Account getAccount() {
+//        System.out.println("I am here:"+this.currentAccount);
+//        return this.currentAccount;
+//    }
 
     public ArrayList<Transaction> getAccountTransactions() {
         ArrayList <Transaction> AccountTransactions = new ArrayList<Transaction>();
@@ -170,6 +171,25 @@ public class Account {
         this.currentAccount = TransactionAccount;
         new Account(TransactionAccount.accountID,TransactionAccount.accountType,TransactionAccount.userID);
         return TransactionAccount;
+    }
+
+    public List<Account> getTransactionAccount(String UID){
+        List<Account> accountList = new ArrayList<Account>();
+        try{
+            Connection conn = sqliteDatabase.connect();
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM accounts WHERE userID = ?");
+            ps.setString(1, UID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                accountList.add(new Account(rs.getString("accountID"),
+                        rs.getString("accountType"),
+                        rs.getString("userID")));
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return accountList;
     }
 
     public void createAccount(String userID) {

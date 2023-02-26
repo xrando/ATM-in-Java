@@ -1,8 +1,5 @@
 package ATM.Bank;
 
-import ATM.Bank.Account;
-import ATM.Bank.User;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -86,7 +83,7 @@ public class Bank
         this.BankUsers.add(NewUser);
 
         //Create a savings account for the user
-        Account NewAccount = new Account("Savings",NewUser,this);
+        Account NewAccount = new Account("Savings",NewUser);
         NewUser.AddAccount(NewAccount);
         this.AddAccount(NewAccount);
         return NewUser;

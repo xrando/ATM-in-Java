@@ -18,7 +18,7 @@ public class ATM
         User NewUser = BankObj.addBankUser("Ben","1234","Test1234@gmail.com","98765432");
 
         //Add a checking account for user1
-        Account NewAccount = new Account("Checking",NewUser,BankObj);
+        Account NewAccount = new Account("Checking",NewUser);
         NewUser.AddAccount(NewAccount);
         BankObj.AddAccount(NewAccount);
 

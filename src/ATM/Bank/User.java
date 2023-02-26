@@ -89,6 +89,10 @@ public class User
         return Accounts;
     }
 
+    public String getAccounts2() {
+        return Accounts.get(1).getAccountType().toString();
+    }
+
     protected void setAccounts(List<Account> userAccounts) {
         Accounts = userAccounts;
     }
@@ -405,6 +409,12 @@ public class User
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        //Populate User.List
+        Account TransactionAccount = new Account();
+        this.Accounts = TransactionAccount.getTransactionAccount(this.UID);
+        for (Account account: this.Accounts) {
+            System.out.println("Account ID: " +account.getAccountID() + " Account Type: " + account.getAccountType());
+        }
     }
 
     public boolean Login(String username, String password) {
@@ -450,6 +460,7 @@ public class User
                 this.phone = rs.getString("Phone");
                 this.loginStatus = rs.getBoolean("loginStatus");
                 conn.close();
+                getUserFromDatabase();
             } catch (SQLException e) {
                 LogHelper.log(Level.SEVERE, e.getMessage(), e);
             }
@@ -642,14 +653,14 @@ public class User
 
         // ATM.ATM.Bank.Bank.User is initialised with data from database after login
         User test2 = new User();
-        User test3 = new User("test3", "123456");
-        test3.Login();
-
-        //test3.CreateUser();
+//        User test3 = new User("test3", "123456");
+//        test3.Login();
+//
+//        test3.CreateUser();
 
         boolean a = test2.Login("test", "123123");
-        System.out.print(a);
-
+        System.out.println(a);
+        System.out.println(test2.getAccounts2());
 
         // To access ATM.ATM.Bank.Bank.User Data
         //System.out.println("UID: " + test2.getUID());
@@ -673,24 +684,24 @@ public class User
         //System.out.println("test2 accounts size" + accounts.size());
         //System.out.println("test2 accounts get(0)" + accounts.get(0));
 
-        System.out.println("test2 UID: " + test3.getUID());
-        List <Account> accounts = test2.getAccounts();
-        int tCount = 0; // To remove when transaction ID is implemented
-        // Accessing of accounts and transactions
-        // This is assuming that the user has 1 and only 1 account
-        for (Account account : accounts) {
-            System.out.println("ATM.ATM.Bank.Bank.Account Name: " + account.getAccountName() + "\n");
-            System.out.println("ATM.ATM.Bank.Bank.Account Balance: " + account.GetAccountBalance());
-            List<Transaction> transactions = account.getAccountTransactions();
-            for (Transaction transaction : transactions) {
-                System.out.print("ATM.ATM.Bank.Bank.Transaction Number\n");
-                System.out.println("ATM.ATM.Bank.Bank.Transaction ID: " + tCount);
-                System.out.println("ATM.ATM.Bank.Bank.Transaction Amount: " + transaction.getAmount());
-                System.out.println("ATM.ATM.Bank.Bank.Transaction Date: " + transaction.getTransactionDate());
-                System.out.println("ATM.ATM.Bank.Bank.Transaction Note: " + transaction.getTransactionNote());
-                tCount++; // To remove when transaction ID is implemented
-            }
-        }
+//        System.out.println("test2 UID: " + test3.getUID());
+//        List <Account> accounts = test2.getAccounts();
+//        int tCount = 0; // To remove when transaction ID is implemented
+//        // Accessing of accounts and transactions
+//        // This is assuming that the user has 1 and only 1 account
+//        for (Account account : accounts) {
+//            System.out.println("ATM.ATM.Bank.Bank.Account Name: " + account.getAccountName() + "\n");
+//            System.out.println("ATM.ATM.Bank.Bank.Account Balance: " + account.GetAccountBalance());
+//            List<Transaction> transactions = account.getAccountTransactions();
+//            for (Transaction transaction : transactions) {
+//                System.out.print("ATM.ATM.Bank.Bank.Transaction Number\n");
+//                System.out.println("ATM.ATM.Bank.Bank.Transaction ID: " + tCount);
+//                System.out.println("ATM.ATM.Bank.Bank.Transaction Amount: " + transaction.getAmount());
+//                System.out.println("ATM.ATM.Bank.Bank.Transaction Date: " + transaction.getTransactionDate());
+//                System.out.println("ATM.ATM.Bank.Bank.Transaction Note: " + transaction.getTransactionNote());
+//                tCount++; // To remove when transaction ID is implemented
+//            }
+//        }
 
         // Outputs:
         // UID: 1
@@ -727,6 +738,7 @@ public class User
         //Connection to SQLite has been established.
         //ATM.ATM.Bank.Bank.Transaction Date: 2023-02-10 03:01:10
         //ATM.ATM.Bank.Bank.Transaction Note: Salary
+
 
     }
 
