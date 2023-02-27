@@ -40,11 +40,12 @@ public class ATMClient {
         //System.out.println(client.listen(new ATMRequestBuilder(Constants.User.Logout).toString()));
 
         JSONObject jo = new JSONObject(client.listen(new JSON(Constants.User.Login).add(Constants.User.Password, "123123").add(Constants.User.Username, "test").toString()));
-
+        JSONObject jo1 = new JSONObject(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, "1").toString()));
         //method 1:
         System.out.println(jo.get(Constants.JSON.Type));
         System.out.println(jo.get(Constants.User.LoginStatus));
-
+        System.out.println(jo1.get(Constants.JSON.Type));
+        System.out.println("Account Selected: "+jo1.get(Constants.Account.SelectedAccount));
         //method 2:
         for(var a:jo.names()){
             System.out.println(jo.get(a.toString()));

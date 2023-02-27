@@ -29,6 +29,18 @@ public class Account {
 
     }
 
+    public Account(Account Account)
+    {
+        //Set Current Account ID
+        this.accountID = Account.getAccountID();
+
+        //Set Current Account ID
+        this.accountType = Account.getAccountType();
+
+        //Set Current Account's UID
+        this.UID = Account.getUID();
+    }
+
     public Account(){
 
     }

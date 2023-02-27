@@ -47,6 +47,11 @@ public abstract class Constants {
         public static final String newPin = "newPin";
     }
 
+    public abstract static class Account { //return bool
+        public static final String SelectAccount = "SelectAccount";
+        public static final String SelectedAccount = "SelectedAccount";
+    }
+
     public abstract static class userFunctions {
         // Takes in username and password
         // Returns true if login is successful, Logs and returns false if login is unsuccessful

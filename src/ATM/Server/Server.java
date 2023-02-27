@@ -1,6 +1,7 @@
 package ATM.Server;
 
 import ATM.Bank.User;
+import ATM.Bank.Account;
 import ATM.Constants.Constants;
 import ATM.Utilities.ATMServerSocket;
 import ATM.Utilities.ATMSocket;
@@ -42,6 +43,12 @@ public class Server {
                             case Constants.User.CreateUser -> {
                                 User tmpuser = new User();
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.User.CreateUser, tmpuser.CreateUser(request.getString(Constants.User.Username), request.getString(Constants.User.Password))).toString());
+                            }
+                            case Constants.Account.SelectAccount -> {
+                                int selectAccount = request.getInt(Constants.Account.SelectedAccount);
+                                Account account = new Account(user.getAccounts().get(selectAccount));
+                                System.out.println("Selected AccountID:"+account.getAccountID() + ", Account type:" +account.getAccountType());
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.SelectedAccount, account.getAccountID()).toString());
                             }
                         }
                     }
