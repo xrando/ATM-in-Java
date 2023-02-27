@@ -41,7 +41,7 @@ public class Transaction {
     }
 
     public double getAmount() {
-        return Amount;
+        return this.Amount;
     }
 
     public void setAmount(double amount) {

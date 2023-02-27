@@ -1,5 +1,6 @@
 package ATM.Server;
 
+import ATM.Bank.Transaction;
 import ATM.Bank.User;
 import ATM.Bank.Account;
 import ATM.Constants.Constants;
@@ -15,6 +16,7 @@ public class Server {
             ATMSocket socket = ss.accept();
             new Thread(() -> {
                 User user = null;
+                Account account = null;
                     while (true) {
                         /*once server receives a client request, it MUST respond to the client to continue*/
                         String clientInput = socket.read(); //receive client request as String
@@ -46,9 +48,17 @@ public class Server {
                             }
                             case Constants.Account.SelectAccount -> {
                                 int selectAccount = request.getInt(Constants.Account.SelectedAccount);
-                                Account account = new Account(user.getAccounts().get(selectAccount));
+                                account = new Account(user.getAccounts().get(selectAccount));
                                 System.out.println("Selected AccountID:"+account.getAccountID() + ", Account type:" +account.getAccountType());
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.SelectedAccount, account.getAccountID()).toString());
+                                account.retrieveAccountTransactions();
+
+                            }
+                            case Constants.Account.TransactionHistory -> {
+                                for (int i=0;i<account.getAccountTransactions().size();i++){
+                                    System.out.println(account.getAccountTransactions().get(i).getAmount());
+                                }
+                                System.out.println("Account Balance: "+account.GetAccountBalance());
                             }
                         }
                     }

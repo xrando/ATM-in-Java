@@ -47,9 +47,10 @@ public abstract class Constants {
         public static final String newPin = "newPin";
     }
 
-    public abstract static class Account { //return bool
+    public abstract static class Account {
         public static final String SelectAccount = "SelectAccount";
         public static final String SelectedAccount = "SelectedAccount";
+        public static final String TransactionHistory = "TransactionHistory";
     }
 
     public abstract static class userFunctions {
@@ -120,9 +121,7 @@ public abstract class Constants {
 
     public abstract static class accountsFunctions {
         //Retrieve account type from account constructor
-        public String getAccountType(){
-            String accountType = null;
-            return accountType;}
+        public abstract String getAccountType();
 
         //Retrieve userID from account constructor
         public abstract String getUID();

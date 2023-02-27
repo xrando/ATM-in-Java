@@ -89,10 +89,6 @@ public class User
         return Accounts;
     }
 
-    public String getAccounts2() {
-        return Accounts.get(1).getAccountType().toString();
-    }
-
     protected void setAccounts(List<Account> userAccounts) {
         Accounts = userAccounts;
     }
@@ -660,7 +656,6 @@ public class User
 
         boolean a = test2.Login("test", "123123");
         System.out.println(a);
-        System.out.println(test2.getAccounts2());
 
         // To access ATM.ATM.Bank.Bank.User Data
         //System.out.println("UID: " + test2.getUID());

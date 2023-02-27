@@ -39,11 +39,15 @@ public class Account {
 
         //Set Current Account's UID
         this.UID = Account.getUID();
+
+        //Initialize transactions
+        this.AccountTransactions = new ArrayList<Transaction>();
     }
 
     public Account(){
 
     }
+
     public Account(int accountID){ //Created a new constructor to accept accountID
         this.AccountName = "Default";
         this.accountID = Integer.toString(accountID);
@@ -80,12 +84,11 @@ public class Account {
         return this.accountID;
     }
 
-//    public Account getAccount() {
-//        System.out.println("I am here:"+this.currentAccount);
-//        return this.currentAccount;
-//    }
-
     public ArrayList<Transaction> getAccountTransactions() {
+        return this.AccountTransactions;
+    }
+
+    public ArrayList<Transaction> retrieveAccountTransactions() {
         ArrayList <Transaction> AccountTransactions = new ArrayList<Transaction>();
         try{
             Connection conn = sqliteDatabase.connect();
@@ -125,7 +128,7 @@ public class Account {
     {
         double balance =0;
         ArrayList <Transaction> AccountTransactions = new ArrayList<Transaction>();
-        AccountTransactions = this.getAccountTransactions();
+        AccountTransactions = this.retrieveAccountTransactions();
         for(Transaction transaction : AccountTransactions)
         {
             balance+=transaction.getAmount();
