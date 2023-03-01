@@ -37,22 +37,38 @@ public class ATMClient {
         //JSONObject ForgetPin = new JSONObject(client.listen(new JSON(Constants.User.ForgetPin).add(Constants.User.Username, "test").toString()));
 
         // Change Pin
-        JSONObject ChangePin = new JSONObject(client.listen(new JSON(Constants.User.ChangePin).add(Constants.User.oldPin, "258852").add(Constants.User.newPin, "123123").toString()));
+        //JSONObject ChangePin = new JSONObject(client.listen(new JSON(Constants.User.ChangePin).add(Constants.User.oldPin, "123456").add(Constants.User.newPin, "123123").toString()));
 
         JSONObject jo1 = new JSONObject(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, "0").toString()));
-        JSONObject jo2 = JSON.tryParse(client.listen(new JSON(Constants.Account.TransactionHistory).toString()));
+        //JSONObject jo2 = JSON.tryParse(client.listen(new JSON(Constants.Account.TransactionHistory).toString()));
 
         //method 1:
-        //System.out.println(jo.get(Constants.JSON.Type));
-        //System.out.println(jo.get(Constants.User.LoginStatus));
+        System.out.println(jo.get(Constants.JSON.Type));
+        System.out.println(jo.get(Constants.User.LoginStatus));
 
         //System.out.println(ChangePin.get(Constants.User.ChangePin));
         System.out.println(jo1.get(Constants.JSON.Type));
         System.out.println("Account Selected: "+jo1.get(Constants.Account.SelectedAccount));
         //method 2:
-        //for(var a:jo.names()){
-        //    System.out.println(jo.get(a.toString()));
-        //}
+        for(var a:jo.names()){
+            System.out.println(jo.get(a.toString()));
+        }
+        //Retrieve Transaction History
+        JSONObject jo2 = JSON.tryParse(client.listen(new JSON(Constants.Account.TransactionHistory).toString()));
+        System.out.println("Retrieve Transaction History: "+jo2.get(Constants.Account.TransactionHistory));
+
+        //Transaction (Deposit) Test
+        JSONObject jo4 = new JSONObject(client.listen(new JSON(Constants.Transaction.Deposit).add(Constants.Transaction.Amount, 1000).add(Constants.Transaction.TransactionNote, "Deposit").toString()));
+        System.out.println(jo4.get(Constants.JSON.Type));
+        System.out.println("Deposit : "+jo4.get(Constants.Transaction.Deposit));
+        System.out.println("Balance : "+jo4.get(Constants.Account.GetAccountBalance));
+
+        //Transaction (Withdrawal) Test
+        JSONObject jo5 = new JSONObject(client.listen(new JSON(Constants.Transaction.Withdraw).add(Constants.Transaction.Amount, 500).add(Constants.Transaction.TransactionNote, "Withdrawal").toString()));
+        System.out.println(jo5.get(Constants.JSON.Type));
+        System.out.println("Withdrawal : "+jo5.get(Constants.Transaction.Withdraw));
+        System.out.println("Balance : "+jo5.get(Constants.Account.GetAccountBalance));
+
 
         //Logout
         JSONObject logout = new JSONObject(client.listen(new JSON(Constants.User.Logout).toString()));

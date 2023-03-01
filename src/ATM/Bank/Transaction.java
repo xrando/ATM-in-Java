@@ -22,6 +22,7 @@ public class Transaction {
         this.Amount = NewAmount;
         //Set new transaction note
         this.TransactionNote = NewTransactionNote;
+        //Set transaction AccountID
         this.TransactionAccount = NewTransactionAccount;
     }
 
