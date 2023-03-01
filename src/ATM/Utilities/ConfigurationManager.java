@@ -1,29 +1,44 @@
 package ATM.Utilities;
 
+import ATM.Constants.Constants;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.Level;
 
 public abstract class ConfigurationManager {
     public static String GetConfig(String Key) {
-        try (InputStream inputStream = ConfigurationManager.class.getClassLoader().getResourceAsStream("config.properties")) {
+        String returnVal = null;
+        try (InputStream inputStream = ConfigurationManager.class.getClassLoader().getResourceAsStream(Constants.CONFIG_FILE_NAME)) {
             Properties properties = new Properties();
             if (inputStream != null)
                 properties.load(inputStream);
-            return properties.getProperty(Key);
+            returnVal = properties.getProperty(Key);
+        } catch (NullPointerException e) {
+            LogHelper.log(Level.SEVERE, "Could not find the config file.", e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LogHelper.log(Level.SEVERE, "Failed to read the config file.", e);
+        } catch (IllegalArgumentException e) {
+            LogHelper.log(Level.SEVERE, "Input stream contains a malformed Unicode escape sequence.", e);
         }
+        return returnVal;
     }
 
-    public static String GetConfig(String Name, String Key) {
-        try (InputStream inputStream = ConfigurationManager.class.getClassLoader().getResourceAsStream(Name)) {
+    public static int GetConfigAsInt(String Key) {
+        int returnVal = 0;
+        try (InputStream inputStream = ConfigurationManager.class.getClassLoader().getResourceAsStream(Constants.CONFIG_FILE_NAME)) {
             Properties properties = new Properties();
             if (inputStream != null)
                 properties.load(inputStream);
-            return properties.getProperty(Key);
+            returnVal = Integer.parseInt(properties.getProperty(Key));
+        } catch (NullPointerException e) {
+            LogHelper.log(Level.SEVERE, "Could not find the config file.", e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LogHelper.log(Level.SEVERE, "Failed to read the config file.", e);
+        } catch (IllegalArgumentException e) {
+            LogHelper.log(Level.SEVERE, "Config for " + Key + "should be integer format, or the input stream contains a malformed Unicode escape sequence.", e);
         }
+        return returnVal;
     }
 }

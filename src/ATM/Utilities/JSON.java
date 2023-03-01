@@ -3,6 +3,8 @@ package ATM.Utilities;
 import ATM.Constants.Constants;
 import org.json.*;
 
+import java.util.logging.Level;
+
 public class JSON {
     private final JSONObject jsonObject = new JSONObject();
     public JSON(String type){
@@ -10,8 +12,22 @@ public class JSON {
     }
 
     public <T> JSON add(String key, T t){
-        this.jsonObject.put(key, t);
+        try{
+            this.jsonObject.put(key, t);
+        } catch (JSONException e) {
+            LogHelper.log(Level.SEVERE, "Error when adding JSON string.", e);
+        }
         return this;
+    }
+
+    public static JSONObject tryParse(String input) {
+        JSONObject jo = null;
+        try {
+            jo = new JSONObject(input);
+        } catch (JSONException e) {
+            LogHelper.log(Level.SEVERE, "Failed to parse string [" + input + "] to JSON.", e);
+        }
+        return jo;
     }
 
     public String toString(){
