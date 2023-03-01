@@ -40,6 +40,8 @@ public abstract class Constants {
         public static final String Password = "Password";
         public static final String LoginStatus = "LoginStatus";
 
+        public static final String ForgetPin = "ForgetPin";
+
 
         public static final String CreateUser = "CreateUser";
         public static final String ChangePin = "ChangePin";

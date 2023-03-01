@@ -50,6 +50,10 @@ public class Server {
                                 User tmpuser = new User();
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.User.CreateUser, tmpuser.CreateUser(request.getString(Constants.User.Username), request.getString(Constants.User.Password))).toString());
                             }
+                            case Constants.User.ForgetPin -> {
+                                User tmpuser = new User();
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.User.ForgetPin, tmpuser.forgetPin(request.getString(Constants.User.Username))).toString());
+                            }
                             case Constants.Account.SelectAccount -> {
                                 int selectAccount = request.getInt(Constants.Account.SelectedAccount);
                                 account = new Account(user.getAccounts().get(selectAccount));
