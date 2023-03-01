@@ -12,8 +12,11 @@ public class ATMSocket {
     public ATMSocket() {
         try {
             sslSocket = (SSLSocket) Security.sslContext(Constants.SSL.TRUSTSTORE, Constants.SSL.TRUSTSTOREPASS).getSocketFactory().createSocket(Constants.Socket.HOST, Constants.Socket.PORT);
+            sslSocket.setSoTimeout(Constants.Socket.TIMEOUT);
         } catch (IOException e) {
-            LogHelper.log(Level.SEVERE, "Check host IP or port number.", e);
+            LogHelper.log(Level.SEVERE, "Server is not ready, or wrong host IP / port number.", e);
+        } catch (IllegalArgumentException e) {
+            LogHelper.log(Level.SEVERE, "Timeout might be set to negative by mistake, or the port number is out of range (0 and 65535).", e);
         }
     }
 

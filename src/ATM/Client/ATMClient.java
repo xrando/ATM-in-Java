@@ -52,7 +52,7 @@ public class ATMClient {
             System.out.println(jo.get(a.toString()));
         }
         //Retrieve Transaction History
-        JSONObject jo2 = new JSONObject(client.listen(new JSON(Constants.Account.TransactionHistory).toString()));
+        JSONObject jo2 = JSON.tryParse(client.listen(new JSON(Constants.Account.TransactionHistory).toString()));
         System.out.println("Retrieve Transaction History: "+jo2.get(Constants.Account.TransactionHistory));
 
         //Transaction (Deposit) Test
