@@ -57,13 +57,13 @@ public class ATMClient {
         JSONObject jo4 = new JSONObject(client.listen(new JSON(Constants.Transaction.Deposit).add(Constants.Transaction.Amount, 1000).add(Constants.Transaction.TransactionNote, "Deposit").toString()));
         System.out.println(jo4.get(Constants.JSON.Type));
         System.out.println("Deposit : "+jo4.get(Constants.Transaction.Deposit));
-        System.out.println("Balance : "+jo4.get(Constants.Account.CheckBalance));
+        System.out.println("Balance : "+jo4.get(Constants.Account.GetAccountBalance));
 
         //Transaction (Withdrawal) Test
         JSONObject jo5 = new JSONObject(client.listen(new JSON(Constants.Transaction.Withdraw).add(Constants.Transaction.Amount, 500).add(Constants.Transaction.TransactionNote, "Withdrawal").toString()));
         System.out.println(jo5.get(Constants.JSON.Type));
         System.out.println("Withdrawal : "+jo5.get(Constants.Transaction.Withdraw));
-        System.out.println("Balance : "+jo5.get(Constants.Account.CheckBalance));
+        System.out.println("Balance : "+jo5.get(Constants.Account.GetAccountBalance));
 
 
         //Logout

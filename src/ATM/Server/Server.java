@@ -2,6 +2,7 @@ package ATM.Server;
 
 import ATM.Bank.User;
 import ATM.Bank.Account;
+import ATM.Bank.Transaction;
 import ATM.Constants.Constants;
 import ATM.Utilities.ATMServerSocket;
 import ATM.Utilities.ATMSocket;
@@ -83,12 +84,12 @@ public class Server {
                                 //Negative to make value a withdrawal
                                 transaction = new Transaction(-(request.getDouble(Constants.Transaction.Amount)), request.getString(Constants.Transaction.TransactionNote),account.getAccountID());
                                 transaction.AddTransactionToSQL(account,transaction);
-                                socket.write(new JSON(Constants.Stream.RES).add(Constants.Transaction.Withdraw,"Withdrawal Complete").add(Constants.Account.CheckBalance,account.GetAccountBalance()).toString());
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.Transaction.Withdraw,"Withdrawal Complete").add(Constants.Account.GetAccountBalance,account.GetAccountBalance()).toString());
                             }
                             case Constants.Transaction.Deposit -> {
                                 transaction = new Transaction(request.getDouble(Constants.Transaction.Amount), request.getString(Constants.Transaction.TransactionNote),account.getAccountID());
                                 transaction.AddTransactionToSQL(account,transaction);
-                                socket.write(new JSON(Constants.Stream.RES).add(Constants.Transaction.Deposit,"Deposit Complete").add(Constants.Account.CheckBalance,account.GetAccountBalance()).toString());
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.Transaction.Deposit,"Deposit Complete").add(Constants.Account.GetAccountBalance,account.GetAccountBalance()).toString());
                             }
 
                             //TODO: send back all accountids of current user
