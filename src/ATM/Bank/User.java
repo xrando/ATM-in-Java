@@ -1,6 +1,7 @@
 package ATM.Bank;
 
 import ATM.Utilities.LogHelper;
+import ATM.Utilities.Helper;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -319,6 +320,23 @@ public class User
         return new String[]{password, Salt};
     }
 
+    public String getEmailFromDatabase(String UID){
+        String getEmailQuery = "SELECT email FROM users WHERE uid = ?";
+        String email = "";
+        //get password from database
+        try {
+            Connection conn = sqliteDatabase.connect();
+            PreparedStatement ps = conn.prepareStatement(getEmailQuery);
+            ps.setString(1, UID);
+            ResultSet rs = ps.executeQuery();
+            email = rs.getString("email");
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return email;
+    }
+
     /////////////////////////////////
     // Validation methods
     ////////////////////////////////
@@ -577,6 +595,11 @@ public class User
             LogHelper.log(Level.SEVERE, "Failed Login attempt, Attempted Username: " + this.Username);
             return false;
         }
+        // Check if user is already logged in
+        if (this.loginStatus || getLoginStatusFromDB(this.Username)) {
+            LogHelper.log(Level.SEVERE, "Attempted Relogin attempt, Attempted Username: " + this.Username);
+            return false;
+        }
         //check if password is correct
         if (validatePassword(this.Password, this.UID)) {
             System.out.println("Login successful!");
@@ -591,6 +614,7 @@ public class User
             } catch (SQLException e) {
                 LogHelper.log(Level.SEVERE, e.getMessage(), e);
             }
+            this.loginStatus = true;
             return true;
         }
         else {
@@ -606,6 +630,12 @@ public class User
             LogHelper.log(Level.SEVERE, "Failed Login attempt, Attempted Username: " + username);
             //return null;
         }
+        // Check if user is already logged in
+        if (this.loginStatus || getLoginStatusFromDB(username)) {
+            LogHelper.log(Level.SEVERE, "Attempted Relogin attempt, Attempted Username: " + username);
+            return false;
+        }
+
         //check if password is correct
         if (validatePassword(password, UID)) {
             System.out.println("Login successful!");
@@ -680,6 +710,55 @@ public class User
         this.loginStatus = b;
     }
 
+    //Forget Pin
+    public boolean forgetPin(String name){
+        //check if user exists
+        String UID = CheckUserExist(name);
+
+        if (UID == null) {
+            LogHelper.log(Level.SEVERE, "Failed Pin Change attempt, Name: " + name);
+            return false;
+        }
+
+        String email = getEmailFromDatabase(UID);
+
+        if (email == null){
+            return false;
+        }
+
+        String salt = getPasswordFromDatabase(UID)[1];
+        // Generate a random password
+        // Generate a 6 digit random number all digits should be different
+        String clearPin = String.format("%06d", new Random().nextInt(999999));
+        String newPassword = generatePasswordHash(clearPin, salt);
+        // Send email to user with new password
+        String subject = "A Password change is requested";
+        String body = "Dear " + name + ",\n\n" +
+                "Your new password is: " + clearPin + "\n\n" +
+                "Please change your password after you login.\n\n" +
+                "If you did not request a password change, please contact us immediately.\n\n" +
+                "Thank you,\n"+
+                "Pure Bank LTD\n"+
+                "pureinc933@gmail.com\n\n"+
+                "Please do not reply to this email as it is automatically generated.";
+        // Send email
+        Helper.SendMail(email, subject, body);
+
+        // Update password in database
+        try {
+            Connection conn = sqliteDatabase.connect();
+            PreparedStatement ps = conn.prepareStatement("UPDATE Users SET Password = ? WHERE UID = ?");
+            ps.setString(1, newPassword);
+            ps.setString(2, UID);
+            ps.executeUpdate();
+            conn.close();
+        } catch (SQLException e) {
+            LogHelper.log(Level.SEVERE, e.getMessage(), e);
+        }
+
+        return true;
+    }
+
 
     // For testing
     public static void main(String[] args){
@@ -699,16 +778,21 @@ public class User
 
         // ATM.ATM.Bank.Bank.User is initialised with data from database after login
         User test2 = new User();
+        test2.Login("test", "046903");
+        test2.changePin("046903", "123123");
+        test2.logout();
+
+
         //test2.Login("test", "123123");
 //        User test3 = new User("test3", "123456");
 //        test3.Login();
 //
 //        test3.CreateUser();
 
-        test2.CreateUser("test5", "123123");
+        //test2.CreateUser("test5", "123123");
 
         //Create user test
-        User test3 = new User();
+        //User test3 = new User();
 
         // To access User Data
         //System.out.println("UID: " + test2.getUID());
