@@ -9,14 +9,14 @@ import java.util.logging.Level;
 
 //remove this when deploying client
 public class ATMServerSocket {
-    SSLServerSocket sslServerSocket;
+    private final SSLServerSocket sslServerSocket = (SSLServerSocket) Security.sslContext(Constants.SSL.KEYSTORE, Constants.SSL.KEYSTOREPASS).getServerSocketFactory().createServerSocket(Constants.Socket.PORT);
 
-    public ATMServerSocket() {
-        try {
-            sslServerSocket = (SSLServerSocket) Security.sslContext(Constants.SSL.KEYSTORE, Constants.SSL.KEYSTOREPASS).getServerSocketFactory().createServerSocket(Constants.Socket.PORT);
-        } catch (IOException e) {
-            LogHelper.log(Level.SEVERE, "Check port number.", e);
-        }
+    public ATMServerSocket() throws IOException {
+        sslServerSocket.setSoTimeout(0);
+    }
+
+    public boolean getSslServerSocketStatus() {
+        return sslServerSocket != null;
     }
 
     public ATMSocket accept() {

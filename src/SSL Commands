@@ -1,6 +1,6 @@
-keytool -genkey -keyalg RSA -alias ATM -keystore ATM2.jks -validity 365 -keysize 2048
+keytool -genkey -keyalg RSA -alias ATM -keystore ATM.jks -validity 365 -keysize 2048
 keytool -export -alias ATM -file server.cer -keystore ATM.jks
-keytool -import -v -trustcacerts -alias ATM -file server.cer -keystore cacerts.jks
+keytool -import -v -trustcacerts -alias ATM -file server.cer -keystore Client.jks
 
 run in cmd, additional input needed
 

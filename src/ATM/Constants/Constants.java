@@ -25,7 +25,7 @@ public abstract class Constants {
         public static final String PROTOCOL = "TLS";
         public static final String KEYSTORE = "Resources/SSL/ATM.jks";
         public static final String KEYSTOREPASS = "123456";
-        public static final String TRUSTSTORE = "Resources/SSL/cacerts.jks";
+        public static final String TRUSTSTORE = "Resources/SSL/Client.jks";
         public static final String TRUSTSTOREPASS = "123456";
     }
 

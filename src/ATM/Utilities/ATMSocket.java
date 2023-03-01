@@ -2,6 +2,7 @@ package ATM.Utilities;
 
 import ATM.Constants.Constants;
 
+import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -17,6 +18,9 @@ public class ATMSocket {
             LogHelper.log(Level.SEVERE, "Server is not ready, or wrong host IP / port number.", e);
         } catch (IllegalArgumentException e) {
             LogHelper.log(Level.SEVERE, "Timeout might be set to negative by mistake, or the port number is out of range (0 and 65535).", e);
+        } catch (NullPointerException e) {
+            LogHelper.log(Level.SEVERE, "Failed to generate ssl socket.", e);
+            throw e;
         }
     }
 
@@ -38,8 +42,10 @@ public class ATMSocket {
                 } else
                     a.append(temp);
             }
+        } catch (SSLHandshakeException e) {
+            LogHelper.log(Level.SEVERE, "Secure connection cannot be established with host " + this.sslSocket.getRemoteSocketAddress().toString(), e);
         } catch (IOException e) {
-            LogHelper.log(Level.SEVERE, "If there are no bytes buffered on the socket, or all buffered bytes have been consumed by read.", e);
+            LogHelper.log(Level.SEVERE, "There are no bytes buffered on the socket, or all buffered bytes have been consumed by read.", e);
         }
         return a.toString();
     }
@@ -50,6 +56,9 @@ public class ATMSocket {
             this.sslSocket.getOutputStream().write(s.getBytes());
             this.sslSocket.getOutputStream().write(Constants.Stream.EOF.getBytes());
             this.sslSocket.getOutputStream().flush();
+        } catch (SSLHandshakeException e) {
+            LogHelper.log(Level.SEVERE, "Secure connection cannot be established with host " + this.sslSocket.getRemoteSocketAddress().toString(), e);
+            System.exit(-1);
         } catch (IOException e) {
             LogHelper.log(Level.SEVERE, "I/O error occurs when creating the output stream or the socket is not connected.", e);
         }
