@@ -1,18 +1,31 @@
 package ATM.Server;
 
-import ATM.Bank.Transaction;
 import ATM.Bank.User;
 import ATM.Bank.Account;
 import ATM.Constants.Constants;
 import ATM.Utilities.ATMServerSocket;
 import ATM.Utilities.ATMSocket;
 import ATM.Utilities.JSON;
+import ATM.Utilities.LogHelper;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.logging.Level;
 
 public class Server {
     public void listen() {
-        ATMServerSocket ss = new ATMServerSocket();
-        while (true) {
+        ATMServerSocket ss = null;
+        try {
+            ss = new ATMServerSocket();
+        } catch (IOException e) {
+            LogHelper.log(Level.SEVERE, "Check port number.", e);
+            System.exit(-1);
+        } catch (NullPointerException e) {
+            LogHelper.log(Level.SEVERE, "Failed to generate ssl server socket.", e);
+            System.exit(-1);
+        }
+
+        while (ss.getSslServerSocketStatus()) {
             ATMSocket socket = ss.accept();
             new Thread(() -> {
                 User user = null;
@@ -26,12 +39,12 @@ public class Server {
                         System.out.println("Received: " + clientInput);
 
                         //exit code to safely end the connection
-                        if (clientInput.equals(Constants.Stream.EOS))
+                        if (clientInput.equals(Constants.Stream.EOS) | clientInput.isEmpty())
                             break;
 
                         //request[0] is the request type, the rest are the parameters if applicable (can have no parameter)
                         //String[] request = clientInput.split(Constants.RequestBuilder.Separator);
-                        JSONObject request = new JSONObject(clientInput);
+                        JSONObject request = JSON.tryParse(clientInput);
 
                         switch (request.getString(Constants.JSON.Type)){
                             case Constants.User.Login -> {
@@ -42,7 +55,11 @@ public class Server {
                             }
                             case Constants.User.Logout -> socket.write(new JSON(Constants.Stream.RES).add(Constants.User.LoginStatus, user.logout()).toString());
                             //TODO: complete the cases
-                            case Constants.User.ChangePin -> socket.write(new JSON(Constants.Stream.RES).add(Constants.User.ChangePin, user.changePin(request.getString(Constants.User.oldPin), request.getString(Constants.User.newPin))).toString());
+                            case Constants.User.ChangePin -> {
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.User.ChangePin, user.changePin(request.getString(Constants.User.oldPin), request.getString(Constants.User.newPin))).toString());
+                                System.out.println(request.getString(Constants.User.oldPin));
+                                System.out.println(request.getString(Constants.User.newPin));
+                            }
                             case Constants.User.CreateUser -> {
                                 User tmpuser = new User();
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.User.CreateUser, tmpuser.CreateUser(request.getString(Constants.User.Username), request.getString(Constants.User.Password))).toString());
@@ -73,10 +90,20 @@ public class Server {
                                 transaction.AddTransactionToSQL(account,transaction);
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.Transaction.Deposit,"Deposit Complete").add(Constants.Account.CheckBalance,account.GetAccountBalance()).toString());
                             }
+
+                            //TODO: send back all accountids of current user
+                            //case Constants.Account.AllAccounts
+
+                            //TODO: send back all account summary of current user
+                            //case Constants.Account.AllAccountSummary
+
+                            //TODO: send back account balance of accountId received of current user
+                            //case Constants.Account.GetAccountBalance
                         }
                     }
                     socket.close();
             }).start();
         }
+        System.out.println("Server down.");
     }
 }
