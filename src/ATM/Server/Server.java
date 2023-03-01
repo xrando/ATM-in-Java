@@ -17,6 +17,7 @@ public class Server {
             new Thread(() -> {
                 User user = null;
                 Account account = null;
+                Transaction transaction = null;
                     while (true) {
                         /*once server receives a client request, it MUST respond to the client to continue*/
                         String clientInput = socket.read(); //receive client request as String
@@ -59,6 +60,18 @@ public class Server {
                                     System.out.println(account.getAccountTransactions().get(i).getAmount());
                                 }
                                 System.out.println("Account Balance: "+account.GetAccountBalance());
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.TransactionHistory,"Transaction Retrieved").toString());
+                            }
+                            case Constants.Transaction.Withdraw -> {
+                                //Negative to make value a withdrawal
+                                transaction = new Transaction(-(request.getDouble(Constants.Transaction.Amount)), request.getString(Constants.Transaction.TransactionNote),account.getAccountID());
+                                transaction.AddTransactionToSQL(account,transaction);
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.Transaction.Withdraw,"Withdrawal Complete").add(Constants.Account.CheckBalance,account.GetAccountBalance()).toString());
+                            }
+                            case Constants.Transaction.Deposit -> {
+                                transaction = new Transaction(request.getDouble(Constants.Transaction.Amount), request.getString(Constants.Transaction.TransactionNote),account.getAccountID());
+                                transaction.AddTransactionToSQL(account,transaction);
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.Transaction.Deposit,"Deposit Complete").add(Constants.Account.CheckBalance,account.GetAccountBalance()).toString());
                             }
                         }
                     }

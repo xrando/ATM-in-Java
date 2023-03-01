@@ -51,6 +51,14 @@ public abstract class Constants {
         public static final String SelectAccount = "SelectAccount";
         public static final String SelectedAccount = "SelectedAccount";
         public static final String TransactionHistory = "TransactionHistory";
+        public static final String CheckBalance = "CheckBalance";
+    }
+
+    public abstract static class Transaction {
+        public static final String Withdraw = "Withdraw";
+        public static final String Deposit = "Deposit";
+        public static final String Amount = "Amount";
+        public static final String TransactionNote = "TransactionNote";
     }
 
     public abstract static class userFunctions {
