@@ -278,6 +278,10 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                //Send request to server to get transaction information for current user
+                JSONObject jo = new JSONObject(client.listen(new JSON(Constants.Account.TransactionHistory).toString()));
+                //populate view transaction screen with data
+                AllTransactions.setText(jo.toString());
                 //attach view transaction screen
                 setScreen(screen,ViewTransactions);
             }
@@ -291,7 +295,14 @@ public class GUI {
                 //attach withdrawal screen
                 setScreen(screen,Withdrawal);
                 //TODO: populate accounts ddl with accounts linked with current user
-
+                //Send request to server to get all accounts of current users
+                JSONObject jo = new JSONObject(client.listen(new JSON(Constants.Account.AllAccounts).toString()));
+                //populate dropdownlist with accountID
+                for(var a:jo.names())
+                {
+                    ddlAccounts.addItem(a.toString());
+                }
+                //ddlAccounts.addItem("example");
             }
         });
         //Create event listener for deposit button
@@ -462,6 +473,10 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                //Send request to server to get account summary information for current user
+                JSONObject jo = new JSONObject(client.listen(new JSON(Constants.Account.AllAccountSummary).toString()));
+                //populate view account summary screen with data
+                AccountSummary.setText(jo.toString());
                 //attach view account summary screen
                 setScreen(screen,ViewAccountSummary);
             }
@@ -557,6 +572,19 @@ public class GUI {
                         lblTransferAmountValidator.setText("转账金额必须为整数.");
                     }
                 }
+            }
+        });
+        //add action listener for dropdownlist
+        ddlAccounts.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                String choice = ddlAccounts.getItemAt(ddlAccounts.getSelectedIndex()).toString();
+                //Onclick, send request to server to get balance of accountId selected
+                JSONObject jo = new JSONObject(client.listen(new JSON(Constants.Account.GetAccountBalance).add(Constants.Account.AccountId, choice).toString()));
+                //update balance label to display updated balance amount
+                lblAccountBalance.setText(jo.toString());
             }
         });
     }

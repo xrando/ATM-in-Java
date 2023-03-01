@@ -64,6 +64,15 @@ public class Server {
                                 }
                                 System.out.println("Account Balance: "+account.GetAccountBalance());
                             }
+
+                            //TODO: send back all accountids of current user
+                            //case Constants.Account.AllAccounts
+
+                            //TODO: send back all account summary of current user
+                            //case Constants.Account.AllAccountSummary
+
+                            //TODO: send back account balance of accountId received of current user
+                            //case Constants.Account.GetAccountBalance
                         }
                     }
                     socket.close();
