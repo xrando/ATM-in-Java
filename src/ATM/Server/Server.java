@@ -41,7 +41,11 @@ public class Server {
                             }
                             case Constants.User.Logout -> socket.write(new JSON(Constants.Stream.RES).add(Constants.User.LoginStatus, user.logout()).toString());
                             //TODO: complete the cases
-                            case Constants.User.ChangePin -> socket.write(new JSON(Constants.Stream.RES).add(Constants.User.ChangePin, user.changePin(request.getString(Constants.User.oldPin), request.getString(Constants.User.newPin))).toString());
+                            case Constants.User.ChangePin -> {
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.User.ChangePin, user.changePin(request.getString(Constants.User.oldPin), request.getString(Constants.User.newPin))).toString());
+                                System.out.println(request.getString(Constants.User.oldPin));
+                                System.out.println(request.getString(Constants.User.newPin));
+                            }
                             case Constants.User.CreateUser -> {
                                 User tmpuser = new User();
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.User.CreateUser, tmpuser.CreateUser(request.getString(Constants.User.Username), request.getString(Constants.User.Password))).toString());
