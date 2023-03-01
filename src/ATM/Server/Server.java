@@ -11,6 +11,7 @@ import ATM.Utilities.LogHelper;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 
 public class Server {
@@ -31,7 +32,7 @@ public class Server {
             new Thread(() -> {
                 User user = null;
                 Account account = null;
-                Transaction transaction = null;
+                Transaction transaction;
                     while (true) {
                         /*once server receives a client request, it MUST respond to the client to continue*/
                         String clientInput = socket.read(); //receive client request as String
@@ -72,13 +73,15 @@ public class Server {
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.SelectedAccount, account.getAccountID()).toString());
                                 account.retrieveAccountTransactions();
 
+                                //socket.write(new JSON(Constants.Stream.RES).add());
                             }
                             case Constants.Account.TransactionHistory -> {
-                                for (int i=0;i<account.getAccountTransactions().size();i++){
-                                    System.out.println(account.getAccountTransactions().get(i).getAmount());
-                                }
+                                ArrayList<Transaction> transactions = account.getAccountTransactions();
+/*                                for (int i=0;i<account.getAccountTransactions().size();i++){
+                                    //System.out.println(account.getAccountTransactions().get(i).getAmount());
+                                }*/
                                 System.out.println("Account Balance: "+account.GetAccountBalance());
-                                socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.TransactionHistory,"Transaction Retrieved").toString());
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.TransactionHistory,JSON.parseTransactionsToString(transactions)).toString());
                             }
                             case Constants.Transaction.Withdraw -> {
                                 //Negative to make value a withdrawal

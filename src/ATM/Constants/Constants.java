@@ -62,8 +62,10 @@ public abstract class Constants {
     public abstract static class Transaction {
         public static final String Withdraw = "Withdraw";
         public static final String Deposit = "Deposit";
-        public static final String Amount = "Amount";
-        public static final String TransactionNote = "TransactionNote";
+        public static final String Amount = "amount";
+        public static final String TransactionNote = "transactionNote";
+        public static final String TimeStamp = "timeStamp";
+        public static final String TransactionDate = "transactionDate";
     }
 
     public abstract static class userFunctions {

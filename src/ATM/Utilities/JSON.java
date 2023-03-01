@@ -1,8 +1,10 @@
 package ATM.Utilities;
 
+import ATM.Bank.Transaction;
 import ATM.Constants.Constants;
 import org.json.*;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 
 public class JSON {
@@ -32,5 +34,13 @@ public class JSON {
 
     public String toString(){
         return this.jsonObject.toString();
+    }
+
+    public static String parseTransactionsToString(ArrayList<Transaction> transactions) {
+        return parseTransactions(transactions).toString();
+    }
+
+    public static JSONArray parseTransactions(ArrayList<Transaction> transactions) {
+        return new JSONArray(transactions);
     }
 }

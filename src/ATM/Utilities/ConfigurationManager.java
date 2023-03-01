@@ -37,7 +37,7 @@ public abstract class ConfigurationManager {
         } catch (IOException e) {
             LogHelper.log(Level.SEVERE, "Failed to read the config file.", e);
         } catch (IllegalArgumentException e) {
-            LogHelper.log(Level.SEVERE, "Config for " + Key + "should be integer format, or the input stream contains a malformed Unicode escape sequence.", e);
+            LogHelper.log(Level.SEVERE, "Config for " + Key + " should be integer format, or the input stream contains a malformed Unicode escape sequence.", e);
         }
         return returnVal;
     }

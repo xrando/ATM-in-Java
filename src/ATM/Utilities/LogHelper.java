@@ -16,19 +16,18 @@ public abstract class LogHelper {
         try {
             Files.createDirectories(Paths.get(ConfigurationManager.GetConfig("LogLocation")));
             FileHandler fileHandler = new FileHandler(ConfigurationManager.GetConfig("LogLocation") + LocalDate.now() + ".log", true);
-//            System.setProperty("java.util.logging.SimpleFormatter.format","[%1$tF %1$tT] [%4$-7s] %5$s %n");
             SimpleFormatter SF = new SimpleFormatter();
             fileHandler.setFormatter(SF);
             LOGGER.addHandler(fileHandler);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            System.out.println("Failed to log. Please check the config.properties has \"LogLocation\" configured correctly.");
         }
     }
 
-    public static void log(Level lv, String msg, Exception e){
-        LOGGER.log(lv,msg,e);
+    public static void log(Level level, String message, Exception exception){
+        LOGGER.log(level,message,exception);
     }
-    public static void log(Level lv, String msg){
-        LOGGER.log(lv,msg);
+    public static void log(Level level, String message){
+        LOGGER.log(level,message);
     }
 }
