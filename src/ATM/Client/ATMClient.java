@@ -32,7 +32,7 @@ public class ATMClient {
         // Create User
         //JSONObject createUserTest = new JSONObject(client.listen(new JSON(Constants.User.CreateUser).add(Constants.User.Username, "abc123").add(Constants.User.Password, "123123").toString()));
 
-        JSONObject jo = new JSONObject(client.listen(new JSON(Constants.User.Login).add(Constants.User.Password, "258852").add(Constants.User.Username, "test").toString()));
+        JSONObject jo = new JSONObject(client.listen(new JSON(Constants.User.Login).add(Constants.User.Password, "123123").add(Constants.User.Username, "test").toString()));
 
         //forget pin
         //JSONObject ForgetPin = new JSONObject(client.listen(new JSON(Constants.User.ForgetPin).add(Constants.User.Username, "test").toString()));
@@ -40,12 +40,21 @@ public class ATMClient {
         // Change Pin
         //JSONObject ChangePin = new JSONObject(client.listen(new JSON(Constants.User.ChangePin).add(Constants.User.oldPin, "123456").add(Constants.User.newPin, "123123").toString()));
 
+        //Get User Info
+        JSONObject GetUserInfo = JSON.tryParse(client.listen(new JSON(Constants.User.GetUserInformation).toString()));
+
         JSONObject jo1 = new JSONObject(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, "0").toString()));
         //JSONObject jo2 = JSON.tryParse(client.listen(new JSON(Constants.Account.TransactionHistory).toString()));
 
         //method 1:
         System.out.println(jo.get(Constants.JSON.Type));
         System.out.println(jo.get(Constants.User.LoginStatus));
+        System.out.println(jo);
+
+        // Get User Info
+        System.out.println(GetUserInfo.get(Constants.User.Username));
+        System.out.println(GetUserInfo.get(Constants.User.Phone));
+        System.out.println(GetUserInfo.get(Constants.User.Email));
 
         //System.out.println(ChangePin.get(Constants.User.ChangePin));
         System.out.println(jo1.get(Constants.JSON.Type));

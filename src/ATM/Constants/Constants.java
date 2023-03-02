@@ -37,6 +37,8 @@ public abstract class Constants {
         public static final String Login = "Login";
         public static final String Logout = "Logout";
         public static final String Username = "Username";
+        public static final String Email = "Email";
+        public static final String Phone = "Phone";
         public static final String Password = "Password";
         public static final String LoginStatus = "LoginStatus";
 

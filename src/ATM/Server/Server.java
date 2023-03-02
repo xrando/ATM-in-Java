@@ -116,9 +116,10 @@ public class Server {
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.Transaction.Transfer,"Transfer Complete").add(Constants.Account.GetAccountBalance,account.GetAccountBalance()).toString());
                             }
 
-                            //TODO: Get current user particulars (to allow users to see and update particulars in UI,
+                            // Get current user particulars (to allow users to see and update particulars in UI,
                             // send over all current user particulars such as email, phone number etc)
-                            //case Constants.User.GetUserInformation
+                            // Done, Name, phone and email will now be accessible
+                            case Constants.User.GetUserInformation ->  socket.write(new JSON(Constants.Stream.RES).add(Constants.User.Username, user.getUsername()).add(Constants.User.Email, user.getEmail()).add(Constants.User.Phone, user.getPhone()).toString());
                         }
                     }
                     socket.close();

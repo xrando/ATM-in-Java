@@ -572,20 +572,20 @@ public class User
             ResultSet rs = pstmt.executeQuery();
             this.Username = rs.getString("Username");
             this.Password = rs.getString("Password");
-            this.Salt = rs.getString("Salt");
+            //this.Salt = rs.getString("Salt");
             this.UID = rs.getString("UID");
-            this.loginStatus = rs.getBoolean("loginStatus");
+            //this.loginStatus = rs.getBoolean("loginStatus");
             this.email = rs.getString("email");
             this.phone = rs.getString("phone");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         //Populate User.List
-        Account TransactionAccount = new Account();
-        this.Accounts = TransactionAccount.getTransactionAccount(this.UID);
-        for (Account account: this.Accounts) {
-            System.out.println("Account ID: " +account.getAccountID() + " Account Type: " + account.getAccountType());
-        }
+        //Account TransactionAccount = new Account();
+        //this.Accounts = TransactionAccount.getTransactionAccount(this.UID);
+        //for (Account account: this.Accounts) {
+        //    System.out.println("Account ID: " +account.getAccountID() + " Account Type: " + account.getAccountType());
+        //}
     }
 
     public boolean Login(){
@@ -778,12 +778,14 @@ public class User
 
         // ATM.ATM.Bank.Bank.User is initialised with data from database after login
         User test2 = new User();
-        test2.Login("test", "046903");
-        test2.changePin("046903", "123123");
+        //test2.Login("test", "046903");
+        //test2.changePin("046903", "123123");
+        //test2.logout();
+
+        //test2.forgetPin("test");
+
+        test2.Login("test", "445286");
         test2.logout();
-
-
-        //test2.Login("test", "123123");
 //        User test3 = new User("test3", "123456");
 //        test3.Login();
 //
@@ -809,7 +811,6 @@ public class User
 
         // Logout
         //System.out.println("logging out");
-        //test2.logout();
         //System.out.println("Login Status: " + test2.getLoginStatus());
 
         //System.out.println("test2 accounts" + accounts);
