@@ -228,6 +228,19 @@ public class User
 
         this.Password = generatePasswordHash(newPin, getSalt());
 
+        // Send Email
+        String subject = "Pure Bank LTD - Password Change";
+        String body = "Dear " + this.getUsername() + ",\n\n" +
+                "Your password has been changed.\n\n" +
+                "If you did not request a password change, please contact us immediately.\n\n" +
+                "Thank you,\n"+
+                "Pure Bank LTD\n"+
+                "pureinc933@gmail.com\n\n"+
+                "Please do not reply to this email as it is automatically generated.";
+        // Send email
+        Helper.SendMail(email, subject, body);
+
+
         System.out.println("Pin changed successfully.");
         return "Pin changed successfully.";
     }
@@ -480,14 +493,15 @@ public class User
         }
     }
 
-    public boolean CreateUser(String username, String password){
+    public boolean CreateUser(String username, String password, String email){
         User user = new User(username, password);
         //validate user input
         if (ValidatePin(password) && ValidateUserName(username)){
             user.UID = user.genUID();
             user.Salt = user.generateSalt();
             user.Password = user.generatePasswordHash(password, user.Salt);
-            System.out.println("Password: " + password);
+            user.email = email;
+            //System.out.println("Password: " + password);
             insertUser(user);
             System.out.println("User created!\n Proceed to login!");
             return true;
@@ -587,40 +601,41 @@ public class User
         }
     }
 
-    public boolean Login(){
-        //check if user exists
-        this.UID = CheckUserExist(this.Username);
-        if (UID == null) {
-            LogHelper.log(Level.SEVERE, "Failed Login attempt, Attempted Username: " + this.Username);
-            return false;
-        }
-        // Check if user is already logged in
-        if (this.loginStatus || getLoginStatusFromDB(this.Username)) {
-            LogHelper.log(Level.SEVERE, "Attempted Relogin attempt, Attempted Username: " + this.Username);
-            return false;
-        }
-        //check if password is correct
-        if (validatePassword(this.Password, this.UID)) {
-            System.out.println("Login successful!");
-            //set login status to true
-            try {
-                Connection conn = sqliteDatabase.connect();
-                PreparedStatement ps = conn.prepareStatement("UPDATE Users SET loginStatus = ? WHERE UID = ?");
-                ps.setString(1, "1");
-                ps.setString(2, UID);
-                ps.executeUpdate();
-                conn.close();
-            } catch (SQLException e) {
-                LogHelper.log(Level.SEVERE, e.getMessage(), e);
-            }
-            this.loginStatus = true;
-            return true;
-        }
-        else {
-            System.out.println("Login failed!");
-            return false;
-        }
-    }
+    // Unused Login Function
+    //public boolean Login(){
+    //    //check if user exists
+    //    this.UID = CheckUserExist(this.Username);
+    //    if (UID == null) {
+    //        LogHelper.log(Level.SEVERE, "Failed Login attempt, Attempted Username: " + this.Username);
+    //        return false;
+    //    }
+    //    // Check if user is already logged in
+    //    if (this.loginStatus || getLoginStatusFromDB(this.Username)) {
+    //        LogHelper.log(Level.SEVERE, "Attempted Relogin attempt, Attempted Username: " + this.Username);
+    //        return false;
+    //    }
+    //    //check if password is correct
+    //    if (validatePassword(this.Password, this.UID)) {
+    //        System.out.println("Login successful!");
+    //        //set login status to true
+    //        try {
+    //            Connection conn = sqliteDatabase.connect();
+    //            PreparedStatement ps = conn.prepareStatement("UPDATE Users SET loginStatus = ? WHERE UID = ?");
+    //            ps.setString(1, "1");
+    //            ps.setString(2, UID);
+    //            ps.executeUpdate();
+    //            conn.close();
+    //        } catch (SQLException e) {
+    //            LogHelper.log(Level.SEVERE, e.getMessage(), e);
+    //        }
+    //        this.loginStatus = true;
+    //        return true;
+    //    }
+    //    else {
+    //        System.out.println("Login failed!");
+    //        return false;
+    //    }
+    //}
 
     public boolean Login(String username, String password) {
         //check if user exists
@@ -665,6 +680,17 @@ public class User
                 this.loginStatus = rs.getBoolean("loginStatus");
                 conn.close();
                 getUserFromDatabase();
+                // Send email
+                String subject = "Login Successful";
+                String body = "Dear " + this.Username + ",\n\n" +
+                        "Your login was successful.\n\n" +
+                        "If you did not attempt to login, please contact us immediately.\n\n" +
+                        "Thank you,\n"+
+                        "Pure Bank LTD\n"+
+                        "pureinc933@gmail.com\n\n"+
+                        "Please do not reply to this email as it is automatically generated.";
+                Helper.SendMail(email, subject, body);
+
             } catch (SQLException e) {
                 LogHelper.log(Level.SEVERE, e.getMessage(), e);
             }
@@ -675,6 +701,10 @@ public class User
             System.out.println("Incorrect password!");
             return false;
         }
+    }
+
+    // Sent after Login
+    public void LoginEmail(){
     }
 
     //Logout Function
@@ -780,7 +810,7 @@ public class User
         // ATM.ATM.Bank.Bank.User is initialised with data from database after login
         User test2 = new User();
         test2.Login("test", "123123");
-        //test2.changePin("026897", "123123");
+        //test2.changePin("", "123123");
         test2.logout();
 
         //test2.forgetPin("test");

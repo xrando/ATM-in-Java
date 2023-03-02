@@ -30,9 +30,9 @@ public class ATMClient {
         //System.out.println(client.listen(new ATMRequestBuilder(Constants.User.Logout).toString()));
 
         // Create User
-        //JSONObject createUserTest = new JSONObject(client.listen(new JSON(Constants.User.CreateUser).add(Constants.User.Username, "abc123").add(Constants.User.Password, "123123").toString()));
+        //JSONObject createUserTest = new JSONObject(client.listen(new JSON(Constants.User.CreateUser).add(Constants.User.Username, "abc123").add(Constants.User.Password, "123123").add(Constants.User.Email, "pureinc933@gmail.com").toString()));
 
-        JSONObject jo = new JSONObject(client.listen(new JSON(Constants.User.Login).add(Constants.User.Password, "123123").add(Constants.User.Username, "test").toString()));
+        JSONObject jo = new JSONObject(client.listen(new JSON(Constants.User.Login).add(Constants.User.Password, "123123").add(Constants.User.Username, "abc123").toString()));
 
         //forget pin
         //JSONObject ForgetPin = new JSONObject(client.listen(new JSON(Constants.User.ForgetPin).add(Constants.User.Username, "test").toString()));
