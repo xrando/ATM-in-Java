@@ -50,8 +50,8 @@ public class Server {
 
                         switch (request.getString(Constants.JSON.Type)){
                             case Constants.User.Login -> {
-                                user = new User(request.getString(Constants.User.Username), request.getString(Constants.User.Password));
-                                socket.write(new JSON(Constants.Stream.RES).add(Constants.User.LoginStatus, user.Login()).toString()); //now socket.write() can receive boolean. String "true" or "false" will be sent
+                                user = new User();
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.User.LoginStatus, user.Login(request.getString(Constants.User.Username), request.getString(Constants.User.Password))).toString());
                                 //socket.write(user.Login()); //now socket.write() can receive boolean. String "true" or "false" will be sent
                                 user.getUserFromDatabase();
                             }

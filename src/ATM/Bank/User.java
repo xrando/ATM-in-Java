@@ -4,8 +4,9 @@ import ATM.Utilities.Helper;
 import ATM.Utilities.LogHelper;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+//import java.security.MessageDigest;
+//import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -203,6 +204,8 @@ public class User
             return "User is not logged in.";
         }
 
+        String salt = getPasswordFromDatabase(this.getUsername())[1];
+
         // If old pin is not correct, return false
         if (!this.getPassword().equals(generatePasswordHash(oldPin, this.Salt))) {
             LogHelper.log(Level.WARNING, this.getUsername() + " entered wrong old pin.");
@@ -226,6 +229,7 @@ public class User
         }
 
         this.Password = generatePasswordHash(newPin, getSalt());
+        System.out.println(this.Password);
 
         System.out.println("Pin changed successfully.");
         return "Pin changed successfully.";
@@ -246,23 +250,6 @@ public class User
         return BCrypt.hashpw(password, salt);
     }
 
-    public String hash(String stringToHash){
-        String hash = "";
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(stringToHash.getBytes());
-            byte[] bytes = md.digest();
-            StringBuilder sb = new StringBuilder();
-            for (byte aByte : bytes) {
-                sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
-            }
-            hash = sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            LogHelper.log(Level.SEVERE, e.getMessage(), e);
-        }
-        return hash;
-
-    }
     public void PrintAllAccountSummary()
     {
         System.out.printf("\n\n%s's All ATM.ATM.Bank.Bank.Account Summary\n",this.Username);
@@ -743,8 +730,10 @@ public class User
 
         String salt = getPasswordFromDatabase(UID)[1];
         // Generate a random password
-        // Generate a 6 digit random number all digits should be different
-        String clearPin = String.format("%06d", new Random().nextInt(999999));
+        // Generate a 6 digit random number all digits should be different with SecureRandom
+        String clearPin = String.format("%06d", new SecureRandom().nextInt(999999));
+        System.out.println("Clear Pin: " + clearPin);
+
         String newPassword = generatePasswordHash(clearPin, salt);
         // Send email to user with new password
         String subject = "A Password change is requested";
@@ -757,7 +746,7 @@ public class User
                 "pureinc933@gmail.com\n\n"+
                 "Please do not reply to this email as it is automatically generated.";
         // Send email
-        Helper.SendMail(email, subject, body);
+        //Helper.SendMail(email, subject, body);
 
         // Update password in database
         try {
@@ -793,14 +782,15 @@ public class User
 
         // ATM.ATM.Bank.Bank.User is initialised with data from database after login
         User test2 = new User();
-        //test2.Login("test", "046903");
-        //test2.changePin("046903", "123123");
-        //test2.logout();
+        test2.Login("test", "123123");
+        //test2.changePin("026897", "123123");
+        test2.logout();
 
         //test2.forgetPin("test");
 
-        User test3 = new User();
-        test3.Login("test5", "123123");
+        //User test3 = new User();
+        //test3.Login("test5", "123123");
+        //test2.forgetPin("test")
 //
         //test3.CreateUser();
 
