@@ -46,6 +46,7 @@ public abstract class Constants {
 
 
         public static final String CreateUser = "CreateUser";
+        public static final String UpdateUser = "UpdateUser";
         public static final String ChangePin = "ChangePin";
         public static final String Accounts = "Accounts";
         public static final String oldPin = "oldPin";

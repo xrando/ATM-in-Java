@@ -32,7 +32,7 @@ public class ATMClient {
         // Create User
         //JSONObject createUserTest = new JSONObject(client.listen(new JSON(Constants.User.CreateUser).add(Constants.User.Username, "abc123").add(Constants.User.Password, "123123").add(Constants.User.Email, "pureinc933@gmail.com").toString()));
 
-        JSONObject jo = new JSONObject(client.listen(new JSON(Constants.User.Login).add(Constants.User.Password, "123123").add(Constants.User.Username, "abc123").toString()));
+        JSONObject jo = new JSONObject(client.listen(new JSON(Constants.User.Login).add(Constants.User.Password, "123123").add(Constants.User.Username, "test").toString()));
 
         //forget pin
         //JSONObject ForgetPin = new JSONObject(client.listen(new JSON(Constants.User.ForgetPin).add(Constants.User.Username, "test").toString()));
@@ -45,6 +45,9 @@ public class ATMClient {
 
         //Select User Account
         JSONObject SelectAccount = JSON.tryParse(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, 0).toString()));
+
+        //Update User Object
+        //JSONObject UpdateUser = JSON.tryParse(client.listen(new JSON(Constants.User.UpdateUser).add(Constants.User.Email, "test@test.com").add(Constants.User.Phone, "0").add(Constants.User.Username, "test").toString()));
 
         //method 1:
         System.out.println(jo.get(Constants.JSON.Type));

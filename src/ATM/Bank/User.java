@@ -81,8 +81,14 @@ public class User
         return Username;
     }
 
-    protected void setUsername(String username) {
+    public void setUsername(String username) {
         this.Username = username;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     protected String getPassword() {
@@ -501,6 +507,8 @@ public class User
             user.Salt = user.generateSalt();
             user.Password = user.generatePasswordHash(password, user.Salt);
             user.email = email;
+            // May remove
+            user.phone = "0";
             //System.out.println("Password: " + password);
             insertUser(user);
             System.out.println("User created!\n Proceed to login!");

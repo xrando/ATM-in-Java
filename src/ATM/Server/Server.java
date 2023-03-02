@@ -127,6 +127,16 @@ public class Server {
                             // send over all current user particulars such as email, phone number etc)
                             // Done, Name, phone and email will now be accessible
                             case Constants.User.GetUserInformation ->  socket.write(new JSON(Constants.Stream.RES).add(Constants.User.Username, user.getUsername()).add(Constants.User.Email, user.getEmail()).add(Constants.User.Phone, user.getPhone()).toString());
+
+                            // Update user particulars (to allow users to update particulars in UI)
+                            case Constants.User.UpdateUser -> {
+                                user.setUsername(request.getString(Constants.User.Username));
+                                user.setEmail(request.getString(Constants.User.Email));
+                                user.setPhone(request.getString(Constants.User.Phone));
+
+                                // Logout to update user information
+                                //socket.write(new JSON(Constants.Stream.RES).add(Constants.User.UpdateUser, "User information updated").toString());
+                            }
                         }
                     }
                     socket.close();
