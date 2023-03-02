@@ -5,6 +5,7 @@ import ATM.Constants.Constants;
 import org.json.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 public class JSON {
@@ -41,6 +42,14 @@ public class JSON {
     }
 
     public static JSONArray parseTransactions(ArrayList<Transaction> transactions) {
-        return new JSONArray(transactions);
+        JSONArray ja = new JSONArray();
+        transactions.forEach(transaction -> {
+            HashMap<String, String> map = new HashMap<>();
+            map.put(Constants.Transaction.TransactionDate, transaction.getTransactionDate());
+            map.put(Constants.Transaction.TransactionNote, transaction.getTransactionNote());
+            map.put(Constants.Transaction.Amount, String.valueOf(transaction.getAmount()));
+            ja.put(map);
+        });
+        return ja;
     }
 }

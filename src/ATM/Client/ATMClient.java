@@ -55,11 +55,12 @@ public class ATMClient {
 
         //Retrieve Transaction History
         JSONObject jo2 = JSON.tryParse(client.listen(new JSON(Constants.Account.TransactionHistory).toString()));
+
         //System.out.println("Retrieve Transaction History: "+jo2.get(Constants.Account.TransactionHistory));
         JSONArray ja = new JSONArray(jo2.get(Constants.Account.TransactionHistory).toString());
         ja.forEach(record -> {
+            System.out.println(record.toString());
             JSONObject joo = new JSONObject(record.toString());
-            System.out.print(Constants.Transaction.TimeStamp + " : " + joo.get(Constants.Transaction.TimeStamp) + "\t");
             System.out.print(Constants.Transaction.TransactionNote + " : " + joo.get(Constants.Transaction.TransactionNote) + "\t");
             System.out.print(Constants.Transaction.Amount + " : " + joo.get(Constants.Transaction.Amount) + "\t");
             System.out.print(Constants.Transaction.TransactionDate + " : " + joo.get(Constants.Transaction.TransactionDate) + "\n");
