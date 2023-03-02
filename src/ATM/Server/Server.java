@@ -107,6 +107,13 @@ public class Server {
 
                             //TODO: send back account balance of accountId received of current user
                             //case Constants.Account.GetAccountBalance
+
+                            //TODO: Bank transfer of one account to another
+                            //case Constants.Transaction.Transfer
+
+                            //TODO: Get current user particulars (to allow users to see and update particulars in UI,
+                            // send over all current user particulars such as email, phone number etc)
+                            //case Constants.User.GetUserInformation
                         }
                     }
                     socket.close();

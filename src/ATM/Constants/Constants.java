@@ -48,6 +48,7 @@ public abstract class Constants {
         public static final String Accounts = "Accounts";
         public static final String oldPin = "oldPin";
         public static final String newPin = "newPin";
+        public static final String GetUserInformation = "GetUserInformation";
     }
 
     public abstract static class Account {
@@ -64,6 +65,7 @@ public abstract class Constants {
     public abstract static class Transaction {
         public static final String Withdraw = "Withdraw";
         public static final String Deposit = "Deposit";
+        public static final String Transfer = "Transfer";
         public static final String Amount = "amount";
         public static final String TransactionNote = "transactionNote";
         public static final String TimeStamp = "timeStamp";
