@@ -100,13 +100,17 @@ public class Server {
                             }
 
                             //TODO: send back all accountids of current user
-                            //case Constants.Account.AllAccounts
+                            case Constants.Account.AllAccounts -> {
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.AllAccounts,account.getTransactionAccount(account.getUID())).toString());
+                            }
 
                             //TODO: send back all account summary of current user
                             //case Constants.Account.AllAccountSummary
 
                             //TODO: send back account balance of accountId received of current user
-                            //case Constants.Account.GetAccountBalance
+                            case Constants.Account.GetAccountBalance -> {
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.GetAccountBalance,account.GetAccountBalance()).toString());
+                            }
 
                             //TODO: Bank transfer of one account to another
                             case Constants.Transaction.Transfer -> {

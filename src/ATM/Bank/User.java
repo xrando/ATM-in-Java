@@ -58,7 +58,6 @@ public class User
         this.Password = password;
         this.loginStatus = false;
         this.Accounts = new ArrayList<Account>();
-
     }
 
     public User(){
@@ -581,8 +580,8 @@ public class User
             System.out.println(e.getMessage());
         }
         //Populate User.List
-        //Account TransactionAccount = new Account();
-        //this.Accounts = TransactionAccount.getTransactionAccount(this.UID);
+        Account TransactionAccount = new Account();
+        this.Accounts = TransactionAccount.getTransactionAccount(this.UID);
         //for (Account account: this.Accounts) {
         //    System.out.println("Account ID: " +account.getAccountID() + " Account Type: " + account.getAccountType());
         //}
