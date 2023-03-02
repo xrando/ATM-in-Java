@@ -329,7 +329,14 @@ public class GUI {
                 //attach withdrawal screen
                 setScreen(screen,Withdrawal);
                 //clear balance
-                lblAccountBalance.setText("");
+                //lblAccountBalance.setText("");
+                String choice = ddlAccounts.getItemAt(ddlAccounts.getSelectedIndex()).toString();
+                //send select account request to server
+                new JSONObject(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, ddlAccounts.getSelectedIndex()).toString()));
+                //Onclick, send request to server to get balance of accountId selected
+                JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.GetAccountBalance).add(Constants.Account.AccountId, choice).toString()));
+                //update balance label to display updated balance amount
+                lblAccountBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
             }
         });
         //Create event listener for deposit button
@@ -341,7 +348,14 @@ public class GUI {
                 //attach deposit screen
                 setScreen(screen,Deposit);
                 //clear balance
-                lblAccountbalance.setText("");
+                //lblAccountbalance.setText("");
+                String choice = ddlAccounts.getItemAt(ddlAccounts.getSelectedIndex()).toString();
+                //send select account request to server
+                new JSONObject(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, ddlAccounts.getSelectedIndex()).toString()));
+                //Onclick, send request to server to get balance of accountId selected
+                JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.GetAccountBalance).add(Constants.Account.AccountId, choice).toString()));
+                //update balance label to display updated balance amount
+                lblAccountbalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
             }
         });
         //Create event listener for bank transfer button
@@ -353,7 +367,14 @@ public class GUI {
                 //attach bank transfer screen
                 setScreen(screen,BankTransfer);
                 //clear balance
-                lblAccBalance.setText("");
+                //lblAccBalance.setText("");
+                String choice = ddlAccounts.getItemAt(ddlAccounts.getSelectedIndex()).toString();
+                //send select account request to server
+                new JSONObject(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, ddlAccounts.getSelectedIndex()).toString()));
+                //Onclick, send request to server to get balance of accountId selected
+                JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.GetAccountBalance).add(Constants.Account.AccountId, choice).toString()));
+                //update balance label to display updated balance amount
+                lblAccBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
             }
         });
         //Create event listener for settings button
