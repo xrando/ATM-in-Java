@@ -58,7 +58,7 @@ public abstract class Constants {
         public static final String SelectAccount = "SelectAccount";
         public static final String SelectedAccount = "SelectedAccount";
         public static final String TransactionHistory = "TransactionHistory";
-        public static final String AllAccountSummary = "AllAccountSummary";
+        public static final String CreateAccount = "CreateAccount";
         public static final String AllAccounts = "AllAccounts";
         public static final String AccountId = "accountId";
         public static final String AccountType = "accountType";

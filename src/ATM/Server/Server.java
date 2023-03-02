@@ -115,6 +115,11 @@ public class Server {
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.GetAccountBalance,account.GetAccountBalance()).toString());
                             }
 
+                            case Constants.Account.CreateAccount -> {
+                                int selection = request.getInt(Constants.Account.CreateAccount);
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.CreateAccount, account.createAccount(selection,user.getUID())).toString());
+                            }
+
                             //TODO: Bank transfer of one account to another
                             case Constants.Transaction.Transfer -> {
                                 //Negative to deduct value

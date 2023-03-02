@@ -89,6 +89,8 @@ public class ATMClient {
             System.out.print(Constants.Account.UserID + " : " + joo2.get(Constants.Account.UserID) + "\n");
         });
 
+        //Create Transaction Account
+        JSONObject accountCreation = JSON.tryParse(client.listen(new JSON(Constants.Account.CreateAccount).add(Constants.Account.CreateAccount, 0).toString()));
 
 
         //Transaction (Deposit) Test
