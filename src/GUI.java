@@ -5,7 +5,6 @@ import ATM.Utilities.LogHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.Arrays;
 import java.util.logging.Level;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -119,6 +118,8 @@ public class GUI {
     private JTextField txtNewUserEmail;
     private JLabel lblNewUserPhoneNumber;
     private JTextField txtNewUserPhoneNumber;
+    private JLabel lblNewUserAccount;
+    private JComboBox ddlNewUserAccount;
     private Map<String, String> English = Map.ofEntries(
             entry("0", "Username:"),
             entry("1", "Password:"),
@@ -165,7 +166,8 @@ public class GUI {
             entry("42", "English"),
             entry("43", "Chinese"),
             entry("44", "Create New User"),
-            entry("45", "View Account Summary")
+            entry("45", "View Account Summary"),
+            entry("46", "Forget Password")
     );
 
     private Map<String, String> Chinese = Map.ofEntries(
@@ -214,7 +216,8 @@ public class GUI {
             entry("42", "英语"),
             entry("43", "中文"),
             entry("44", "创建新用户"),
-            entry("45", "查看帐户摘要")
+            entry("45", "查看帐户摘要"),
+            entry("46", "忘记密码")
     );
 
     public GUI() throws Exception
@@ -249,17 +252,20 @@ public class GUI {
                     }
                     //attach main menu screen
                     setScreen(base,main);
-
+                    setScreen(screen,menu);
                     //Onlogin
-                    //test
-                    //send select account request to server
-                    //JSONObject jo1 = new JSONObject(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, "0").toString()));
+                    //Select User Account
+                    JSONObject SelectAccount = JSON.tryParse(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, 0).toString()));
 
-                    //TODO: SOLVE ISSUE WITH POPULATING DDL
+
                     //populate dropdownlists with data
+                    //populate create new user dropdownlist
+                    ddlNewUserAccount.addItem("savings");
+                    ddlNewUserAccount.addItem("current");
+
                     //Send request to server to get all accounts of current users
                     //Retrieve All User Accounts
-                    /*JSONObject retrieveAccounts = JSON.tryParse(client.listen(new JSON(Constants.Account.AllAccounts).toString()));
+                    JSONObject retrieveAccounts = JSON.tryParse(client.listen(new JSON(Constants.Account.AllAccounts).toString()));
                     JSONArray ja2 = new JSONArray(retrieveAccounts.get(Constants.Account.AllAccounts).toString());
                     ja2.forEach(record -> {
                         JSONObject joo2 = new JSONObject(record.toString());
@@ -272,37 +278,7 @@ public class GUI {
                         ddlAccount.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
                         ddlaccount.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
                         ddlTAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
-                    });*/
-                    //populate dropdownlists with user accounts
-                    //Arrays.stream(ja2).forEach(s->ddlAccounts.addItem(s));
-
-
-                    //test
-                    //String [] t = new String[]{"test","test2","test3"};
-                    //does work
-                    //Arrays.stream(t).forEach(s->ddlAccounts.addItem(s));
-                    //not working
-                    /*for(var a:t)
-                    {
-                        ddlAccounts.addItem(makeObj(a.toString()));
-                        ddlAccount.addItem(makeObj(a.toString()));
-                        ddlaccount.addItem(makeObj(a.toString()));
-                        ddlTAccounts.addItem(makeObj(a.toString()));
-                    }*/
-
-
-
-                    //sample
-                    //populate dropdownlist with accountID
-                    /*for(var a:jo2.names())
-                    {
-                        ddlAccounts.addItem(a.toString());
-                        ddlAccount.addItem(a.toString());
-                        ddlaccount.addItem(a.toString());
-                        ddlTAccounts.addItem(a.toString());
-                    }*/
-
-
+                    });
                 }
                 else
                 {
@@ -317,17 +293,11 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 //sent request to server to logout
-                //Logout
-                System.out.println("Before logout");
                 JSONObject logout = JSON.tryParse(client.listen(new JSON(Constants.User.Logout).toString()));
-                System.out.println("After logout");
                 txtUsername.setText("");
                 txtPassword.setText("");
                 //re-attach login screen
                 setScreen(base,login);
-                //set screen to main
-                setScreen(screen,main);
-
             }
         });
         //Create event listener for back button
@@ -346,17 +316,8 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                //Send request to server to get all accounts for current user
-                //JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.AllAccounts).toString()));
-                //populate dropdownlist with accounts
-                //test
-                //ddlTAccounts.addItem("test");
-                //Done on login
                 //attach view transaction screen
                 setScreen(screen,ViewTransactions);
-
-
-
             }
         });
         //Create event listener for withdrawal button
@@ -367,18 +328,8 @@ public class GUI {
             {
                 //attach withdrawal screen
                 setScreen(screen,Withdrawal);
-                //TODO: populate accounts ddl with accounts linked with current user
-                //Send request to server to get all accounts of current users
-                /*JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.AllAccounts).toString()));
-                //populate dropdownlist with accountID
-                for(var a:jo.names())
-                {
-                    ddlAccounts.addItem(a.toString());
-                }*/
-                //done when login
-                //test
-                /*ddlAccounts.addItem("test");
-                ddlAccounts.addItem("example");*/
+                //clear balance
+                lblAccountBalance.setText("");
             }
         });
         //Create event listener for deposit button
@@ -389,6 +340,8 @@ public class GUI {
             {
                 //attach deposit screen
                 setScreen(screen,Deposit);
+                //clear balance
+                lblAccountbalance.setText("");
             }
         });
         //Create event listener for bank transfer button
@@ -399,6 +352,8 @@ public class GUI {
             {
                 //attach bank transfer screen
                 setScreen(screen,BankTransfer);
+                //clear balance
+                lblAccBalance.setText("");
             }
         });
         //Create event listener for settings button
@@ -449,9 +404,6 @@ public class GUI {
                 {
                     lblConfirmPasswordValidator.setText("Ensure that new password and confirm password entered are the same");
                 }
-
-
-
                 //attach settings screen
                 setScreen(screen,Settings);
 
@@ -475,7 +427,6 @@ public class GUI {
                             .add(Constants.User.Phone, txtPhoneNumber.getText()).toString()));
                     //display updated message if changes found
                     lblChangeSuccessful.setText("Particulars updated!");
-
                 }
                 catch (NumberFormatException ex)
                 {
@@ -514,7 +465,7 @@ public class GUI {
                     JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Transaction.Withdraw).add(Constants.Transaction.Amount, txtWithdrawalAmount.getText()).add(Constants.Transaction.TransactionNote, note).toString()));
 
                     //update lblAccountBalance with updated account balance
-                    lblAccountBalance.setText(jo.toString());
+                    lblAccountBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
 
                 }
                 catch (NumberFormatException ex)
@@ -531,7 +482,6 @@ public class GUI {
                         lblWithdrawalAmountValidator.setText("取款金额必须为整数.");
                     }
                 }
-
             }
         });
         //Create event listener for language button
@@ -601,11 +551,10 @@ public class GUI {
                         .add(Constants.User.Username, txtNewUsername.getText())
                         .add(Constants.User.Password, txtNewUserPassword.getText())
                         .add(Constants.User.Email, txtNewUserEmail.getText())
-                        .add(Constants.User.Phone, txtNewUserPhoneNumber.getText()).toString()));
+                        .add(Constants.User.Phone, txtNewUserPhoneNumber.getText())
+                        .add(Constants.User.Accounts, ddlNewUserAccount.getItemAt(ddlNewUserAccount.getSelectedIndex())).toString()));
                 //attach login screen and set label to notify successful user creation
                 setScreen(base,login);
-
-
             }
         });
         //back to login screen
@@ -628,7 +577,17 @@ public class GUI {
                 {
                     Integer.parseInt(txtDepositAmount.getText());
                     //create new transaction entry
-                    //update lblAccountBalance with updated account balance
+                    //set transaction note to deposit if left empty
+                    String note="Deposit";
+                    if (!txtDepositNote.getText().equals(""))
+                    {
+                        note = txtDepositNote.getText();
+                    }
+                    //create new transaction entry
+                    JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Transaction.Deposit).add(Constants.Transaction.Amount, txtDepositAmount.getText()).add(Constants.Transaction.TransactionNote, note).toString()));
+
+                    //update lblAccountbalance with updated account balance
+                    lblAccountbalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
 
                 }
                 catch (NumberFormatException ex)
@@ -658,8 +617,12 @@ public class GUI {
                 {
                     Integer.parseInt(txtTransferAmount.getText());
                     //create new transaction entry
-                    //update lblAccountBalance with updated account balance
-
+                    JSONObject transfer = new JSONObject(client.listen(new JSON(Constants.Transaction.Transfer)
+                            .add(Constants.Transaction.Amount, txtTransferAmount.getText())
+                            .add(Constants.Transaction.TransactionNote, "Transfer")
+                            .add(Constants.Transaction.Payee, txtTransferTo.getText()).toString()));
+                    //update lblAccBalance with updated account balance
+                    lblAccBalance.setText("$" + transfer.get(Constants.Account.GetAccountBalance).toString());
                 }
                 catch (NumberFormatException ex)
                 {
@@ -684,13 +647,12 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 String choice = ddlAccounts.getItemAt(ddlAccounts.getSelectedIndex()).toString();
-                System.out.println("index selected: "+ ddlAccounts.getSelectedIndex());
                 //send select account request to server
                 JSONObject jo1 = new JSONObject(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, ddlAccounts.getSelectedIndex()).toString()));
                 //Onclick, send request to server to get balance of accountId selected
                 JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.GetAccountBalance).add(Constants.Account.AccountId, choice).toString()));
                 //update balance label to display updated balance amount
-                lblAccountBalance.setText(jo.toString());
+                lblAccountBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
             }
         });
         //add action listener for transaction history dropdownlist
@@ -705,7 +667,22 @@ public class GUI {
                 //Onclick, send request to server to get transaction history of accountId selected
                 JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.TransactionHistory).add(Constants.Account.AccountId, choice).toString()));
                 //populate date to screen
-                AllTransactions.setText(jo.toString());
+                JSONArray ja = new JSONArray(jo.get(Constants.Account.TransactionHistory).toString());
+                StringBuilder output = new StringBuilder();
+                ja.forEach(record -> {
+                    JSONObject joo = new JSONObject(record.toString());
+                    System.out.print(Constants.Transaction.TransactionNote + " : " + joo.get(Constants.Transaction.TransactionNote) + "\t");
+                    System.out.print(Constants.Transaction.Amount + " : " + joo.get(Constants.Transaction.Amount) + "\t");
+                    System.out.print(Constants.Transaction.date + " : " + joo.get(Constants.Transaction.date) + "\n");
+                    System.out.print(Constants.Transaction.TimeStamp + " : " + joo.get(Constants.Transaction.TimeStamp) + "\n");
+
+                    output.append(Constants.Transaction.TransactionNote + " : " + joo.get(Constants.Transaction.TransactionNote) + "\t");
+                    output.append(Constants.Transaction.Amount + " : " + joo.get(Constants.Transaction.Amount) + "\t");
+                    output.append(Constants.Transaction.date + " : " + joo.get(Constants.Transaction.date));
+                    output.append(Constants.Transaction.TimeStamp + " : " + joo.get(Constants.Transaction.TimeStamp));
+                });
+                //TODO: FIX DISPLAY ISSUE FOR ALL TRANSACTIONS
+                AllTransactions.setText(output.toString());
             }
         });
         //add action listener for deposit dropdownlist
@@ -715,10 +692,13 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 String choice = ddlAccount.getItemAt(ddlAccount.getSelectedIndex()).toString();
+                //send select account request to server
+                JSONObject jo1 = new JSONObject(client.listen(new JSON(Constants.Account.SelectAccount)
+                        .add(Constants.Account.SelectedAccount, ddlAccount.getSelectedIndex()).toString()));
                 //Onclick, send request to server to get balance of accountId selected
                 JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.GetAccountBalance).add(Constants.Account.AccountId, choice).toString()));
                 //update balance label to display updated balance amount
-                lblAccountbalance.setText(jo.toString());
+                lblAccountbalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
             }
         });
         //add event listener for forget password
@@ -738,6 +718,21 @@ public class GUI {
                 }
             }
         });
+        ddlaccount.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                String choice = ddlaccount.getItemAt(ddlaccount.getSelectedIndex()).toString();
+                //send select account request to server
+                JSONObject jo1 = new JSONObject(client.listen(new JSON(Constants.Account.SelectAccount)
+                        .add(Constants.Account.SelectedAccount, ddlaccount.getSelectedIndex()).toString()));
+                //Onclick, send request to server to get balance of accountId selected
+                JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.GetAccountBalance).add(Constants.Account.AccountId, choice).toString()));
+                //update balance label to display updated balance amount
+                lblAccBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
+            }
+        });
     }
     protected Object makeObj(final String item)  {
         return new Object() { public String toString() { return item; } };
@@ -749,6 +744,7 @@ public class GUI {
         lblUser.setText(language.get("0"));
         lblPass.setText(language.get("1"));
         btnLogin.setText(language.get("2"));
+        btnForgetPassword.setText(language.get("46"));
         btnChangeLang.setText(language.get("3"));
         //main menu
         btnBack.setText(language.get("4"));
@@ -805,6 +801,9 @@ public class GUI {
         lblNewUserpw.setText(language.get("1"));
         btnNewUserBack.setText(language.get("4"));
         btnCreateNewUser.setText(language.get("44"));
+        lblNewUserEmail.setText(language.get("34"));
+        lblNewUserPhoneNumber.setText(language.get("35"));
+        lblNewUserAccount.setText(language.get("26"));
         //view account summary
         btnViewAccountSummary.setText(language.get("45"));
         lblViewAccountSummary.setText(language.get("45"));

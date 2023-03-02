@@ -245,7 +245,10 @@
                       <background color="-789517"/>
                       <editable value="false"/>
                       <foreground color="-16777216"/>
+                      <lineWrap value="true"/>
+                      <rows value="20"/>
                       <text value=""/>
+                      <wrapStyleWord value="true"/>
                     </properties>
                   </component>
                   <component id="f0fb4" class="javax.swing.JComboBox" binding="ddlTAccounts">
@@ -305,7 +308,7 @@
                     </constraints>
                     <properties>
                       <foreground color="-15033303"/>
-                      <text value="ewewewe"/>
+                      <text value=""/>
                     </properties>
                   </component>
                   <component id="a6b2" class="javax.swing.JLabel" binding="lblwAmt">
@@ -419,7 +422,7 @@
                     </constraints>
                     <properties>
                       <foreground color="-15033303"/>
-                      <text value="Label"/>
+                      <text value=""/>
                     </properties>
                   </component>
                   <component id="182d0" class="javax.swing.JTextField" binding="txtDepositAmount">
@@ -506,7 +509,7 @@
                     </constraints>
                     <properties>
                       <foreground color="-15033303"/>
-                      <text value="Label"/>
+                      <text value=""/>
                     </properties>
                   </component>
                   <component id="d2ab4" class="javax.swing.JLabel" binding="lbltransferAccount">
@@ -553,7 +556,7 @@
                   </component>
                   <component id="46dea" class="javax.swing.JLabel" binding="lblTransferAmountValidator">
                     <constraints>
-                      <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="6" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <foreground color="-64762"/>
@@ -821,7 +824,7 @@
           </component>
         </children>
       </grid>
-      <grid id="9ea1d" binding="NewUser" layout-manager="GridLayoutManager" row-count="9" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="9ea1d" binding="NewUser" layout-manager="GridLayoutManager" row-count="10" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <card name="Card4"/>
@@ -876,7 +879,7 @@
           </component>
           <component id="35c6a" class="javax.swing.JButton" binding="btnCreateNewUser">
             <constraints>
-              <grid row="7" column="0" row-span="2" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="8" column="0" row-span="2" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="Create new user"/>
@@ -884,7 +887,7 @@
           </component>
           <component id="aa3db" class="javax.swing.JButton" binding="btnNewUserBack">
             <constraints>
-              <grid row="5" column="0" row-span="2" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="6" column="0" row-span="2" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="Back"/>
@@ -921,6 +924,21 @@
               <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
               </grid>
+            </constraints>
+            <properties/>
+          </component>
+          <component id="5945a" class="javax.swing.JLabel" binding="lblNewUserAccount">
+            <constraints>
+              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <foreground color="-16777216"/>
+              <text value="Account:"/>
+            </properties>
+          </component>
+          <component id="4e192" class="javax.swing.JComboBox" binding="ddlNewUserAccount">
+            <constraints>
+              <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
           </component>
