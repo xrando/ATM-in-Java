@@ -3,11 +3,12 @@ import ATM.Constants.Constants;
 import ATM.Utilities.JSON;
 import ATM.Utilities.LogHelper;
 import org.json.JSONObject;
+
+import java.util.Arrays;
 import java.util.logging.Level;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.Map;
 
 import static java.util.Map.entry;
@@ -111,6 +112,8 @@ public class GUI {
     private JButton btnNewUserBack;
     private JLabel lblNewUserpw;
     private JLabel lblTransferAmountValidator;
+    private JComboBox ddlTAccounts;
+    private JButton btnForgetPassword;
     private Map<String, String> English = Map.ofEntries(
             entry("0", "Username:"),
             entry("1", "Password:"),
@@ -241,6 +244,38 @@ public class GUI {
                     }
                     //attach main menu screen
                     setScreen(base,main);
+
+                    //Onlogin
+                    //test
+                    //send select account request to server
+                    //JSONObject jo1 = new JSONObject(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, "0").toString()));
+
+
+                    //populate dropdownlists with data
+                    //Send request to server to get all accounts of current users
+                    //JSONObject jo2 = JSON.tryParse(client.listen(new JSON(Constants.Account.AllAccounts).toString()));
+                    //populate dropdownlist with accountID
+                    /*for(var a:jo2.names())
+                    {
+                        ddlAccounts.addItem(a.toString());
+                        ddlAccount.addItem(a.toString());
+                        ddlaccount.addItem(a.toString());
+                        ddlTAccounts.addItem(a.toString());
+                    }*/
+
+
+                    //test
+                    String [] t = new String[]{"test","test2","test3"};
+                    //does work
+                    Arrays.stream(t).forEach(s->ddlAccounts.addItem(s));
+                    //not working
+                    /*for(var a:t)
+                    {
+                        ddlAccounts.addItem(makeObj(a.toString()));
+                        ddlAccount.addItem(makeObj(a.toString()));
+                        ddlaccount.addItem(makeObj(a.toString()));
+                        ddlTAccounts.addItem(makeObj(a.toString()));
+                    }*/
                 }
                 else
                 {
@@ -260,6 +295,7 @@ public class GUI {
                 setScreen(base,login);
                 //set screen to main
                 setScreen(screen,main);
+                JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.Logout).toString()));
             }
         });
         //Create event listener for back button
@@ -278,12 +314,17 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                //Send request to server to get transaction information for current user
-                JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.TransactionHistory).toString()));
-                //populate view transaction screen with data
-                AllTransactions.setText(jo.get(Constants.Account.TransactionHistory).toString());
+                //Send request to server to get all accounts for current user
+                //JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.AllAccounts).toString()));
+                //populate dropdownlist with accounts
+                //test
+                //ddlTAccounts.addItem("test");
+                //Done on login
                 //attach view transaction screen
                 setScreen(screen,ViewTransactions);
+
+
+
             }
         });
         //Create event listener for withdrawal button
@@ -296,13 +337,16 @@ public class GUI {
                 setScreen(screen,Withdrawal);
                 //TODO: populate accounts ddl with accounts linked with current user
                 //Send request to server to get all accounts of current users
-                JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.AllAccounts).toString()));
+                /*JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.AllAccounts).toString()));
                 //populate dropdownlist with accountID
                 for(var a:jo.names())
                 {
                     ddlAccounts.addItem(a.toString());
-                }
-                //ddlAccounts.addItem("example");
+                }*/
+                //done when login
+                //test
+                /*ddlAccounts.addItem("test");
+                ddlAccounts.addItem("example");*/
             }
         });
         //Create event listener for deposit button
@@ -355,6 +399,11 @@ public class GUI {
                 {
                     //send request to server for password change
                     JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.ChangePin).add(Constants.User.oldPin, txtOldPassword.getText()).add(Constants.User.newPin, txtNewPassword.getText()).toString()));
+                    if (jo.toString().equals(null)) {
+                        lblConfirmPasswordValidator.setText("Password change failed");
+                    } else {
+                        lblConfirmPasswordValidator.setText("Password changed successfully");
+                    }
                 }
                 else
                 {
@@ -414,8 +463,17 @@ public class GUI {
                 try
                 {
                     Integer.parseInt(txtWithdrawalAmount.getText());
+                    //set transaction note to withdrawal if left empty
+                    String note="Withdrawal";
+                    if (!txtWithdrawalNote.getText().equals(""))
+                    {
+                        note = txtWithdrawalNote.getText();
+                    }
                     //create new transaction entry
+                    JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Transaction.Withdraw).add(Constants.Transaction.Amount, txtWithdrawalAmount.getText()).add(Constants.Transaction.TransactionNote, note).toString()));
+
                     //update lblAccountBalance with updated account balance
+                    lblAccountBalance.setText(jo.toString());
 
                 }
                 catch (NumberFormatException ex)
@@ -574,21 +632,71 @@ public class GUI {
                 }
             }
         });
-        //add action listener for dropdownlist
+        //add action listener for withdrawal dropdownlist
         ddlAccounts.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
                 String choice = ddlAccounts.getItemAt(ddlAccounts.getSelectedIndex()).toString();
+                System.out.println("index selected: "+ ddlAccounts.getSelectedIndex());
+                //send select account request to server
+                JSONObject jo1 = new JSONObject(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, ddlAccounts.getSelectedIndex()).toString()));
                 //Onclick, send request to server to get balance of accountId selected
                 JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.GetAccountBalance).add(Constants.Account.AccountId, choice).toString()));
                 //update balance label to display updated balance amount
                 lblAccountBalance.setText(jo.toString());
             }
         });
+        //add action listener for transaction history dropdownlist
+        ddlTAccounts.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                String choice = ddlTAccounts.getItemAt(ddlTAccounts.getSelectedIndex()).toString();
+                //send select acc request to server
+                JSONObject jo1 = new JSONObject(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, ddlTAccounts.getSelectedIndex()).toString()));
+                //Onclick, send request to server to get transaction history of accountId selected
+                JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.TransactionHistory).add(Constants.Account.AccountId, choice).toString()));
+                //populate date to screen
+                AllTransactions.setText(jo.toString());
+            }
+        });
+        //add action listener for deposit dropdownlist
+        ddlAccount.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                String choice = ddlAccount.getItemAt(ddlAccount.getSelectedIndex()).toString();
+                //Onclick, send request to server to get balance of accountId selected
+                JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.GetAccountBalance).add(Constants.Account.AccountId, choice).toString()));
+                //update balance label to display updated balance amount
+                lblAccountbalance.setText(jo.toString());
+            }
+        });
+        //add event listener for forget password
+        btnForgetPassword.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if (txtUsername.getText().equals(""))
+                {
+                    lblLoginValidator.setText("Enter Username to change password!");
+                }
+                else
+                {
+                    //send request to server to change password
+                    JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.ForgetPin).add(Constants.User.Username, txtUsername.getText()).toString()));
+                }
+            }
+        });
     }
-
+    protected Object makeObj(final String item)  {
+        return new Object() { public String toString() { return item; } };
+    }
     //setLanguage for all buttons and labels
     protected void setLanguage(Map<String, String> language)
     {
