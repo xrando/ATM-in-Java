@@ -238,7 +238,7 @@ public class User
                 "pureinc933@gmail.com\n\n"+
                 "Please do not reply to this email as it is automatically generated.";
         // Send email
-        Helper.SendMail(email, subject, body);
+        //Helper.SendMail(email, subject, body);
 
 
         System.out.println("Pin changed successfully.");
@@ -689,7 +689,7 @@ public class User
                         "Pure Bank LTD\n"+
                         "pureinc933@gmail.com\n\n"+
                         "Please do not reply to this email as it is automatically generated.";
-                Helper.SendMail(email, subject, body);
+                //Helper.SendMail(email, subject, body);
 
             } catch (SQLException e) {
                 LogHelper.log(Level.SEVERE, e.getMessage(), e);
@@ -773,7 +773,7 @@ public class User
                 "pureinc933@gmail.com\n\n"+
                 "Please do not reply to this email as it is automatically generated.";
         // Send email
-        Helper.SendMail(email, subject, body);
+        //Helper.SendMail(email, subject, body);
 
         // Update password in database
         try {
@@ -809,8 +809,9 @@ public class User
 
         // ATM.ATM.Bank.Bank.User is initialised with data from database after login
         User test2 = new User();
+        //test2.forgetPin("test");
         test2.Login("test", "123123");
-        //test2.changePin("", "123123");
+        //test2.changePin("135518", "123123");
         test2.logout();
 
         //test2.forgetPin("test");
