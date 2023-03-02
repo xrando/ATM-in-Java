@@ -69,7 +69,9 @@ public abstract class Constants {
         public static final String Amount = "amount";
         public static final String TransactionNote = "transactionNote";
         public static final String TimeStamp = "timeStamp";
-        public static final String TransactionDate = "transactionDate";
+        public static final String date = "date";
+        public static final String Payee = "payee";
+        public static final String AccountId = "accountID";
     }
 
     public abstract static class userFunctions {

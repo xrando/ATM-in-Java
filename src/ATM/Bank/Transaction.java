@@ -11,38 +11,65 @@ import java.util.Calendar;
 
 public class Transaction {
     private double Amount;
-    private Date TimeStamp;
+    private String timeStamp;
+    private String date;
     private String TransactionNote;
-    private String TransactionAccount;
-    private static Account CurrentAccount;
+    private String accountID;
+    private String payee;
 
     //Create a new transaction
-    public Transaction(double NewAmount, String NewTransactionNote, String NewTransactionAccount) {
+    public Transaction(double NewAmount, String NewTransactionNote, String accountID) {
         //Set new transaction Amount
         this.Amount = NewAmount;
         //Set new transaction note
         this.TransactionNote = NewTransactionNote;
         //Set transaction AccountID
-        this.TransactionAccount = NewTransactionAccount;
+        this.accountID = accountID;
+        //
+        this.date = getCurrentDate();
+        this.timeStamp = getTimeStamp();
+        this.payee = "";
+    }
+
+    //Create a new transaction (with payee)
+    public Transaction(double NewAmount, String NewTransactionNote, String payee,String accountID) {
+        //Set new transaction Amount
+        this.Amount = NewAmount;
+        //Set new transaction note
+        this.TransactionNote = NewTransactionNote;
+        //Set transaction AccountID
+        this.accountID = accountID;
+        //
+        this.date = getCurrentDate();
+        this.timeStamp = getTimeStamp();
+        this.payee = payee;
     }
 
     public Transaction(){
         this.Amount=0;
         //Set new transaction note
         this.TransactionNote = "NewTransactionNote";
-        this.TransactionAccount = null;
+        this.accountID = null;
+        this.payee = "";
     }
 
     // Perhaps ATM.ATM.Bank.Bank.Transaction constructor can add a date and time stamp so that we don't have to access the database to get it for each transaction
     // Add a transaction ID as well
-    public Transaction(double amount, String transactionNote, String date, String timeStamp, String accountID) {
+    public Transaction(double amount, String transactionNote, String date, String timeStamp,String payee, String accountID) {
         this.Amount = amount;
+        this.date = date;
+        this.timeStamp = timeStamp;
         this.TransactionNote = transactionNote;
-        this.TransactionAccount = accountID;
+        this.accountID = accountID;
+        this.payee = payee;
     }
 
     public double getAmount() {
         return this.Amount;
+    }
+
+    public String getPayee() {
+        return this.payee;
     }
 
     public void setAmount(double amount) {
@@ -56,22 +83,11 @@ public class Transaction {
         return strTime;
     }
     public String getTransactionDate(){
-        String sql = "Select date, timeStamp from transactions where transactionID = ?";
-        String dateTime = null;
-        try{
-            Connection conn = sqliteDatabase.connect();
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, "3"); // To update this to the transaction ID todo
-            ResultSet rs = ps.executeQuery();
-            //Add to AccountTransactions
-            //System.out.print(rs.getString("date"));
-            //System.out.print(rs.getString("timeStamp"));
-            dateTime = rs.getString("date") + " " + rs.getString("timeStamp");
+        return this.date;
+    }
 
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return dateTime;
+    public String getTransactionTime(){
+        return this.timeStamp;
     }
 
     public String getCurrentDate() {
@@ -112,20 +128,52 @@ public class Transaction {
     }
 
     public boolean AddTransactionToSQL(Account account, Transaction transactionDetails){
-        String sql = "INSERT INTO transactions( amount, timeStamp, transactionNote, date, accountID) VALUES(?,?,?,?,?)";
-
-        try (Connection conn = sqliteDatabase.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setDouble(1, transactionDetails.Amount);
-            pstmt.setString(2, getTimeStamp());
-            pstmt.setString(3, transactionDetails.TransactionNote);
-            pstmt.setString(4, getCurrentDate());
-            pstmt.setString(5, account.getAccountID());
-            pstmt.executeUpdate();
+        String sql = "INSERT INTO transactions( amount, timeStamp, transactionNote, date, payee,accountID) VALUES(?,?,?,?,?,?)";
+        if (transactionDetails.payee !="") {
+            //deduct for account owner
+            try (Connection conn = sqliteDatabase.connect();
+                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setDouble(1, transactionDetails.Amount);
+                pstmt.setString(2, transactionDetails.timeStamp);
+                pstmt.setString(3, transactionDetails.TransactionNote);
+                pstmt.setString(4, transactionDetails.date);
+                pstmt.setString(5, transactionDetails.payee);
+                pstmt.setString(6, transactionDetails.accountID);
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                return false;
+            }
+            //add to payee account
+            try (Connection conn = sqliteDatabase.connect();
+                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setDouble(1, (-transactionDetails.Amount));
+                pstmt.setString(2, transactionDetails.timeStamp);
+                pstmt.setString(3, transactionDetails.TransactionNote);
+                pstmt.setString(4, transactionDetails.date);
+                pstmt.setString(5, transactionDetails.accountID);
+                pstmt.setString(6, transactionDetails.payee);
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                return false;
+            }
             return true;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            return false;
+        } else {
+            try (Connection conn = sqliteDatabase.connect();
+                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setDouble(1, transactionDetails.Amount);
+                pstmt.setString(2, transactionDetails.timeStamp);
+                pstmt.setString(3, transactionDetails.TransactionNote);
+                pstmt.setString(4, transactionDetails.date);
+                pstmt.setString(5, transactionDetails.payee);
+                pstmt.setString(6, transactionDetails.accountID);
+                pstmt.executeUpdate();
+                return true;
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                return false;
+            }
         }
     }
 
@@ -170,7 +218,7 @@ public class Transaction {
                 GetTransactionHistory(TransactionAccount);
                 break;
             case 4:
-                CurrentAccount = TransactionAccount.setTransactionAccount(TransactionAccount.getUID());
+                //CurrentAccount = TransactionAccount.setTransactionAccount(TransactionAccount.getUID());
                 break;
             case 5:
                 TransactionAccount.createAccount(TransactionAccount.getUID());
@@ -199,14 +247,14 @@ public class Transaction {
         //System.out.println("Phone: " + test2.getPhone());
         //System.out.println("Login Status: " + test2.getLoginStatus());
 
-        Account TransactionAccount = new Account();
-        //Add in after login user to select transaction account from Accounts List PXY
-        CurrentAccount = TransactionAccount.setTransactionAccount(test2.getUID());
-        Transaction transaction = new Transaction();
-        while (true) {
-            System.out.println("Before choice1: "+CurrentAccount.getAccountID());
-            transaction.GetChoice(CurrentAccount);
-        }
+//        Account TransactionAccount = new Account();
+//        //Add in after login user to select transaction account from Accounts List PXY
+//        CurrentAccount = TransactionAccount.setTransactionAccount(test2.getUID());
+//        Transaction transaction = new Transaction();
+//        while (true) {
+//            System.out.println("Before choice1: "+CurrentAccount.getAccountID());
+//            transaction.GetChoice(CurrentAccount);
+//        }
     }
 }
 

@@ -63,7 +63,7 @@ public class ATMClient {
             JSONObject joo = new JSONObject(record.toString());
             System.out.print(Constants.Transaction.TransactionNote + " : " + joo.get(Constants.Transaction.TransactionNote) + "\t");
             System.out.print(Constants.Transaction.Amount + " : " + joo.get(Constants.Transaction.Amount) + "\t");
-            System.out.print(Constants.Transaction.TransactionDate + " : " + joo.get(Constants.Transaction.TransactionDate) + "\n");
+            System.out.print(Constants.Transaction.date + " : " + joo.get(Constants.Transaction.date) + "\n");
         });
 
         //Transaction (Deposit) Test
@@ -74,10 +74,15 @@ public class ATMClient {
 
         //Transaction (Withdrawal) Test
         JSONObject jo5 = new JSONObject(client.listen(new JSON(Constants.Transaction.Withdraw).add(Constants.Transaction.Amount, 500).add(Constants.Transaction.TransactionNote, "Withdrawal").toString()));
-        System.out.println(jo5.get(Constants.JSON.Type));
+        System.out.println(jo5.toString());
         System.out.println("Withdrawal : "+jo5.get(Constants.Transaction.Withdraw));
         System.out.println("Balance : "+jo5.get(Constants.Account.GetAccountBalance));
 
+        //Transaction (Transfer) Test
+        JSONObject jo6 = new JSONObject(client.listen(new JSON(Constants.Transaction.Transfer).add(Constants.Transaction.Amount, 100).add(Constants.Transaction.TransactionNote, "Transfer").add(Constants.Transaction.Payee, "2").toString()));
+        System.out.println(jo6.toString());
+        System.out.println("Transferred : "+jo6.get(Constants.Transaction.Transfer));
+        System.out.println("Balance : "+jo6.get(Constants.Account.GetAccountBalance));
 
         //Logout
         JSONObject logout = new JSONObject(client.listen(new JSON(Constants.User.Logout).toString()));

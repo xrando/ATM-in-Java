@@ -99,7 +99,7 @@ public class Account {
                 //Add to AccountTransactions
                 //System.out.print(rs.getString("accountID"));
                 //System.out.print(rs.getString("amount"));
-                AccountTransactions.add(new Transaction(rs.getDouble("amount"), rs.getString("transactionNote"), rs.getString("date"), rs.getString("timeStamp"), rs.getString("accountID")));
+                AccountTransactions.add(new Transaction(rs.getDouble("amount"), rs.getString("transactionNote"), rs.getString("date"), rs.getString("timeStamp"), rs.getString("payee") ,rs.getString("accountID")));
             }
             conn.close();
         } catch (SQLException e) {

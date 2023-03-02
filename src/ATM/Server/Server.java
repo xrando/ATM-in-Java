@@ -81,9 +81,9 @@ public class Server {
                             }
                             case Constants.Account.TransactionHistory -> {
                                 ArrayList<Transaction> transactions = account.getAccountTransactions();
-/*                                for (int i=0;i<account.getAccountTransactions().size();i++){
-                                    //System.out.println(account.getAccountTransactions().get(i).getAmount());
-                                }*/
+                                for (int i=0;i<transactions.size();i++){
+                                    System.out.println(transactions.get(i).getTransactionDate() + " " + transactions.get(i).getTransactionTime());
+                                }
                                 System.out.println("Account Balance: "+account.GetAccountBalance());
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.TransactionHistory,JSON.parseTransactionsToString(transactions)).toString());
                             }
@@ -109,7 +109,12 @@ public class Server {
                             //case Constants.Account.GetAccountBalance
 
                             //TODO: Bank transfer of one account to another
-                            //case Constants.Transaction.Transfer
+                            case Constants.Transaction.Transfer -> {
+                                //Negative to deduct value
+                                transaction = new Transaction(-(request.getDouble(Constants.Transaction.Amount)), request.getString(Constants.Transaction.TransactionNote),request.getString(Constants.Transaction.Payee),account.getAccountID());
+                                transaction.AddTransactionToSQL(account,transaction);
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.Transaction.Transfer,"Transfer Complete").add(Constants.Account.GetAccountBalance,account.GetAccountBalance()).toString());
+                            }
 
                             //TODO: Get current user particulars (to allow users to see and update particulars in UI,
                             // send over all current user particulars such as email, phone number etc)

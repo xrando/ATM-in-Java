@@ -45,7 +45,8 @@ public class JSON {
         JSONArray ja = new JSONArray();
         transactions.forEach(transaction -> {
             HashMap<String, String> map = new HashMap<>();
-            map.put(Constants.Transaction.TransactionDate, transaction.getTransactionDate());
+            map.put(Constants.Transaction.date, transaction.getTransactionDate());
+            map.put(Constants.Transaction.TimeStamp, transaction.getTransactionTime());
             map.put(Constants.Transaction.TransactionNote, transaction.getTransactionNote());
             map.put(Constants.Transaction.Amount, String.valueOf(transaction.getAmount()));
             ja.put(map);
