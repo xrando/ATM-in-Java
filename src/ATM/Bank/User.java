@@ -1,20 +1,14 @@
 package ATM.Bank;
 
-import ATM.Utilities.Helper;
 import ATM.Utilities.LogHelper;
+import ATM.Utilities.Helper;
 
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 import java.util.logging.Level;
+import java.sql.*;
 
 public class User
 {
@@ -33,8 +27,8 @@ public class User
         this.email = email;
         this.phone = phone;
         this.UID = genUID();
-        //this.Salt = generateSalt();
-        //this.Password = generatePasswordHash(Password, Salt);
+        this.Salt = generateSalt(Username, this.UID);
+        this.Password = generatePasswordHash(Password, Salt);
         this.Accounts = new ArrayList<Account>();
         this.loginStatus = false;
         System.out.printf("UserName: %s\nUID: %s",Username,UID);
@@ -45,8 +39,8 @@ public class User
         this.email = email;
         this.phone = phone;
         this.UID = genUID();
-        //this.Salt = generateSalt();
-        //this.Password = generatePasswordHash(Password, Salt);
+        this.Salt = generateSalt(username, this.UID);
+        this.Password = password;
         //this.Password = generatePasswordHash(password, Salt);
         this.loginStatus = false;
         //ATM.Bank.Bank CurrentBank = new ATM.Bank.Bank("ATM.Bank.Bank of Testing");
@@ -59,7 +53,7 @@ public class User
         this.email = " ";
         this.phone = " ";
         //this.UID = "9999";
-        this.Salt = generateSalt();
+        //this.Salt = generateSalt(username, this.UID);
         //this.Password = generatePasswordHash(password, Salt);
         this.Password = password;
         this.loginStatus = false;
@@ -100,7 +94,7 @@ public class User
         Accounts = userAccounts;
     }
 
-    protected String getUID() {
+    public String getUID() {
         return this.UID;
     }
 
@@ -233,17 +227,13 @@ public class User
 
 
     public String generateSalt(String username, String UID) {
-        //String Salt = hash(username + UID);
-        return BCrypt.gensalt();
-    }
-
-    public String generateSalt() {
-        //String Salt = hash(username + UID);
-        return BCrypt.gensalt();
+        String Salt = hash(username + UID);
+        return Salt;
     }
 
     public String generatePasswordHash(String password, String salt) {
-        return BCrypt.hashpw(password, salt);
+        //MD5 hash
+        return hash(password + salt);
     }
 
     public String hash(String stringToHash){
@@ -353,10 +343,7 @@ public class User
     public boolean validatePassword(String password, String UID) {
         // get password and Salt from database
         String[] passwordAndSalt = getPasswordFromDatabase(UID);
-        //System.out.println(passwordAndSalt[0]);
-        //System.out.println(passwordAndSalt[1]);
-        //System.out.println("Password: " + password);
-        String hashedPassword = BCrypt.hashpw(password,passwordAndSalt[1]);
+        String hashedPassword = generatePasswordHash(password, passwordAndSalt[1]);
         //System.out.println("Hashed Password: " + hashedPassword);
 
         String passwordFromDatabase = passwordAndSalt[0];
@@ -485,7 +472,7 @@ public class User
 
         if (ValidatePhone(phone) && ValidateEmail(email) && ValidatePin(password) && ValidateUserName(username)){
             user.UID = user.genUID();
-            user.Salt = user.generateSalt();
+            user.Salt = user.generateSalt(username, user.UID);
             user.Password = user.generatePasswordHash(password, user.Salt);
             insertUser(user);
             System.out.println("User created!\n Proceed to login!");
@@ -501,9 +488,8 @@ public class User
         //validate user input
         if (ValidatePin(password) && ValidateUserName(username)){
             user.UID = user.genUID();
-            user.Salt = user.generateSalt();
+            user.Salt = user.generateSalt(username, user.UID);
             user.Password = user.generatePasswordHash(password, user.Salt);
-            System.out.println("Password: " + password);
             insertUser(user);
             System.out.println("User created!\n Proceed to login!");
             return true;
@@ -514,11 +500,10 @@ public class User
     }
 
     // Create new user with current user object
-    //public boolean CreateUser(){
-    //    insertUser(this);
-    //    System.out.println("password" + this.getPassword());
-    //    return true;
-    //}
+    public boolean CreateUser(){
+        insertUser(this);
+        return true;
+    }
 
     // Insert user into database (New users only)
     public void insertUser(User user) {
@@ -799,10 +784,12 @@ public class User
 
         //test2.forgetPin("test");
 
-        User test3 = new User();
-        test3.Login("test5", "123123");
+        test2.Login("test", "445286");
+        test2.logout();
+//        User test3 = new User("test3", "123456");
+//        test3.Login();
 //
-        //test3.CreateUser();
+//        test3.CreateUser();
 
         //test2.CreateUser("test5", "123123");
 

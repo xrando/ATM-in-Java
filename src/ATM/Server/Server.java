@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 public class Server {
@@ -81,12 +82,22 @@ public class Server {
                             }
                             case Constants.Account.TransactionHistory -> {
                                 ArrayList<Transaction> transactions = account.getAccountTransactions();
-                                for (int i=0;i<transactions.size();i++){
-                                    System.out.println(transactions.get(i).getTransactionDate() + " " + transactions.get(i).getTransactionTime());
-                                }
-                                System.out.println("Account Balance: "+account.GetAccountBalance());
+//                                for (int i=0;i<transactions.size();i++){
+//                                    System.out.println(transactions.get(i).getTransactionDate() + " " + transactions.get(i).getTransactionTime());
+//                                }
+//                                System.out.println("Account Balance: "+account.GetAccountBalance());
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.TransactionHistory,JSON.parseTransactionsToString(transactions)).toString());
                             }
+
+                            //TODO: send back all accountids of current user
+                            case Constants.Account.AllAccounts -> {
+                                List<Account> accounts = account.getTransactionAccount(user.getUID());
+                                for (int i=0;i<accounts.size();i++){
+                                    System.out.println(accounts.get(i).getAccountID() + " " + accounts.get(i).getAccountType() + " " + accounts.get(i).getUID());
+                                }
+                                socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.AllAccounts,JSON.parseAccountsToString(accounts)).toString());
+                            }
+
                             case Constants.Transaction.Withdraw -> {
                                 //Negative to make value a withdrawal
                                 transaction = new Transaction(-(request.getDouble(Constants.Transaction.Amount)), request.getString(Constants.Transaction.TransactionNote),account.getAccountID());
@@ -98,14 +109,6 @@ public class Server {
                                 transaction.AddTransactionToSQL(account,transaction);
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.Transaction.Deposit,"Deposit Complete").add(Constants.Account.GetAccountBalance,account.GetAccountBalance()).toString());
                             }
-
-                            //TODO: send back all accountids of current user
-                            case Constants.Account.AllAccounts -> {
-                                socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.AllAccounts,account.getTransactionAccount(account.getUID())).toString());
-                            }
-
-                            //TODO: send back all account summary of current user
-                            //case Constants.Account.AllAccountSummary
 
                             //TODO: send back account balance of accountId received of current user
                             case Constants.Account.GetAccountBalance -> {

@@ -69,12 +69,24 @@ public class ATMClient {
         //System.out.println("Retrieve Transaction History: "+jo2.get(Constants.Account.TransactionHistory));
         JSONArray ja = new JSONArray(jo2.get(Constants.Account.TransactionHistory).toString());
         ja.forEach(record -> {
-            System.out.println(record.toString());
             JSONObject joo = new JSONObject(record.toString());
             System.out.print(Constants.Transaction.TransactionNote + " : " + joo.get(Constants.Transaction.TransactionNote) + "\t");
             System.out.print(Constants.Transaction.Amount + " : " + joo.get(Constants.Transaction.Amount) + "\t");
             System.out.print(Constants.Transaction.date + " : " + joo.get(Constants.Transaction.date) + "\n");
+            System.out.print(Constants.Transaction.TimeStamp + " : " + joo.get(Constants.Transaction.TimeStamp) + "\n");
         });
+
+        //Retrieve All User Accounts
+        JSONObject retrieveAccounts = JSON.tryParse(client.listen(new JSON(Constants.Account.AllAccounts).toString()));
+        JSONArray ja2 = new JSONArray(retrieveAccounts.get(Constants.Account.AllAccounts).toString());
+        ja2.forEach(record -> {
+            JSONObject joo2 = new JSONObject(record.toString());
+            System.out.print(Constants.Account.AccountId + " : " + joo2.get(Constants.Account.AccountId) + "\t");
+            System.out.print(Constants.Account.AccountType + " : " + joo2.get(Constants.Account.AccountType) + "\t");
+            System.out.print(Constants.Account.UserID + " : " + joo2.get(Constants.Account.UserID) + "\n");
+        });
+
+
 
         //Transaction (Deposit) Test
         JSONObject jo4 = new JSONObject(client.listen(new JSON(Constants.Transaction.Deposit).add(Constants.Transaction.Amount, 1000).add(Constants.Transaction.TransactionNote, "Deposit").toString()));

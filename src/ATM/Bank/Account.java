@@ -14,7 +14,6 @@ public class Account {
     private String userID;
     private String accountID;
     private ArrayList<Transaction> AccountTransactions;
-    private Account currentAccount;
     //Create a new account
     public Account(String NewAccountName, Bank CurrentBank)
     {
@@ -109,23 +108,7 @@ public class Account {
         return AccountTransactions;
     }
 
-    public String getAccountSummary()
-    {
-        //Calculate ATM.ATM.Bank.Bank.Account's balance
-        double balance = this.GetAccountBalance();
-
-        //Format account summary, to distinguish negative and positive balance, () will be used to display negative balance
-        if(balance<0)
-        {
-            return String.format("%s : $(%.2f) : %s",this.UID,-balance,this.AccountName);
-        }
-        else
-        {
-            return String.format("%s : $%.2f : %s",this.UID,balance,this.AccountName);
-        }
-    }
-    public double GetAccountBalance()
-    {
+    public double GetAccountBalance() {
         double balance =0;
         ArrayList <Transaction> AccountTransactions = new ArrayList<Transaction>();
         AccountTransactions = this.retrieveAccountTransactions();
@@ -135,6 +118,7 @@ public class Account {
         }
         return balance;
     }
+
     //Print transaction history of the account
     public void PrintTransactionHistory()
     {
@@ -145,6 +129,7 @@ public class Account {
 //        }
 //        System.out.println();
     }
+
     //Add transaction in this account
     public boolean AddTransaction(double Amount, String TransactionNote)
     {
@@ -183,9 +168,24 @@ public class Account {
         System.out.println("Please key in the number of the account which you would like to transact in:");
         int userInput = sc.nextInt();
         Account TransactionAccount = accountList.get(userInput-1);
-        this.currentAccount = TransactionAccount;
         new Account(TransactionAccount.accountID,TransactionAccount.accountType,TransactionAccount.userID);
         return TransactionAccount;
+    }
+
+    public String getAccountSummary()
+    {
+        //Calculate ATM.ATM.Bank.Bank.Account's balance
+        double balance = this.GetAccountBalance();
+
+        //Format account summary, to distinguish negative and positive balance, () will be used to display negative balance
+        if(balance<0)
+        {
+            return String.format("%s : $(%.2f) : %s",this.UID,-balance,this.AccountName);
+        }
+        else
+        {
+            return String.format("%s : $%.2f : %s",this.UID,balance,this.AccountName);
+        }
     }
 
     public List<Account> getTransactionAccount(String UID){
