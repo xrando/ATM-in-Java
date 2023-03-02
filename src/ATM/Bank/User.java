@@ -101,7 +101,7 @@ public class User
         Accounts = userAccounts;
     }
 
-    protected String getUID() {
+    public String getUID() {
         return this.UID;
     }
 
@@ -204,8 +204,6 @@ public class User
             return "User is not logged in.";
         }
 
-        String salt = getPasswordFromDatabase(this.getUsername())[1];
-
         // If old pin is not correct, return false
         if (!this.getPassword().equals(generatePasswordHash(oldPin, this.Salt))) {
             LogHelper.log(Level.WARNING, this.getUsername() + " entered wrong old pin.");
@@ -229,7 +227,6 @@ public class User
         }
 
         this.Password = generatePasswordHash(newPin, getSalt());
-        System.out.println(this.Password);
 
         System.out.println("Pin changed successfully.");
         return "Pin changed successfully.";
@@ -746,7 +743,7 @@ public class User
                 "pureinc933@gmail.com\n\n"+
                 "Please do not reply to this email as it is automatically generated.";
         // Send email
-        //Helper.SendMail(email, subject, body);
+        Helper.SendMail(email, subject, body);
 
         // Update password in database
         try {

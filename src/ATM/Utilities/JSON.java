@@ -1,11 +1,13 @@
 package ATM.Utilities;
 
+import ATM.Bank.Account;
 import ATM.Bank.Transaction;
 import ATM.Constants.Constants;
 import org.json.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 
 public class JSON {
@@ -49,6 +51,22 @@ public class JSON {
             map.put(Constants.Transaction.TimeStamp, transaction.getTransactionTime());
             map.put(Constants.Transaction.TransactionNote, transaction.getTransactionNote());
             map.put(Constants.Transaction.Amount, String.valueOf(transaction.getAmount()));
+            ja.put(map);
+        });
+        return ja;
+    }
+
+    public static String parseAccountsToString(List<Account> accounts) {
+        return parseAccounts(accounts).toString();
+    }
+
+    public static JSONArray parseAccounts(List<Account> accounts) {
+        JSONArray ja = new JSONArray();
+        accounts.forEach(account -> {
+            HashMap<String, String> map = new HashMap<>();
+            map.put(Constants.Account.AccountId, account.getAccountID());
+            map.put(Constants.Account.AccountType, account.getAccountType());
+            map.put(Constants.Account.UserID, account.getUID());
             ja.put(map);
         });
         return ja;
