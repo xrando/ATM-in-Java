@@ -798,9 +798,33 @@ public class User
         return true;
     }
 
+    public static void genUsers(){
+        String email = "";
+        String password = "123123";
+        // Create 100 users
+        String[] names = {"john", "james", "jack", "jill", "jane", "joe", "jenny", "jerry", "bob", "jill", "tom","brandon"};
+        for (int i = 0; i < 100; i++){
+            int ranIndex = new SecureRandom().nextInt(names.length);
+            String name = names[ranIndex] + i;
+            // Create email for certain users
+            if (ranIndex % 8 == 0){
+                email = "pureinc933@gmail.com";
+            }
+            else{
+                email = name + "@gmail.com";
+            }
+
+            User user = new User();
+            user.CreateUser(name, password, email);
+        }
+        System.out.println("Done");
+    }
+
 
     // For testing
     public static void main(String[] args){
+
+        genUsers();
         // To create new user
         //ATM.ATM.Bank.Bank.User newUser = new ATM.ATM.Bank.Bank.User();
         //newUser.CreateUser();
@@ -816,11 +840,11 @@ public class User
         //String password = sc.nextLine();
 
         // ATM.ATM.Bank.Bank.User is initialised with data from database after login
-        User test2 = new User();
+        //User test2 = new User();
         //test2.forgetPin("test");
-        test2.Login("test", "123123");
+        //test2.Login("test", "123123");
         //test2.changePin("135518", "123123");
-        test2.logout();
+        //test2.logout();
 
         //test2.forgetPin("test");
 
