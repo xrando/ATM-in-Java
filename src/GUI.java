@@ -2,6 +2,7 @@ import ATM.Client.Client;
 import ATM.Constants.Constants;
 import ATM.Utilities.JSON;
 import ATM.Utilities.LogHelper;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -114,6 +115,10 @@ public class GUI {
     private JLabel lblTransferAmountValidator;
     private JComboBox ddlTAccounts;
     private JButton btnForgetPassword;
+    private JLabel lblNewUserEmail;
+    private JTextField txtNewUserEmail;
+    private JLabel lblNewUserPhoneNumber;
+    private JTextField txtNewUserPhoneNumber;
     private Map<String, String> English = Map.ofEntries(
             entry("0", "Username:"),
             entry("1", "Password:"),
@@ -250,10 +255,44 @@ public class GUI {
                     //send select account request to server
                     //JSONObject jo1 = new JSONObject(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, "0").toString()));
 
-
+                    //TODO: SOLVE ISSUE WITH POPULATING DDL
                     //populate dropdownlists with data
                     //Send request to server to get all accounts of current users
-                    //JSONObject jo2 = JSON.tryParse(client.listen(new JSON(Constants.Account.AllAccounts).toString()));
+                    //Retrieve All User Accounts
+                    /*JSONObject retrieveAccounts = JSON.tryParse(client.listen(new JSON(Constants.Account.AllAccounts).toString()));
+                    JSONArray ja2 = new JSONArray(retrieveAccounts.get(Constants.Account.AllAccounts).toString());
+                    ja2.forEach(record -> {
+                        JSONObject joo2 = new JSONObject(record.toString());
+                        System.out.print(Constants.Account.AccountId + " : " + joo2.get(Constants.Account.AccountId) + "\t");
+                        System.out.print(Constants.Account.AccountType + " : " + joo2.get(Constants.Account.AccountType) + "\t");
+                        System.out.print(Constants.Account.UserID + " : " + joo2.get(Constants.Account.UserID) + "\n");
+
+                        //populate dropdownlists with user accounts
+                        ddlAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
+                        ddlAccount.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
+                        ddlaccount.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
+                        ddlTAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
+                    });*/
+                    //populate dropdownlists with user accounts
+                    //Arrays.stream(ja2).forEach(s->ddlAccounts.addItem(s));
+
+
+                    //test
+                    //String [] t = new String[]{"test","test2","test3"};
+                    //does work
+                    //Arrays.stream(t).forEach(s->ddlAccounts.addItem(s));
+                    //not working
+                    /*for(var a:t)
+                    {
+                        ddlAccounts.addItem(makeObj(a.toString()));
+                        ddlAccount.addItem(makeObj(a.toString()));
+                        ddlaccount.addItem(makeObj(a.toString()));
+                        ddlTAccounts.addItem(makeObj(a.toString()));
+                    }*/
+
+
+
+                    //sample
                     //populate dropdownlist with accountID
                     /*for(var a:jo2.names())
                     {
@@ -264,18 +303,6 @@ public class GUI {
                     }*/
 
 
-                    //test
-                    String [] t = new String[]{"test","test2","test3"};
-                    //does work
-                    Arrays.stream(t).forEach(s->ddlAccounts.addItem(s));
-                    //not working
-                    /*for(var a:t)
-                    {
-                        ddlAccounts.addItem(makeObj(a.toString()));
-                        ddlAccount.addItem(makeObj(a.toString()));
-                        ddlaccount.addItem(makeObj(a.toString()));
-                        ddlTAccounts.addItem(makeObj(a.toString()));
-                    }*/
                 }
                 else
                 {
@@ -289,13 +316,18 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                //sent request to server to logout
+                //Logout
+                System.out.println("Before logout");
+                JSONObject logout = JSON.tryParse(client.listen(new JSON(Constants.User.Logout).toString()));
+                System.out.println("After logout");
                 txtUsername.setText("");
                 txtPassword.setText("");
                 //re-attach login screen
                 setScreen(base,login);
                 //set screen to main
                 setScreen(screen,main);
-                JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.Logout).toString()));
+
             }
         });
         //Create event listener for back button
@@ -375,6 +407,12 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                //populate fields with current user data
+                //send Get User Info request
+                JSONObject GetUserInfo = JSON.tryParse(client.listen(new JSON(Constants.User.GetUserInformation).toString()));
+                txtUserName.setText(GetUserInfo.get(Constants.User.Username).toString());
+                txtEmailAddress.setText(GetUserInfo.get(Constants.User.Email).toString());
+                txtPhoneNumber.setText(GetUserInfo.get(Constants.User.Phone).toString());
                 //attach settings screen
                 setScreen(screen,Settings);
             }
@@ -398,7 +436,9 @@ public class GUI {
                 if(txtNewPassword.getText().equals(txtConfirmPassword.getText()))
                 {
                     //send request to server for password change
-                    JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.ChangePin).add(Constants.User.oldPin, txtOldPassword.getText()).add(Constants.User.newPin, txtNewPassword.getText()).toString()));
+                    JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.ChangePin)
+                            .add(Constants.User.oldPin, txtOldPassword.getText())
+                            .add(Constants.User.newPin, txtNewPassword.getText()).toString()));
                     if (jo.toString().equals(null)) {
                         lblConfirmPasswordValidator.setText("Password change failed");
                     } else {
@@ -428,12 +468,13 @@ public class GUI {
                 try
                 {
                     Integer.parseInt(txtPhoneNumber.getText());
-
-
-                    //if changes found to particulars
-                    //loop
+                    //send request to update particulars
+                    JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.UpdateUser)
+                            .add(Constants.User.Username, txtUserName.getText())
+                            .add(Constants.User.Email, txtEmailAddress.getText())
+                            .add(Constants.User.Phone, txtPhoneNumber.getText()).toString()));
                     //display updated message if changes found
-                    //lblChangeSuccessful.setText("Particulars updated!");
+                    lblChangeSuccessful.setText("Particulars updated!");
 
                 }
                 catch (NumberFormatException ex)
@@ -532,9 +573,9 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 //Send request to server to get account summary information for current user
-                JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.AllAccountSummary).toString()));
+                //JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.AllAccountSummary).toString()));
                 //populate view account summary screen with data
-                AccountSummary.setText(jo.toString());
+                //AccountSummary.setText(jo.toString());
                 //attach view account summary screen
                 setScreen(screen,ViewAccountSummary);
             }
@@ -556,7 +597,11 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 //send request to create new user to server
-                JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.CreateUser).add(Constants.User.Username, txtNewUsername.getText()).add(Constants.User.Password, txtNewUserPassword.getText()).toString()));
+                JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.CreateUser)
+                        .add(Constants.User.Username, txtNewUsername.getText())
+                        .add(Constants.User.Password, txtNewUserPassword.getText())
+                        .add(Constants.User.Email, txtNewUserEmail.getText())
+                        .add(Constants.User.Phone, txtNewUserPhoneNumber.getText()).toString()));
                 //attach login screen and set label to notify successful user creation
                 setScreen(base,login);
 
