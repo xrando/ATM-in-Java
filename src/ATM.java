@@ -63,7 +63,7 @@ public class ATM
     public static void PrintUserMenu(User NewUser, Scanner scanner)
     {
         //Print all user's account summary
-        NewUser.PrintAllAccountSummary();
+        //NewUser.PrintAllAccountSummary();
 
         //Initialize
         int choice;
@@ -133,7 +133,7 @@ public class ATM
         while (UserAccount < 0 || UserAccount >= NewUser.getAccounts().size());
 
         //Print transaction history
-        NewUser.PrintAccountTransactionHistory(UserAccount);
+        //NewUser.PrintAccountTransactionHistory(UserAccount);
     }
     //Transfer money from an account to another account
     public static void TransferMoney(User NewUser, Scanner scanner)
@@ -152,7 +152,7 @@ public class ATM
                 System.out.println("Invalid account chosen, please try again.");
             }
         } while (TransferFrom < 0 || TransferFrom >= NewUser.getAccounts().size());
-        AccountBalance = NewUser.GetAccountBalance(TransferFrom);
+        //AccountBalance = NewUser.GetAccountBalance(TransferFrom);
 
         //Get account to transfer to
         do
@@ -165,23 +165,23 @@ public class ATM
             }
         } while (TransferTo < 0 || TransferTo >= NewUser.getAccounts().size());
         //Get amount to transfer
-        do
-        {
-            System.out.printf("Enter the amount to transfer (ATM.ATM.Bank.Bank.Account Balance: $%.2f): $",AccountBalance);
-            Amount = scanner.nextDouble();
-            if (Amount<0)
-            {
-                System.out.println("Amount can not be below zero. Please enter a valid amount.");
-            }
-            else if (Amount>AccountBalance)
-            {
-                System.out.printf("There is insufficient money in this account (ATM.ATM.Bank.Bank.Account Balance: $%.2f). Please enter a valid amount.",AccountBalance);
-            }
-        } while (Amount<0 || Amount>AccountBalance);
+//        do
+//        {
+//           // System.out.printf("Enter the amount to transfer (ATM.ATM.Bank.Bank.Account Balance: $%.2f): $",AccountBalance);
+//            Amount = scanner.nextDouble();
+//            if (Amount<0)
+//            {
+//                System.out.println("Amount can not be below zero. Please enter a valid amount.");
+//            }
+//            else if (Amount>AccountBalance)
+//            {
+//                System.out.printf("There is insufficient money in this account (ATM.ATM.Bank.Bank.Account Balance: $%.2f). Please enter a valid amount.",AccountBalance);
+//            }
+//        } while (Amount<0 || Amount>AccountBalance);
 
         //Transfer money, format TransactionNote
-        NewUser.AddAccountTransaction(TransferFrom,-1*Amount, String.format("Transfer to account %s", NewUser.GetAccountUID(TransferTo)));
-        NewUser.AddAccountTransaction(TransferTo,Amount, String.format("Transfer to account %s", NewUser.GetAccountUID(TransferFrom)));
+        //NewUser.AddAccountTransaction(TransferFrom,-1*Amount, String.format("Transfer to account %s", NewUser.GetAccountUID(TransferTo)));
+        //NewUser.AddAccountTransaction(TransferTo,Amount, String.format("Transfer to account %s", NewUser.GetAccountUID(TransferFrom)));
     }
     //Withdraw money from an account
     public static void WithdrawMoney(User NewUser, Scanner scanner)
@@ -201,27 +201,27 @@ public class ATM
                 System.out.println("Invalid account chosen, please try again.");
             }
         } while (WithdrawFrom < 0 || WithdrawFrom >= NewUser.getAccounts().size());
-        AccountBalance = NewUser.GetAccountBalance(WithdrawFrom);
+        //AccountBalance = NewUser.GetAccountBalance(WithdrawFrom);
 
         //Get amount to withdraw
-        do
-        {
-            System.out.printf("Enter the amount to withdraw (ATM.ATM.Bank.Bank.Account Balance: $%.2f): $",AccountBalance);
-            Amount = scanner.nextDouble();
-            if (Amount<0)
-            {
-                System.out.println("Amount can not be below zero. Please enter a valid amount.");
-            }
-            else if (Amount>AccountBalance)
-            {
-                System.out.printf("There is insufficient money in this account (ATM.ATM.Bank.Bank.Account Balance: $%.2f). Please enter a valid amount.",AccountBalance);
-            }
-            else if (Amount>50000)
-            {
-                //Notify incoming huge withdrawal via sms/email
-
-            }
-        } while (Amount<0 || Amount>AccountBalance);
+//        do
+//        {
+//            //System.out.printf("Enter the amount to withdraw (ATM.ATM.Bank.Bank.Account Balance: $%.2f): $",AccountBalance);
+//            Amount = scanner.nextDouble();
+//            if (Amount<0)
+//            {
+//                System.out.println("Amount can not be below zero. Please enter a valid amount.");
+//            }
+//            else if (Amount>AccountBalance)
+//            {
+//                System.out.printf("There is insufficient money in this account (ATM.ATM.Bank.Bank.Account Balance: $%.2f). Please enter a valid amount.",AccountBalance);
+//            }
+//            else if (Amount>50000)
+//            {
+//                //Notify incoming huge withdrawal via sms/email
+//
+//            }
+//        } while (Amount<0 || Amount>AccountBalance);
 
         //Gobble previous input
         scanner.nextLine();
@@ -231,7 +231,7 @@ public class ATM
         TransactionNote = scanner.nextLine();
 
         //Withdraw money
-        NewUser.AddAccountTransaction(WithdrawFrom,-1*Amount, TransactionNote);
+        //NewUser.AddAccountTransaction(WithdrawFrom,-1*Amount, TransactionNote);
     }
     //Deposit money to an account
     public static void DepositMoney(User NewUser, Scanner scanner)
@@ -251,7 +251,7 @@ public class ATM
                 System.out.println("Invalid account chosen, please try again.");
             }
         } while (DepositTo < 0 || DepositTo >= NewUser.getAccounts().size());
-        AccountBalance = NewUser.GetAccountBalance(DepositTo);
+        //AccountBalance = NewUser.GetAccountBalance(DepositTo);
 
         //Get amount to deposit
         do
@@ -276,7 +276,7 @@ public class ATM
         TransactionNote = scanner.nextLine();
 
         //Withdraw money
-        NewUser.AddAccountTransaction(DepositTo, Amount, TransactionNote);
+        //NewUser.AddAccountTransaction(DepositTo, Amount, TransactionNote);
     }
     //ATM.ATM.Bank.Bank.User settings
     public static void UserSettings(User NewUser, Scanner scanner)

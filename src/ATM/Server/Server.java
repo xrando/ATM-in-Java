@@ -57,7 +57,7 @@ public class Server {
                                 user.getUserFromDatabase();
                             }
                             case Constants.User.Logout -> socket.write(new JSON(Constants.Stream.RES).add(Constants.User.LoginStatus, user.logout()).toString());
-                            //TODO: complete the cases
+
                             case Constants.User.ChangePin -> {
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.User.ChangePin, user.changePin(request.getString(Constants.User.oldPin), request.getString(Constants.User.newPin))).toString());
                                 System.out.println(request.getString(Constants.User.oldPin));
@@ -77,8 +77,6 @@ public class Server {
                                 System.out.println("Selected AccountID:"+account.getAccountID() + ", Account type:" +account.getAccountType());
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.SelectedAccount, account.getAccountID()).toString());
                                 account.retrieveAccountTransactions();
-
-                                //socket.write(new JSON(Constants.Stream.RES).add());
                             }
                             case Constants.Account.TransactionHistory -> {
                                 ArrayList<Transaction> transactions = account.getAccountTransactions();
@@ -89,7 +87,6 @@ public class Server {
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.TransactionHistory,JSON.parseTransactionsToString(transactions)).toString());
                             }
 
-                            //TODO: send back all accountids of current user
                             case Constants.Account.AllAccounts -> {
                                 List<Account> accounts = account.getTransactionAccount(user.getUID());
                                 for (int i=0;i<accounts.size();i++){
@@ -110,7 +107,6 @@ public class Server {
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.Transaction.Deposit,"Deposit Complete").add(Constants.Account.GetAccountBalance,account.GetAccountBalance()).toString());
                             }
 
-                            //TODO: send back account balance of accountId received of current user
                             case Constants.Account.GetAccountBalance -> {
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.GetAccountBalance,account.GetAccountBalance()).toString());
                             }
@@ -120,7 +116,6 @@ public class Server {
                                 socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.CreateAccount, account.createAccount(selection,user.getUID())).toString());
                             }
 
-                            //TODO: Bank transfer of one account to another
                             case Constants.Transaction.Transfer -> {
                                 //Negative to deduct value
                                 transaction = new Transaction(-(request.getDouble(Constants.Transaction.Amount)), request.getString(Constants.Transaction.TransactionNote),request.getString(Constants.Transaction.Payee),account.getAccountID());
