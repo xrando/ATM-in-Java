@@ -573,7 +573,7 @@ public class GUI {
                         .add(Constants.User.Password, txtNewUserPassword.getText())
                         .add(Constants.User.Email, txtNewUserEmail.getText())
                         .add(Constants.User.Phone, txtNewUserPhoneNumber.getText())
-                        .add(Constants.User.Accounts, /*ddlNewUserAccount.getItemAt(ddlNewUserAccount.getSelectedIndex()))*/ddlNewUserAccount.getSelectedIndex().toString()));
+                        .add(Constants.User.Accounts, /*ddlNewUserAccount.getItemAt(ddlNewUserAccount.getSelectedIndex()))*/ddlNewUserAccount.getSelectedIndex()).toString()));
                 //attach login screen and set label to notify successful user creation
                 setScreen(base,login);
             }
