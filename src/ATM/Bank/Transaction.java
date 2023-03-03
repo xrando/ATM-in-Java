@@ -1,5 +1,6 @@
 package ATM.Bank;
 
+import ATM.Utilities.Helper;
 import ATM.Utilities.TableHelper;
 
 import java.sql.*;
@@ -72,6 +73,11 @@ public class Transaction {
         return this.payee;
     }
 
+    public String getAccountID() {
+        return this.accountID;
+    }
+
+
     public void setAmount(double amount) {
         Amount = amount;
     }
@@ -127,7 +133,7 @@ public class Transaction {
         }
     }
 
-    public boolean AddTransactionToSQL(Account account, Transaction transactionDetails){
+    public boolean AddTransactionToSQL(Transaction transactionDetails){
         String sql = "INSERT INTO transactions( amount, timeStamp, transactionNote, date, payee,accountID) VALUES(?,?,?,?,?,?)";
         if (transactionDetails.payee !="") {
             //deduct for account owner
@@ -177,6 +183,24 @@ public class Transaction {
         }
     }
 
+    public static void transactionEmail(Transaction transactionDetails,String username, String email){
+        // Send email to user with new password
+        String subject = "Transaction Alert";
+        String body = "Dear " + username + ",\n\n" +
+                "We refer to your Transaction dated "+ transactionDetails.getTransactionDate() + ". We are pleased to confirm that the transaction was completed.\n\n" +
+                "Date & Time: " + transactionDetails.getTransactionDate() + " : " + transactionDetails.getTransactionTime() + "\n" +
+                "Amount: " + (-transactionDetails.getAmount()) +"\n"+
+                "From: " + transactionDetails.getAccountID() +"\n"+
+                "To: " + transactionDetails.getPayee() +"\n\n"+
+                "To view your transactions, login to your account to view your transaction history.\n" +
+                "If you did not request a password change, please contact us immediately.\n\n" +
+                "Pure Bank LTD\n"+
+                "pureinc933@gmail.com\n\n"+
+                "Please do not reply to this email as it is automatically generated.";
+        // Send email
+        Helper.SendMail("poonxiangyuan@hotmail.com", subject, body);
+    }
+
     public boolean GetChoice(Account TransactionAccount) {
         double TAmount;
         String TNote;
@@ -199,7 +223,7 @@ public class Transaction {
                 System.out.println("Enter a ATM.ATM.Bank.Bank.Transaction Note");
                 TNote = sc.nextLine();
                 Transaction deposit = new Transaction(TAmount, TNote,TransactionAccount.getAccountID());
-                deposit.AddTransactionToSQL(TransactionAccount,deposit);
+                deposit.AddTransactionToSQL(deposit);
                 System.out.printf("Deposit of %.2f Completed", TAmount);
                 break;
             case 2:
@@ -211,7 +235,7 @@ public class Transaction {
                 System.out.println("Enter a ATM.ATM.Bank.Bank.Transaction Note");
                 TNote = sc.nextLine();
                 Transaction withdraw = new Transaction(-TAmount, TNote,TransactionAccount.getAccountID());
-                withdraw.AddTransactionToSQL(TransactionAccount,withdraw);
+                withdraw.AddTransactionToSQL(withdraw);
                 System.out.printf("Withdrawal of %.2f Completed", TAmount);
                 break;
             case 3:
@@ -231,14 +255,14 @@ public class Transaction {
 
     public static void main(String[] args) {
         //test Login
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter username: ");
-        String username = sc.nextLine();
-        System.out.println("Enter pin: ");
-        String password = sc.nextLine();
-        //login
-        User test2 = new User();
-        test2.Login(username, password);
+//        Scanner sc = new Scanner(System.in);
+//        System.out.println("Enter username: ");
+//        String username = sc.nextLine();
+//        System.out.println("Enter pin: ");
+//        String password = sc.nextLine();
+//        //login
+//        User test2 = new User();
+//        test2.Login(username, password);
         //System.out.println("UID: " + test2.getUID());
         //System.out.println("Username: " + test2.getUsername());
         //System.out.println("Password: " + test2.getPassword());

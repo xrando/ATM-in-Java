@@ -844,7 +844,7 @@ public class User
             } else {
                 Account account = new Account();
                 Transaction transaction = new Transaction(amount,depositReason[reasonI],String.valueOf(ranIndex+1),String.valueOf(ranIndex2+1));
-                transaction.AddTransactionToSQL(account,transaction);
+                transaction.AddTransactionToSQL(transaction);
             }
         }
         System.out.println("Done");
@@ -859,7 +859,7 @@ public class User
             int ranIndex = new SecureRandom().nextInt(100);
             Account account = new Account();
             Transaction transaction = new Transaction(amount,depositReason[reasonI],String.valueOf(ranIndex+1));
-            transaction.AddTransactionToSQL(account,transaction);
+            transaction.AddTransactionToSQL(transaction);
         }
         System.out.println("Done");
     }
