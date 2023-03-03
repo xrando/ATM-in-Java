@@ -15,21 +15,12 @@ public class Account {
     private String accountID;
     private ArrayList<Transaction> AccountTransactions;
     //Create a new account
-    public Account(String NewAccountName, Bank CurrentBank)
-    {
-        //Set account name and account holder
-        this.AccountName = NewAccountName;
 
-        //Generate new account UID
-        this.UID = CurrentBank.generateNewAccountUID();
-
-        //Initialize transactions
-        this.AccountTransactions = new ArrayList<Transaction>();
+    public Account(){
 
     }
 
-    public Account(Account Account)
-    {
+    public Account(Account Account) {
         //Set Current Account ID
         this.accountID = Account.getAccountID();
 
@@ -43,18 +34,13 @@ public class Account {
         this.AccountTransactions = new ArrayList<Transaction>();
     }
 
-    public Account(){
-
-    }
-
     public Account(int accountID){ //Created a new constructor to accept accountID
         this.AccountName = "Default";
         this.accountID = Integer.toString(accountID);
 
     }
 
-    public Account(String accountID, String accountType,String userID)
-    {
+    public Account(String accountID, String accountType,String userID) {
         //Set account name and account holder
         this.accountID = accountID;
         this.accountType =accountType;
@@ -67,11 +53,6 @@ public class Account {
 
     public Account(String savings, User newUser) {
     }
-
-
-//    public String getAccountName() {
-//        return AccountName;
-//    }
 
     public String getAccountType(){ return this.accountType;}
 
@@ -119,75 +100,6 @@ public class Account {
         return balance;
     }
 
-    //Print transaction history of the account
-    public void PrintTransactionHistory()
-    {
-//        System.out.printf("\nTransaction history for account %s\n",this.UID);
-//        for (int i=this.AccountTransactions.size()-1;i>=0;i--)
-//        {
-//            System.out.println(this.AccountTransactions.get(i).GetTransactionSummary());
-//        }
-//        System.out.println();
-    }
-
-    //Add transaction in this account
-    public boolean AddTransaction(double Amount, String TransactionNote)
-    {
-        //Create new transaction obj and add to list
-        Transaction NewTransaction = new Transaction(Amount,TransactionNote,this.accountID);
-        this.AccountTransactions.add(NewTransaction);
-        return true;
-    }
-
-//    public Account setTransactionAccount(String userID){
-//        ArrayList <Account> accountList = new ArrayList<Account>();
-//        try{
-//            Connection conn = sqliteDatabase.connect();
-//            PreparedStatement ps = conn.prepareStatement("SELECT * FROM accounts WHERE userID = ?");
-//            ps.setString(1, userID);
-//            ResultSet rs = ps.executeQuery();
-//            while (rs.next()){
-//                accountList.add(new Account(rs.getString("accountID"),
-//                                            rs.getString("accountType"),
-//                                            rs.getString("userID")));
-//            }
-//            conn.close();
-//        } catch (SQLException e) {
-//            System.out.println(e.getMessage());
-//        }
-//        TableHelper tb = new TableHelper();
-//        tb.setHeaders("No.","ATM.ATM.Bank.Bank.Account ID", "ATM.ATM.Bank.Bank.Account Type", "ATM.ATM.Bank.Bank.User ID");
-//        for(int i =0; accountList.size()>i;i++){
-//            tb.addRow(String.valueOf(i+1),
-//                      String.valueOf(accountList.get(i).accountID),
-//                      accountList.get(i).accountType,
-//                      String.valueOf(accountList.get(i).userID));
-//        }
-//        tb.print(false);
-//        Scanner sc = new Scanner(System.in);
-//        System.out.println("Please key in the number of the account which you would like to transact in:");
-//        int userInput = sc.nextInt();
-//        Account TransactionAccount = accountList.get(userInput-1);
-//        new Account(TransactionAccount.accountID,TransactionAccount.accountType,TransactionAccount.userID);
-//        return TransactionAccount;
-//    }
-
-    public String getAccountSummary()
-    {
-        //Calculate ATM.ATM.Bank.Bank.Account's balance
-        double balance = this.GetAccountBalance();
-
-        //Format account summary, to distinguish negative and positive balance, () will be used to display negative balance
-        if(balance<0)
-        {
-            return String.format("%s : $(%.2f) : %s",this.UID,-balance,this.AccountName);
-        }
-        else
-        {
-            return String.format("%s : $%.2f : %s",this.UID,balance,this.AccountName);
-        }
-    }
-
     public List<Account> getTransactionAccount(String UID){
         List<Account> accountList = new ArrayList<Account>();
         try{
@@ -230,4 +142,5 @@ public class Account {
         }
         return true;
     }
+
 }

@@ -266,34 +266,6 @@ public class User
         return BCrypt.hashpw(password, salt);
     }
 
-    public void PrintAllAccountSummary()
-    {
-        System.out.printf("\n\n%s's All ATM.ATM.Bank.Bank.Account Summary\n",this.Username);
-        for(int i = 0;i<this.Accounts.size();i++)
-        {
-            System.out.printf("%d) %s\n",i+1,this.Accounts.get(i).getAccountSummary());
-        }
-        System.out.println();
-    }
-    public void PrintAccountTransactionHistory(int AccountIndex)
-    {
-        this.Accounts.get(AccountIndex).PrintTransactionHistory();
-    }
-    //Get balance of particular account
-    public double GetAccountBalance(int AccountIndex)
-    {
-        return this.Accounts.get(AccountIndex).GetAccountBalance();
-    }
-    //Get UID of particular account
-    public String GetAccountUID(int AccountIndex)
-    {
-        return this.Accounts.get(AccountIndex).getUID();
-    }
-    public void AddAccountTransaction(int AccountIndex, double Amount, String TransactionNote)
-    {
-        this.Accounts.get(AccountIndex).AddTransaction(Amount,TransactionNote);
-    }
-
     public List<Account> getAccountsFromDatabase(String UID){
         List<Account> Accounts = new ArrayList<>();
         try{
