@@ -2,6 +2,7 @@ import ATM.Client.Client;
 import ATM.Constants.Constants;
 import ATM.Utilities.JSON;
 import ATM.Utilities.LogHelper;
+import ATM.Utilities.InputSanitisation;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -232,57 +233,77 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                //test account username: test, pw:123123
-                //init json object to store replies from server
-                JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.Login).add(Constants.User.Password, txtPassword.getText()).add(Constants.User.Username, txtUsername.getText()).toString()));
-
-                //Get user input from textboxs and on successful login, show main menu
-                if (jo.get(Constants.User.LoginStatus).toString().toLowerCase().equals("true"))
+                // TODO: Input Validation (done)
+                String pinValid = InputSanitisation.validPin(txtPassword.getText());
+                System.out.println(pinValid);
+                String nameValid = InputSanitisation.validNameString(txtUsername.getText());
+                System.out.println(nameValid);
+                //if input pass validation
+                if (pinValid.equals("true")&&nameValid.equals("true"))
                 {
-                    lblLoginValidator.setText("");
-                    if(language[0].equals("eng"))
+                    //test account username: test, pw:123123
+                    //init json object to store replies from server
+                    JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.Login).add(Constants.User.Password, txtPassword.getText()).add(Constants.User.Username, txtUsername.getText()).toString()));
+
+                    //Get user input from textboxs and on successful login, show main menu
+                    if (jo.get(Constants.User.LoginStatus).toString().toLowerCase().equals("true"))
                     {
-                        //set welcome msg
-                        lblWelcomeMessage.setText("Welcome " + txtUsername.getText());
+                        lblLoginValidator.setText("");
+                        if(language[0].equals("eng"))
+                        {
+                            //set welcome msg
+                            lblWelcomeMessage.setText("Welcome " + txtUsername.getText());
+                        }
+                        else
+                        {
+                            //set welcome msg
+                            lblWelcomeMessage.setText("欢迎 " + txtUsername.getText());
+                        }
+                        //attach main menu screen
+                        setScreen(base,main);
+                        setScreen(screen,menu);
+                        //Onlogin
+                        //Select User Account
+                        JSONObject SelectAccount = JSON.tryParse(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, 0).toString()));
+
+
+                        //populate dropdownlists with data
+                        //populate create new user dropdownlist
+                        ddlNewUserAccount.addItem("savings");
+                        ddlNewUserAccount.addItem("current");
+
+                        //Send request to server to get all accounts of current users
+                        //Retrieve All User Accounts
+                        JSONObject retrieveAccounts = JSON.tryParse(client.listen(new JSON(Constants.Account.AllAccounts).toString()));
+                        JSONArray ja2 = new JSONArray(retrieveAccounts.get(Constants.Account.AllAccounts).toString());
+                        ja2.forEach(record -> {
+                            JSONObject joo2 = new JSONObject(record.toString());
+                            /*System.out.print(Constants.Account.AccountId + " : " + joo2.get(Constants.Account.AccountId) + "\t");
+                            System.out.print(Constants.Account.AccountType + " : " + joo2.get(Constants.Account.AccountType) + "\t");
+                            System.out.print(Constants.Account.UserID + " : " + joo2.get(Constants.Account.UserID) + "\n");*/
+
+                            //populate dropdownlists with user accounts
+                            ddlAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
+                            ddlAccount.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
+                            ddlaccount.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
+                            ddlTAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
+                        });
                     }
                     else
                     {
-                        //set welcome msg
-                        lblWelcomeMessage.setText("欢迎 " + txtUsername.getText());
+                        lblLoginValidator.setText("Wrong credentials");
                     }
-                    //attach main menu screen
-                    setScreen(base,main);
-                    setScreen(screen,menu);
-                    //Onlogin
-                    //Select User Account
-                    JSONObject SelectAccount = JSON.tryParse(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, 0).toString()));
-
-
-                    //populate dropdownlists with data
-                    //populate create new user dropdownlist
-                    ddlNewUserAccount.addItem("savings");
-                    ddlNewUserAccount.addItem("current");
-
-                    //Send request to server to get all accounts of current users
-                    //Retrieve All User Accounts
-                    JSONObject retrieveAccounts = JSON.tryParse(client.listen(new JSON(Constants.Account.AllAccounts).toString()));
-                    JSONArray ja2 = new JSONArray(retrieveAccounts.get(Constants.Account.AllAccounts).toString());
-                    ja2.forEach(record -> {
-                        JSONObject joo2 = new JSONObject(record.toString());
-                        System.out.print(Constants.Account.AccountId + " : " + joo2.get(Constants.Account.AccountId) + "\t");
-                        System.out.print(Constants.Account.AccountType + " : " + joo2.get(Constants.Account.AccountType) + "\t");
-                        System.out.print(Constants.Account.UserID + " : " + joo2.get(Constants.Account.UserID) + "\n");
-
-                        //populate dropdownlists with user accounts
-                        ddlAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
-                        ddlAccount.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
-                        ddlaccount.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
-                        ddlTAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
-                    });
                 }
                 else
                 {
-                    lblLoginValidator.setText("Wrong credentials");
+                    if (!pinValid.equals("true"))
+                    {
+                        lblLoginValidator.setText(pinValid);
+                    }
+                    else if (!nameValid.equals("true"))
+                    {
+                        lblLoginValidator.setText(nameValid);
+                    }
                 }
             }
         });
@@ -409,7 +430,24 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if(txtNewPassword.getText().equals(txtConfirmPassword.getText()))
+                // TODO: Input validation
+                // Page changes back to home screen when fields are invalid
+                String result = InputSanitisation.validPin(txtOldPassword.getText());
+                String result1 = InputSanitisation.validPin(txtNewPassword.getText());
+                String result2 = InputSanitisation.validPin(txtConfirmPassword.getText());
+                if (!InputSanitisation.validPin(txtOldPassword.getText()).equals("true"))
+                {
+                    lblConfirmPasswordValidator.setText("Old password is invalid. " + result);
+                }
+                else if (!InputSanitisation.validPin(txtNewPassword.getText()).equals("true"))
+                {
+                    lblConfirmPasswordValidator.setText("New password is invalid. " + result1);
+                }
+                else if (!InputSanitisation.validPin(txtConfirmPassword.getText()).equals("true"))
+                {
+                    lblConfirmPasswordValidator.setText("Confirm password is invalid. " + result2);
+                }
+                else if(txtNewPassword.getText().equals(txtConfirmPassword.getText()))
                 {
                     //send request to server for password change
                     JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.ChangePin)
@@ -426,7 +464,11 @@ public class GUI {
                     lblConfirmPasswordValidator.setText("Ensure that new password and confirm password entered are the same");
                 }
                 //attach settings screen
-                setScreen(screen,Settings);
+                //setScreen(screen,Settings);
+                //clear textboxs
+                txtOldPassword.setText("");
+                txtNewPassword.setText("");
+                txtConfirmPassword.setText("");
 
             }
         });
@@ -568,12 +610,32 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 //send request to create new user to server
+                String username = txtNewUsername.getText();
+                String password = txtNewUserPassword.getText();
+                String email = txtNewUserEmail.getText();
+
+                // TODO: Input Validation
+                // validate Pin
+                //String result = InputSanitisation.validPin(password);
+                //if (!result.equals("valid")) {
+                //    lblNewUserValidator.setText(result);
+                //    return;
+                //}
+
+                // validate email
+                //String emailResult = InputSanitisation.validEmail(email);
+                //if (!emailResult.equals("valid")) {
+                //    lblNewUserValidator.setText(emailResult);
+                //    return;
+                //}
+
+
                 JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.CreateUser)
                         .add(Constants.User.Username, txtNewUsername.getText())
                         .add(Constants.User.Password, txtNewUserPassword.getText())
                         .add(Constants.User.Email, txtNewUserEmail.getText())
                         .add(Constants.User.Phone, txtNewUserPhoneNumber.getText())
-                        .add(Constants.User.Accounts, ddlNewUserAccount.getItemAt(ddlNewUserAccount.getSelectedIndex())).toString()));
+                        .add(Constants.User.Accounts, /*ddlNewUserAccount.getItemAt(ddlNewUserAccount.getSelectedIndex()))*/ddlNewUserAccount.getSelectedIndex()).toString()));
                 //attach login screen and set label to notify successful user creation
                 setScreen(base,login);
             }

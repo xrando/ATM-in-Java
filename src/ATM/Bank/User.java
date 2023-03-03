@@ -266,34 +266,6 @@ public class User
         return BCrypt.hashpw(password, salt);
     }
 
-    public void PrintAllAccountSummary()
-    {
-        System.out.printf("\n\n%s's All ATM.ATM.Bank.Bank.Account Summary\n",this.Username);
-        for(int i = 0;i<this.Accounts.size();i++)
-        {
-            System.out.printf("%d) %s\n",i+1,this.Accounts.get(i).getAccountSummary());
-        }
-        System.out.println();
-    }
-    public void PrintAccountTransactionHistory(int AccountIndex)
-    {
-        this.Accounts.get(AccountIndex).PrintTransactionHistory();
-    }
-    //Get balance of particular account
-    public double GetAccountBalance(int AccountIndex)
-    {
-        return this.Accounts.get(AccountIndex).GetAccountBalance();
-    }
-    //Get UID of particular account
-    public String GetAccountUID(int AccountIndex)
-    {
-        return this.Accounts.get(AccountIndex).getUID();
-    }
-    public void AddAccountTransaction(int AccountIndex, double Amount, String TransactionNote)
-    {
-        this.Accounts.get(AccountIndex).AddTransaction(Amount,TransactionNote);
-    }
-
     public List<Account> getAccountsFromDatabase(String UID){
         List<Account> Accounts = new ArrayList<>();
         try{
@@ -499,8 +471,9 @@ public class User
         }
     }
 
-    public boolean CreateUser(String username, String password, String email){
+    public boolean CreateUser(String username, String password, String email, int AccType){
         User user = new User(username, password);
+        Account account = new Account();
         //validate user input
         if (ValidatePin(password) && ValidateUserName(username)){
             user.UID = user.genUID();
@@ -509,9 +482,23 @@ public class User
             user.email = email;
             // May remove
             user.phone = "0";
+            account.createAccount(AccType, user.UID);
             //System.out.println("Password: " + password);
             insertUser(user);
             System.out.println("User created!\n Proceed to login!");
+
+            // Send email to new User
+            String subject = "Welcome to Pure Bank LTD!";
+            String body = "Dear " + username + ",\n\n" +
+                    "Thank you for registering with Pure Bank LTD!\n\n" +
+                    "If you did not register for an account with us, please contact us immediately\n\n" +
+                    "Thank you,\n"+
+                    "Pure Bank LTD\n"+
+                    "pureinc933@gmail.com\n\n"+
+                    "Please do not reply to this email as it is automatically generated.";
+
+            //Helper.SendMail(email, subject, body);
+
             return true;
         } else {
             System.out.println("Invalid input!");
@@ -815,7 +802,51 @@ public class User
             }
 
             User user = new User();
-            user.CreateUser(name, password, email);
+            //user.CreateUser(name, password, email, 1)
+        }
+        System.out.println("Done");
+    }
+
+    public static void genAccount(){
+        int accountType = 0;
+        Account account = new Account();
+        // Create 100 accounts assuming there are 0 - 99 userID
+        for (int i = 0; i < 100; i++){
+            int ranIndex = new SecureRandom().nextInt(3);
+            accountType = (ranIndex-1);
+            account.createAccount(accountType, String.valueOf(i));
+        }
+        System.out.println("Done");
+    }
+
+    public static void genTransferTransactions(){
+        String[] depositReason = {"Deposit","Salary","Part-time","Cashback","Reimbursement","Transfer"};
+        for (int i = 0; i < 100; i++){
+            int amount = new SecureRandom().nextInt(10000);
+            int reasonI = new SecureRandom().nextInt(depositReason.length);
+            int ranIndex = new SecureRandom().nextInt(100);
+            int ranIndex2 = new SecureRandom().nextInt(100);
+            if (ranIndex==ranIndex2){
+                ranIndex2 = new SecureRandom().nextInt(100);
+            } else {
+                Account account = new Account();
+                Transaction transaction = new Transaction(amount,depositReason[reasonI],String.valueOf(ranIndex+1),String.valueOf(ranIndex2+1));
+                transaction.AddTransactionToSQL(transaction);
+            }
+        }
+        System.out.println("Done");
+    }
+
+    public static void genPosTransactions(){
+        String payee ="";
+        String[] depositReason = {"Deposit","Salary","Part-time","Cashback","Reimbursement","Transfer"};
+        for (int i = 0; i < 100; i++){
+            int amount = new SecureRandom().nextInt(5000);
+            int reasonI = new SecureRandom().nextInt(depositReason.length);
+            int ranIndex = new SecureRandom().nextInt(100);
+            Account account = new Account();
+            Transaction transaction = new Transaction(amount,depositReason[reasonI],String.valueOf(ranIndex+1));
+            transaction.AddTransactionToSQL(transaction);
         }
         System.out.println("Done");
     }
@@ -824,7 +855,10 @@ public class User
     // For testing
     public static void main(String[] args){
 
-        genUsers();
+        //genUsers();
+        //genAccount();
+        //genPosTransactions();
+        //genTransferTransactions();
         // To create new user
         //ATM.ATM.Bank.Bank.User newUser = new ATM.ATM.Bank.Bank.User();
         //newUser.CreateUser();
