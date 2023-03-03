@@ -499,8 +499,9 @@ public class User
         }
     }
 
-    public boolean CreateUser(String username, String password, String email){
+    public boolean CreateUser(String username, String password, String email, int AccType){
         User user = new User(username, password);
+        Account account = new Account();
         //validate user input
         if (ValidatePin(password) && ValidateUserName(username)){
             user.UID = user.genUID();
@@ -509,6 +510,7 @@ public class User
             user.email = email;
             // May remove
             user.phone = "0";
+            account.createAccount(AccType, user.UID);
             //System.out.println("Password: " + password);
             insertUser(user);
             System.out.println("User created!\n Proceed to login!");
@@ -828,7 +830,7 @@ public class User
             }
 
             User user = new User();
-            user.CreateUser(name, password, email);
+            //user.CreateUser(name, password, email, 1)
         }
         System.out.println("Done");
     }
