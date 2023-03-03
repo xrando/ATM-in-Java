@@ -1,6 +1,20 @@
-keytool -genkey -keyalg RSA -alias ATM -keystore ATM.jks -validity 365 -keysize 2048
-keytool -export -alias ATM -file server.cer -keystore ATM.jks
-keytool -import -v -trustcacerts -alias ATM -file server.cer -keystore Client.jks
+generate server keystore with password 123456:
+keytool -genkey -alias serverkey -keyalg RSA -keysize 2048 -sigalg SHA256withRSA -keystore server.keystore -storepass 123456
+
+generate client keystore with password 654321:
+keytool -genkey -alias clientkey -keyalg RSA -keysize 2048 -sigalg SHA256withRSA -keystore client.keystore -storepass 654321
+
+export server certificate:
+keytool -exportcert -keystore server.keystore -alias serverkey -storepass 123456 -rfc -file server.cert
+
+export client certificate:
+keytool -exportcert -keystore client.keystore -alias clientkey -storepass 654321 -rfc -file client.cert
+
+import client certificate to server keystore:
+keytool -import -trustcacerts -file client.cert -keypass 123456 -storepass 123456 -keystore server.keystore
+
+import server certificate to client keystore:
+keytool -import -trustcacerts -file server.cert -keypass 654321 -storepass 654321 -keystore client.keystore
 
 run in cmd, additional input needed
 

@@ -13,6 +13,7 @@ public class ATMServerSocket {
 
     public ATMServerSocket() throws IOException {
         sslServerSocket.setSoTimeout(0);
+        sslServerSocket.setNeedClientAuth(true);
     }
 
     public boolean getSslServerSocketStatus() {

@@ -23,10 +23,10 @@ public abstract class Constants {
 
     public abstract static class SSL {
         public static final String PROTOCOL = "TLS";
-        public static final String KEYSTORE = "Resources/SSL/ATM.jks";
+        public static final String KEYSTORE = "Resources/SSL/server.keystore";
         public static final String KEYSTOREPASS = "123456";
-        public static final String TRUSTSTORE = "Resources/SSL/Client.jks";
-        public static final String TRUSTSTOREPASS = "123456";
+        public static final String TRUSTSTORE = "Resources/SSL/client.keystore";
+        public static final String TRUSTSTOREPASS = "654321";
     }
 
     public abstract static class JSON {
