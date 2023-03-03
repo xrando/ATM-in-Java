@@ -121,6 +121,8 @@ public class GUI {
     private JTextField txtNewUserPhoneNumber;
     private JLabel lblNewUserAccount;
     private JComboBox ddlNewUserAccount;
+    private JLabel lblNewUserValidator;
+    private JLabel lblDepositAmountValidator;
     private Map<String, String> English = Map.ofEntries(
             entry("0", "Username:"),
             entry("1", "Password:"),
@@ -517,19 +519,27 @@ public class GUI {
                 //if amount entered is not integer (incorrect format)
                 try
                 {
-                    Integer.parseInt(txtWithdrawalAmount.getText());
-                    //set transaction note to withdrawal if left empty
-                    String note="Withdrawal";
-                    if (!txtWithdrawalNote.getText().equals(""))
+                    //input validation to check if input withdrawal amount is higher than current balance
+                    if(Double.parseDouble(lblAccountBalance.getText().substring(1))<Double.parseDouble(txtWithdrawalAmount.getText()))
                     {
-                        note = txtWithdrawalNote.getText();
+                        //display error message
+                        lblWithdrawalAmountValidator.setText("Amount entered must not exceed current account balance");
                     }
-                    //create new transaction entry
-                    JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Transaction.Withdraw).add(Constants.Transaction.Amount, txtWithdrawalAmount.getText()).add(Constants.Transaction.TransactionNote, note).toString()));
+                    else
+                    {
+                        Integer.parseInt(txtWithdrawalAmount.getText());
+                        //set transaction note to withdrawal if left empty
+                        String note="Withdrawal";
+                        if (!txtWithdrawalNote.getText().equals(""))
+                        {
+                            note = txtWithdrawalNote.getText();
+                        }
+                        //create new transaction entry
+                        JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Transaction.Withdraw).add(Constants.Transaction.Amount, txtWithdrawalAmount.getText()).add(Constants.Transaction.TransactionNote, note).toString()));
 
-                    //update lblAccountBalance with updated account balance
-                    lblAccountBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
-
+                        //update lblAccountBalance with updated account balance
+                        lblAccountBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
+                    }
                 }
                 catch (NumberFormatException ex)
                 {
@@ -616,28 +626,43 @@ public class GUI {
 
                 // TODO: Input Validation
                 // validate Pin
-                //String result = InputSanitisation.validPin(password);
+                String result = InputSanitisation.validPin(password);
                 //if (!result.equals("valid")) {
                 //    lblNewUserValidator.setText(result);
                 //    return;
                 //}
 
                 // validate email
-                //String emailResult = InputSanitisation.validEmail(email);
+                String emailResult = InputSanitisation.validEmail(email);
                 //if (!emailResult.equals("valid")) {
                 //    lblNewUserValidator.setText(emailResult);
                 //    return;
                 //}
 
+                if (result.equals("true")&&emailResult.equals("true"))
+                {
+                    JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.CreateUser)
+                            .add(Constants.User.Username, txtNewUsername.getText())
+                            .add(Constants.User.Password, txtNewUserPassword.getText())
+                            .add(Constants.User.Email, txtNewUserEmail.getText())
+                            .add(Constants.User.Phone, txtNewUserPhoneNumber.getText())
+                            .add(Constants.User.Accounts, /*ddlNewUserAccount.getItemAt(ddlNewUserAccount.getSelectedIndex()))*/ddlNewUserAccount.getSelectedIndex()).toString()));
+                    lblNewUserValidator.setText("User created successfully");
+                    //attach login screen
+                    //setScreen(base,login);
+                }
+                else
+                {
+                    if (!result.equals("true"))
+                    {
+                        lblNewUserValidator.setText(result);
+                    }
+                    else if(!emailResult.equals("true"))
+                    {
+                        lblNewUserValidator.setText(emailResult);
+                    }
+                }
 
-                JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.CreateUser)
-                        .add(Constants.User.Username, txtNewUsername.getText())
-                        .add(Constants.User.Password, txtNewUserPassword.getText())
-                        .add(Constants.User.Email, txtNewUserEmail.getText())
-                        .add(Constants.User.Phone, txtNewUserPhoneNumber.getText())
-                        .add(Constants.User.Accounts, /*ddlNewUserAccount.getItemAt(ddlNewUserAccount.getSelectedIndex()))*/ddlNewUserAccount.getSelectedIndex()).toString()));
-                //attach login screen and set label to notify successful user creation
-                setScreen(base,login);
             }
         });
         //back to login screen
@@ -658,19 +683,28 @@ public class GUI {
                 //catch if amount entered is not integer (incorrect format)
                 try
                 {
-                    Integer.parseInt(txtDepositAmount.getText());
-                    //create new transaction entry
-                    //set transaction note to deposit if left empty
-                    String note="Deposit";
-                    if (!txtDepositNote.getText().equals(""))
+                    //input validation to check if input deposit amount is higher than current balance
+                    if(Double.parseDouble(lblAccountbalance.getText().substring(1))<Double.parseDouble(txtDepositAmount.getText()))
                     {
-                        note = txtDepositNote.getText();
+                        lblDepositAmountValidator.setText("Amount entered must not exceed current account balance");
                     }
-                    //create new transaction entry
-                    JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Transaction.Deposit).add(Constants.Transaction.Amount, txtDepositAmount.getText()).add(Constants.Transaction.TransactionNote, note).toString()));
+                    else
+                    {
+                        Integer.parseInt(txtDepositAmount.getText());
+                        //create new transaction entry
+                        //set transaction note to deposit if left empty
+                        String note="Deposit";
+                        if (!txtDepositNote.getText().equals(""))
+                        {
+                            note = txtDepositNote.getText();
+                        }
+                        //create new transaction entry
+                        JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Transaction.Deposit).add(Constants.Transaction.Amount, txtDepositAmount.getText()).add(Constants.Transaction.TransactionNote, note).toString()));
 
-                    //update lblAccountbalance with updated account balance
-                    lblAccountbalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
+                        //update lblAccountbalance with updated account balance
+                        lblAccountbalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
+                    }
+
 
                 }
                 catch (NumberFormatException ex)
@@ -698,14 +732,22 @@ public class GUI {
                 //catch if amount entered is not integer (incorrect format)
                 try
                 {
-                    Integer.parseInt(txtTransferAmount.getText());
-                    //create new transaction entry
-                    JSONObject transfer = new JSONObject(client.listen(new JSON(Constants.Transaction.Transfer)
-                            .add(Constants.Transaction.Amount, txtTransferAmount.getText())
-                            .add(Constants.Transaction.TransactionNote, "Transfer")
-                            .add(Constants.Transaction.Payee, txtTransferTo.getText()).toString()));
-                    //update lblAccBalance with updated account balance
-                    lblAccBalance.setText("$" + transfer.get(Constants.Account.GetAccountBalance).toString());
+                    //input validation to check if input transfer amount is higher than current balance
+                    if(Double.parseDouble(lblAccBalance.getText().substring(1))<Double.parseDouble(txtTransferAmount.getText()))
+                    {
+                        lblTransferAmountValidator.setText("Amount entered must not exceed current account balance");
+                    }
+                    else
+                    {
+                        Integer.parseInt(txtTransferAmount.getText());
+                        //create new transaction entry
+                        JSONObject transfer = new JSONObject(client.listen(new JSON(Constants.Transaction.Transfer)
+                                .add(Constants.Transaction.Amount, txtTransferAmount.getText())
+                                .add(Constants.Transaction.TransactionNote, "Transfer")
+                                .add(Constants.Transaction.Payee, txtTransferTo.getText()).toString()));
+                        //update lblAccBalance with updated account balance
+                        lblAccBalance.setText("$" + transfer.get(Constants.Account.GetAccountBalance).toString());
+                    }
                 }
                 catch (NumberFormatException ex)
                 {
