@@ -188,7 +188,7 @@ public class Transaction {
         String subject = "Transaction Alert";
         String body = "Dear " + username + ",\n\n" +
                 "We refer to your Transaction dated "+ transactionDetails.getTransactionDate() + ". We are pleased to confirm that the transaction was completed.\n\n" +
-                "Date & Time: " + transactionDetails.getTransactionDate() + " : " + transactionDetails.getTransactionTime() + "\n" +
+                "Date & Time: " + transactionDetails.getTransactionDate() + " , " + transactionDetails.getTransactionTime() + "\n" +
                 "Amount: " + (-transactionDetails.getAmount()) +"\n"+
                 "From: " + transactionDetails.getAccountID() +"\n"+
                 "To: " + transactionDetails.getPayee() +"\n\n"+
@@ -198,7 +198,7 @@ public class Transaction {
                 "pureinc933@gmail.com\n\n"+
                 "Please do not reply to this email as it is automatically generated.";
         // Send email
-        Helper.SendMail("poonxiangyuan@hotmail.com", subject, body);
+        //Helper.SendMail(email , subject, body);
     }
 
     public boolean GetChoice(Account TransactionAccount) {

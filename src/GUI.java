@@ -2,6 +2,7 @@ import ATM.Client.Client;
 import ATM.Constants.Constants;
 import ATM.Utilities.JSON;
 import ATM.Utilities.LogHelper;
+import ATM.Utilities.InputSanitisation;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -232,6 +233,11 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                // TODO: Input Validation in a loop
+                //String pinValid = InputSanitisation.validPin(txtPassword.getText());
+                //System.out.println(pinValid);
+                //String nameValid = InputSanitisation.validNameString(txtUsername.getText());
+                //System.out.println(nameValid);
                 //test account username: test, pw:123123
                 //init json object to store replies from server
                 JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.Login).add(Constants.User.Password, txtPassword.getText()).add(Constants.User.Username, txtUsername.getText()).toString()));
@@ -409,7 +415,20 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if(txtNewPassword.getText().equals(txtConfirmPassword.getText()))
+                // TODO: Input validation
+                // Page changes back to home screen when fields are invalid
+                String result1 = InputSanitisation.validPin(txtNewPassword.getText());
+                String result2 = InputSanitisation.validPin(txtConfirmPassword.getText());
+
+                if (!InputSanitisation.validPin(txtNewPassword.getText()).equals("true"))
+                {
+                    lblConfirmPasswordValidator.setText("New password is invalid. " + result1);
+                }
+                else if (!InputSanitisation.validPin(txtConfirmPassword.getText()).equals("true"))
+                {
+                    lblConfirmPasswordValidator.setText("Confirm password is invalid. " + result2);
+                }
+                else if(txtNewPassword.getText().equals(txtConfirmPassword.getText()))
                 {
                     //send request to server for password change
                     JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.ChangePin)
@@ -568,6 +587,26 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 //send request to create new user to server
+                String username = txtNewUsername.getText();
+                String password = txtNewUserPassword.getText();
+                String email = txtNewUserEmail.getText();
+
+                // TODO: Input Validation
+                // validate Pin
+                //String result = InputSanitisation.validPin(password);
+                //if (!result.equals("valid")) {
+                //    lblNewUserValidator.setText(result);
+                //    return;
+                //}
+
+                // validate email
+                //String emailResult = InputSanitisation.validEmail(email);
+                //if (!emailResult.equals("valid")) {
+                //    lblNewUserValidator.setText(emailResult);
+                //    return;
+                //}
+
+
                 JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.CreateUser)
                         .add(Constants.User.Username, txtNewUsername.getText())
                         .add(Constants.User.Password, txtNewUserPassword.getText())

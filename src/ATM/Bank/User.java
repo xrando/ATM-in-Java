@@ -512,6 +512,19 @@ public class User
             //System.out.println("Password: " + password);
             insertUser(user);
             System.out.println("User created!\n Proceed to login!");
+
+            // Send email to new User
+            String subject = "Welcome to Pure Bank LTD!";
+            String body = "Dear " + username + ",\n\n" +
+                    "Thank you for registering with Pure Bank LTD!\n\n" +
+                    "If you did not register for an account with us, please contact us immediately\n\n" +
+                    "Thank you,\n"+
+                    "Pure Bank LTD\n"+
+                    "pureinc933@gmail.com\n\n"+
+                    "Please do not reply to this email as it is automatically generated.";
+
+            //Helper.SendMail(email, subject, body);
+
             return true;
         } else {
             System.out.println("Invalid input!");
