@@ -1,7 +1,5 @@
 package ATM.Constants;
 
-import ATM.Bank.Account;
-import ATM.Bank.Transaction;
 import ATM.Utilities.ConfigurationManager;
 
 
@@ -22,11 +20,11 @@ public abstract class Constants {
     }
 
     public abstract static class SSL {
-        public static final String PROTOCOL = "TLS";
-        public static final String KEYSTORE = "Resources/SSL/server.keystore";
-        public static final String KEYSTOREPASS = "123456";
-        public static final String TRUSTSTORE = "Resources/SSL/client.keystore";
-        public static final String TRUSTSTOREPASS = "654321";
+        public static final String PROTOCOL = ConfigurationManager.GetConfig("Protocol");
+        public static final String SERVER_KEYSTORE = ConfigurationManager.GetConfig("Server_Key");
+        public static final String SERVER_KEYSTORE_PASS = ConfigurationManager.GetConfig("Server_Pass");
+        public static final String CLIENT_KEYSTORE = ConfigurationManager.GetConfig("Client_Key");
+        public static final String CLIENT_KEYSTORE_PASS = ConfigurationManager.GetConfig("Client_Pass");
     }
 
     public abstract static class JSON {

@@ -13,7 +13,7 @@ public class ATMClientSocket extends ATMSSLContext implements AutoCloseable {
     private final SSLSocket sslSocket;
 
     protected ATMClientSocket() throws IOException {
-        super(Constants.SSL.TRUSTSTORE, Constants.SSL.TRUSTSTOREPASS);
+        super(Constants.SSL.CLIENT_KEYSTORE, Constants.SSL.CLIENT_KEYSTORE_PASS);
 /*        try {
             sslSocket = (SSLSocket) SSLCONTEXT.getSocketFactory().createSocket(Constants.Socket.HOST, Constants.Socket.PORT);
             sslSocket.setSoTimeout(Constants.Socket.TIMEOUT);
@@ -50,7 +50,7 @@ public class ATMClientSocket extends ATMSSLContext implements AutoCloseable {
         } catch (SSLHandshakeException e) {
             LogHelper.log(Level.SEVERE, "Secure connection cannot be established with host " + this.sslSocket.getRemoteSocketAddress().toString(), e);
         } catch (IOException e) {
-            LogHelper.log(Level.SEVERE, "There are no bytes buffered on the socket, or all buffered bytes have been consumed by read.", e);
+            LogHelper.log(Level.WARNING, "There are no bytes buffered on the socket, or all buffered bytes have been consumed by read.", e);
         }
         return a.toString();
     }
@@ -73,7 +73,7 @@ public class ATMClientSocket extends ATMSSLContext implements AutoCloseable {
         try {
             this.sslSocket.close();
         } catch (IOException e) {
-            LogHelper.log(Level.SEVERE, "I/O error occurs when closing this socket.", e);
+            LogHelper.log(Level.WARNING, "I/O error occurs when closing this socket.", e);
         }
     }
 }

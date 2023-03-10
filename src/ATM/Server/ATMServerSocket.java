@@ -21,7 +21,7 @@ public class ATMServerSocket extends ATMSSLContext implements AutoCloseable {
     private final SSLServerSocket sslServerSocket;
 
     protected ATMServerSocket() throws IOException {
-        super(Constants.SSL.KEYSTORE, Constants.SSL.KEYSTOREPASS);
+        super(Constants.SSL.SERVER_KEYSTORE, Constants.SSL.SERVER_KEYSTORE_PASS);
         sslServerSocket = (SSLServerSocket) SSLCONTEXT.getServerSocketFactory().createServerSocket(Constants.Socket.PORT);
         sslServerSocket.setSoTimeout(0);
         sslServerSocket.setNeedClientAuth(true);
