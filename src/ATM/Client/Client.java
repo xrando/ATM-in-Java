@@ -1,13 +1,12 @@
 package ATM.Client;
 
 import ATM.Constants.Constants;
-import ATM.Utilities.ATMSocket;
 
 public class Client {
-    private final ATMSocket socket;
+    private final ATMClientSocket socket;
 
     public Client() {
-        socket = new ATMSocket(); //start new instance of client socket
+        socket = new ATMClientSocket(); //start new instance of client socket
     }
 
     public String listen(String input) {

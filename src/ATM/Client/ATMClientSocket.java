@@ -1,16 +1,19 @@
-package ATM.Utilities;
+package ATM.Client;
 
 import ATM.Constants.Constants;
+import ATM.Utilities.ATMSockets;
+import ATM.Utilities.LogHelper;
+import ATM.Utilities.Security;
 
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.util.logging.Level;
 
-public class ATMSocket {
+public class ATMClientSocket implements ATMSockets {
     private SSLSocket sslSocket;
 
-    public ATMSocket() {
+    public ATMClientSocket() {
         try {
             sslSocket = (SSLSocket) Security.sslContext(Constants.SSL.TRUSTSTORE, Constants.SSL.TRUSTSTOREPASS).getSocketFactory().createSocket(Constants.Socket.HOST, Constants.Socket.PORT);
             sslSocket.setSoTimeout(Constants.Socket.TIMEOUT);
@@ -24,7 +27,7 @@ public class ATMSocket {
         }
     }
 
-    public ATMSocket(SSLSocket sslSocket) {
+    public ATMClientSocket(SSLSocket sslSocket) {
         this.sslSocket = sslSocket;
     }
 

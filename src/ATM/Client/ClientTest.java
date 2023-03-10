@@ -5,7 +5,7 @@ import ATM.Utilities.JSON;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class ATMClient {
+public class ClientTest {
     public static void main(String[] args){
         Client client = new Client();
         //can have multiple listen events here

@@ -1,4 +1,5 @@
-import ATM.Client.Client;
+package ATM.Client;
+
 import ATM.Constants.Constants;
 import ATM.Utilities.JSON;
 import ATM.Utilities.LogHelper;

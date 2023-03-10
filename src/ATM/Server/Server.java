@@ -3,9 +3,8 @@ package ATM.Server;
 import ATM.Bank.User;
 import ATM.Bank.Account;
 import ATM.Bank.Transaction;
+import ATM.Client.ATMClientSocket;
 import ATM.Constants.Constants;
-import ATM.Utilities.ATMServerSocket;
-import ATM.Utilities.ATMSocket;
 import ATM.Utilities.JSON;
 import ATM.Utilities.LogHelper;
 import org.json.JSONObject;
@@ -29,7 +28,7 @@ public class Server {
         }
 
         while (ss.getSslServerSocketStatus()) {
-            ATMSocket socket = ss.accept();
+            ATMClientSocket socket = ss.accept();
             new Thread(() -> {
                 User user = null;
                 Account account = null;
@@ -73,10 +72,16 @@ public class Server {
                             }
                             case Constants.Account.SelectAccount -> {
                                 int selectAccount = request.getInt(Constants.Account.SelectedAccount);
-                                account = new Account(user.getAccounts().get(selectAccount));
-                                System.out.println("Selected AccountID:"+account.getAccountID() + ", Account type:" +account.getAccountType());
-                                socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.SelectedAccount, account.getAccountID()).toString());
-                                account.retrieveAccountTransactions();
+                                if (user.getAccounts().size() > 0) {
+                                    account = new Account(user.getAccounts().get(selectAccount));
+                                    System.out.println("Selected AccountID:"+account.getAccountID() + ", Account type:" +account.getAccountType());
+                                    socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.SelectedAccount, account.getAccountID()).toString());
+                                    account.retrieveAccountTransactions();
+                                }
+                                else {
+                                    socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.SelectedAccount, null).toString());
+                                }
+
                             }
                             case Constants.Account.TransactionHistory -> {
                                 ArrayList<Transaction> transactions = account.getAccountTransactions();
@@ -88,6 +93,11 @@ public class Server {
                             }
 
                             case Constants.Account.AllAccounts -> {
+                                if (account == null) {
+                                    socket.write(new JSON(Constants.Stream.RES).add(Constants.Account.AllAccounts,null).toString());
+                                    break;
+                                }
+
                                 List<Account> accounts = account.getTransactionAccount(user.getUID());
                                 for (int i=0;i<accounts.size();i++){
                                     System.out.println(accounts.get(i).getAccountID() + " " + accounts.get(i).getAccountType() + " " + accounts.get(i).getUID());
@@ -144,5 +154,9 @@ public class Server {
             }).start();
         }
         System.out.println("Server down.");
+    }
+
+    public static void main(String[] args) {
+        new Server().listen();
     }
 }
