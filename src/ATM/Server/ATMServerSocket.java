@@ -2,28 +2,36 @@ package ATM.Server;
 
 import ATM.Client.ATMClientSocket;
 import ATM.Constants.Constants;
+import ATM.Utilities.ATMSSLContext;
 import ATM.Utilities.LogHelper;
-import ATM.Utilities.Security;
 
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.util.logging.Level;
 
-//remove this when deploying client
-public class ATMServerSocket implements AutoCloseable {
-    private final SSLServerSocket sslServerSocket = (SSLServerSocket) Security.sslContext(Constants.SSL.KEYSTORE, Constants.SSL.KEYSTOREPASS).getServerSocketFactory().createServerSocket(Constants.Socket.PORT);
+public class ATMServerSocket extends ATMSSLContext implements AutoCloseable {
+/*    private final SSLServerSocket sslServerSocket = (SSLServerSocket) Security.sslContext(Constants.SSL.KEYSTORE, Constants.SSL.KEYSTOREPASS).getServerSocketFactory().createServerSocket(Constants.Socket.PORT);
 
     public ATMServerSocket() throws IOException {
         sslServerSocket.setSoTimeout(0);
         sslServerSocket.setNeedClientAuth(true);
+    }*/
+
+    private final SSLServerSocket sslServerSocket;
+
+    protected ATMServerSocket() throws IOException {
+        super(Constants.SSL.KEYSTORE, Constants.SSL.KEYSTOREPASS);
+        sslServerSocket = (SSLServerSocket) SSLCONTEXT.getServerSocketFactory().createServerSocket(Constants.Socket.PORT);
+        sslServerSocket.setSoTimeout(0);
+        sslServerSocket.setNeedClientAuth(true);
     }
 
-    public boolean getSslServerSocketStatus() {
+    protected boolean getSslServerSocketStatus() {
         return sslServerSocket != null;
     }
 
-    public ATMClientSocket accept() {
+    protected ATMClientSocket accept() {
         ATMClientSocket atmSocket = null;
         try {
             SSLSocket sslSocket = (SSLSocket) sslServerSocket.accept();

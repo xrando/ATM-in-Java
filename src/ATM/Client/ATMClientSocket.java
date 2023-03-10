@@ -1,21 +1,21 @@
 package ATM.Client;
 
 import ATM.Constants.Constants;
-import ATM.Utilities.ATMSockets;
+import ATM.Utilities.ATMSSLContext;
 import ATM.Utilities.LogHelper;
-import ATM.Utilities.Security;
 
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.util.logging.Level;
 
-public class ATMClientSocket implements ATMSockets {
-    private SSLSocket sslSocket;
+public class ATMClientSocket extends ATMSSLContext implements AutoCloseable {
+    private final SSLSocket sslSocket;
 
-    public ATMClientSocket() {
-        try {
-            sslSocket = (SSLSocket) Security.sslContext(Constants.SSL.TRUSTSTORE, Constants.SSL.TRUSTSTOREPASS).getSocketFactory().createSocket(Constants.Socket.HOST, Constants.Socket.PORT);
+    protected ATMClientSocket() throws IOException {
+        super(Constants.SSL.TRUSTSTORE, Constants.SSL.TRUSTSTOREPASS);
+/*        try {
+            sslSocket = (SSLSocket) SSLCONTEXT.getSocketFactory().createSocket(Constants.Socket.HOST, Constants.Socket.PORT);
             sslSocket.setSoTimeout(Constants.Socket.TIMEOUT);
         } catch (IOException e) {
             LogHelper.log(Level.SEVERE, "Server is not ready, or wrong host IP / port number.", e);
@@ -24,7 +24,9 @@ public class ATMClientSocket implements ATMSockets {
         } catch (NullPointerException e) {
             LogHelper.log(Level.SEVERE, "Failed to generate ssl socket.", e);
             throw e;
-        }
+        }*/
+        sslSocket = (SSLSocket) SSLCONTEXT.getSocketFactory().createSocket(Constants.Socket.HOST, Constants.Socket.PORT);
+        sslSocket.setSoTimeout(Constants.Socket.TIMEOUT);
     }
 
     public ATMClientSocket(SSLSocket sslSocket) {
