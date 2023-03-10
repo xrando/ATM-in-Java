@@ -8,19 +8,17 @@ import ATM.Utilities.LogHelper;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.logging.Level;
 
 public class ATMServerSocket extends ATMSSLContext implements AutoCloseable {
-/*    private final SSLServerSocket sslServerSocket = (SSLServerSocket) Security.sslContext(Constants.SSL.KEYSTORE, Constants.SSL.KEYSTOREPASS).getServerSocketFactory().createServerSocket(Constants.Socket.PORT);
-
-    public ATMServerSocket() throws IOException {
-        sslServerSocket.setSoTimeout(0);
-        sslServerSocket.setNeedClientAuth(true);
-    }*/
-
     private final SSLServerSocket sslServerSocket;
 
-    protected ATMServerSocket() throws IOException {
+    protected ATMServerSocket() throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         super(Constants.SSL.SERVER_KEYSTORE, Constants.SSL.SERVER_KEYSTORE_PASS);
         sslServerSocket = (SSLServerSocket) SSLCONTEXT.getServerSocketFactory().createServerSocket(Constants.Socket.PORT);
         sslServerSocket.setSoTimeout(0);

@@ -10,6 +10,11 @@ import ATM.Utilities.LogHelper;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -21,10 +26,18 @@ public class Server {
             ss = new ATMServerSocket();
         } catch (IOException e) {
             LogHelper.log(Level.SEVERE, "Check port number.", e);
-            System.exit(-1);
         } catch (NullPointerException e) {
             LogHelper.log(Level.SEVERE, "Failed to generate ssl server socket.", e);
-            System.exit(-1);
+        } catch (CertificateException e) {
+            LogHelper.log(Level.SEVERE, "Could not load certificate.", e);
+        } catch (NoSuchAlgorithmException e) {
+            LogHelper.log(Level.SEVERE, "No Provider supports a KeyManagerFactorySpi implementation for the specified algorithm", e);
+        } catch (KeyStoreException e) {
+            LogHelper.log(Level.SEVERE, "Failed to load keystore.", e);
+        } catch (UnrecoverableKeyException e) {
+            LogHelper.log(Level.SEVERE, "Password might be incorrect.", e);
+        } catch (KeyManagementException e) {
+            LogHelper.log(Level.SEVERE, "Key expired or failed authorization.", e);
         }
 
         while (ss.getSslServerSocketStatus()) {

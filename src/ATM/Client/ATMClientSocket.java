@@ -7,24 +7,18 @@ import ATM.Utilities.LogHelper;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.logging.Level;
 
 public class ATMClientSocket extends ATMSSLContext implements AutoCloseable {
     private final SSLSocket sslSocket;
 
-    protected ATMClientSocket() throws IOException {
+    protected ATMClientSocket() throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         super(Constants.SSL.CLIENT_KEYSTORE, Constants.SSL.CLIENT_KEYSTORE_PASS);
-/*        try {
-            sslSocket = (SSLSocket) SSLCONTEXT.getSocketFactory().createSocket(Constants.Socket.HOST, Constants.Socket.PORT);
-            sslSocket.setSoTimeout(Constants.Socket.TIMEOUT);
-        } catch (IOException e) {
-            LogHelper.log(Level.SEVERE, "Server is not ready, or wrong host IP / port number.", e);
-        } catch (IllegalArgumentException e) {
-            LogHelper.log(Level.SEVERE, "Timeout might be set to negative by mistake, or the port number is out of range (0 and 65535).", e);
-        } catch (NullPointerException e) {
-            LogHelper.log(Level.SEVERE, "Failed to generate ssl socket.", e);
-            throw e;
-        }*/
         sslSocket = (SSLSocket) SSLCONTEXT.getSocketFactory().createSocket(Constants.Socket.HOST, Constants.Socket.PORT);
         sslSocket.setSoTimeout(Constants.Socket.TIMEOUT);
     }
