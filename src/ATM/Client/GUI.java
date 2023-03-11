@@ -806,9 +806,16 @@ public class GUI {
                     output.append(Constants.Transaction.Amount + " : " + joo.get(Constants.Transaction.Amount) + "\t");
                     output.append(Constants.Transaction.date + " : " + joo.get(Constants.Transaction.date));
                     output.append(Constants.Transaction.TimeStamp + " : " + joo.get(Constants.Transaction.TimeStamp));
+
+                    //clear text area
+                    AllTransactions.setText("");
+
+                    //append new transactions to text area
+                    AllTransactions.append(Constants.Transaction.TransactionNote + " : " + joo.get(Constants.Transaction.TransactionNote) + "\n");
+                    AllTransactions.append(Constants.Transaction.Amount + " : " + joo.get(Constants.Transaction.Amount) + "\n");
+                    AllTransactions.append(Constants.Transaction.date + " : " + joo.get(Constants.Transaction.date) + "\n");
+                    AllTransactions.append(Constants.Transaction.TimeStamp + " : " + joo.get(Constants.Transaction.TimeStamp) + "\n");
                 });
-                //TODO: FIX DISPLAY ISSUE FOR ALL TRANSACTIONS
-                AllTransactions.setText(output.toString());
             }
         });
         //add action listener for deposit dropdownlist
