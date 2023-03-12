@@ -270,28 +270,32 @@
                       <text value="View Transactions"/>
                     </properties>
                   </component>
-                  <component id="3563d" class="javax.swing.JTextArea" binding="AllTransactions">
-                    <constraints>
-                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                        <preferred-size width="150" height="50"/>
-                      </grid>
-                    </constraints>
-                    <properties>
-                      <background color="-789517"/>
-                      <editable value="false"/>
-                      <foreground color="-16777216"/>
-                      <lineWrap value="true"/>
-                      <rows value="20"/>
-                      <text value=""/>
-                      <wrapStyleWord value="true"/>
-                    </properties>
-                  </component>
                   <component id="f0fb4" class="javax.swing.JComboBox" binding="ddlTAccounts">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                   </component>
+                  <scrollpane id="192cb" binding="AllTransactionScoller">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <autoscrolls value="false"/>
+                      <requestFocusEnabled value="true"/>
+                      <verifyInputWhenFocusTarget value="true"/>
+                      <verticalScrollBarPolicy value="20"/>
+                    </properties>
+                    <border type="none"/>
+                    <children>
+                      <component id="668cb" class="javax.swing.JTextArea" binding="AllTransactions">
+                        <constraints/>
+                        <properties>
+                          <background color="-526345"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </scrollpane>
                 </children>
               </grid>
               <grid id="306ef" binding="Withdrawal" layout-manager="GridLayoutManager" row-count="8" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">

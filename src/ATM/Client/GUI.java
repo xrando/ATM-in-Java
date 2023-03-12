@@ -7,6 +7,7 @@ import ATM.Utilities.InputSanitisation;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.util.logging.Level;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -124,6 +125,7 @@ public class GUI {
     private JComboBox ddlNewUserAccount;
     private JLabel lblNewUserValidator;
     private JLabel lblDepositAmountValidator;
+    private JScrollPane AllTransactionScoller;
     private Map<String, String> English = Map.ofEntries(
             entry("0", "Username:"),
             entry("1", "Password:"),
@@ -794,28 +796,25 @@ public class GUI {
                 JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.TransactionHistory).add(Constants.Account.AccountId, choice).toString()));
                 //populate date to screen
                 JSONArray ja = new JSONArray(jo.get(Constants.Account.TransactionHistory).toString());
-                StringBuilder output = new StringBuilder();
+                //clear text area
+                AllTransactions.setText("");
                 ja.forEach(record -> {
                     JSONObject joo = new JSONObject(record.toString());
+                    //debug
                     System.out.print(Constants.Transaction.TransactionNote + " : " + joo.get(Constants.Transaction.TransactionNote) + "\t");
                     System.out.print(Constants.Transaction.Amount + " : " + joo.get(Constants.Transaction.Amount) + "\t");
                     System.out.print(Constants.Transaction.date + " : " + joo.get(Constants.Transaction.date) + "\n");
                     System.out.print(Constants.Transaction.TimeStamp + " : " + joo.get(Constants.Transaction.TimeStamp) + "\n");
 
-                    output.append(Constants.Transaction.TransactionNote + " : " + joo.get(Constants.Transaction.TransactionNote) + "\t");
-                    output.append(Constants.Transaction.Amount + " : " + joo.get(Constants.Transaction.Amount) + "\t");
-                    output.append(Constants.Transaction.date + " : " + joo.get(Constants.Transaction.date));
-                    output.append(Constants.Transaction.TimeStamp + " : " + joo.get(Constants.Transaction.TimeStamp));
-
-                    //clear text area
-                    AllTransactions.setText("");
-
                     //append new transactions to text area
-                    AllTransactions.append(Constants.Transaction.TransactionNote + " : " + joo.get(Constants.Transaction.TransactionNote) + "\n");
-                    AllTransactions.append(Constants.Transaction.Amount + " : " + joo.get(Constants.Transaction.Amount) + "\n");
-                    AllTransactions.append(Constants.Transaction.date + " : " + joo.get(Constants.Transaction.date) + "\n");
-                    AllTransactions.append(Constants.Transaction.TimeStamp + " : " + joo.get(Constants.Transaction.TimeStamp) + "\n");
+                    AllTransactions.append("  Transaction Note: "+ joo.get(Constants.Transaction.TransactionNote) + "\n");
+                    AllTransactions.append("  Amount: $" + joo.get(Constants.Transaction.Amount) + "\n");
+                    AllTransactions.append("  Transaction Date: " + joo.get(Constants.Transaction.date) + "\n");
+                    AllTransactions.append("  Transaction Time: " + joo.get(Constants.Transaction.TimeStamp) + "\n");
+                    AllTransactions.append("\n\n");
                 });
+                //set scroller to focus to top
+                AllTransactions.setCaretPosition(0);
             }
         });
         //add action listener for deposit dropdownlist
