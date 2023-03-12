@@ -231,18 +231,17 @@ public class GUI {
         final String[] language = new String[]{"eng"};
         //init client object
         Client client = new Client();
-        //init json object to store replies from server
         //Create event listener for login button
         btnLogin.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                // TODO: Input Validation (done)
+                //Input validation
                 String pinValid = InputSanitisation.validPin(txtPassword.getText());
-                System.out.println(pinValid);
+                //System.out.println(pinValid);
                 String nameValid = InputSanitisation.validNameString(txtUsername.getText());
-                System.out.println(nameValid);
+                //System.out.println(nameValid);
                 //if input pass validation
                 if (pinValid.equals("true")&&nameValid.equals("true"))
                 {
@@ -250,7 +249,7 @@ public class GUI {
                     //init json object to store replies from server
                     JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.User.Login).add(Constants.User.Password, txtPassword.getText()).add(Constants.User.Username, txtUsername.getText()).toString()));
 
-                    //Get user input from textboxs and on successful login, show main menu
+                    //Get user input from textbox and on successful login, show main menu
                     if (jo.get(Constants.User.LoginStatus).toString().toLowerCase().equals("true"))
                     {
                         lblLoginValidator.setText("");
@@ -270,7 +269,6 @@ public class GUI {
                         //Onlogin
                         //Select User Account
                         JSONObject SelectAccount = JSON.tryParse(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, 0).toString()));
-
 
                         //populate dropdownlists with data
                         //populate create new user dropdownlist
@@ -354,8 +352,6 @@ public class GUI {
             {
                 //attach withdrawal screen
                 setScreen(screen,Withdrawal);
-                //clear balance
-                //lblAccountBalance.setText("");
                 String choice = ddlAccounts.getItemAt(ddlAccounts.getSelectedIndex()).toString();
                 //send select account request to server
                 new JSONObject(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, ddlAccounts.getSelectedIndex()).toString()));
@@ -373,8 +369,6 @@ public class GUI {
             {
                 //attach deposit screen
                 setScreen(screen,Deposit);
-                //clear balance
-                //lblAccountbalance.setText("");
                 String choice = ddlAccounts.getItemAt(ddlAccounts.getSelectedIndex()).toString();
                 //send select account request to server
                 new JSONObject(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, ddlAccounts.getSelectedIndex()).toString()));
@@ -392,8 +386,6 @@ public class GUI {
             {
                 //attach bank transfer screen
                 setScreen(screen,BankTransfer);
-                //clear balance
-                //lblAccBalance.setText("");
                 String choice = ddlAccounts.getItemAt(ddlAccounts.getSelectedIndex()).toString();
                 //send select account request to server
                 new JSONObject(client.listen(new JSON(Constants.Account.SelectAccount).add(Constants.Account.SelectedAccount, ddlAccounts.getSelectedIndex()).toString()));
@@ -409,9 +401,9 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                //populate fields with current user data
                 //send Get User Info request
                 JSONObject GetUserInfo = JSON.tryParse(client.listen(new JSON(Constants.User.GetUserInformation).toString()));
+                //populate fields with current user data
                 txtUserName.setText(GetUserInfo.get(Constants.User.Username).toString());
                 txtEmailAddress.setText(GetUserInfo.get(Constants.User.Email).toString());
                 txtPhoneNumber.setText(GetUserInfo.get(Constants.User.Phone).toString());
@@ -435,8 +427,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                // TODO: Input validation
-                // Page changes back to home screen when fields are invalid
+                //Input validation
                 String result = InputSanitisation.validPin(txtOldPassword.getText());
                 String result1 = InputSanitisation.validPin(txtNewPassword.getText());
                 String result2 = InputSanitisation.validPin(txtConfirmPassword.getText());
@@ -468,9 +459,7 @@ public class GUI {
                 {
                     lblConfirmPasswordValidator.setText("Ensure that new password and confirm password entered are the same");
                 }
-                //attach settings screen
-                //setScreen(screen,Settings);
-                //clear textboxs
+                //clear textbox
                 txtOldPassword.setText("");
                 txtNewPassword.setText("");
                 txtConfirmPassword.setText("");
@@ -483,7 +472,6 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                //TODO: call setter methods to update user objects fields
                 //if phone number entered is not integer (incorrect format)
                 try
                 {
@@ -518,7 +506,6 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                //TODO: compute account balance after withdrawal
                 //if amount entered is not integer (incorrect format)
                 try
                 {
@@ -592,7 +579,7 @@ public class GUI {
                 setScreen(base,login);
             }
         });
-        //view account summary
+        //TODO: view account summary (to remove?)
         btnViewAccountSummary.addActionListener(new ActionListener()
         {
             @Override
@@ -627,8 +614,7 @@ public class GUI {
                 String password = txtNewUserPassword.getText();
                 String email = txtNewUserEmail.getText();
 
-                // TODO: Input Validation
-                // validate Pin
+                //Input Validation
                 String result = InputSanitisation.validPin(password);
                 //if (!result.equals("valid")) {
                 //    lblNewUserValidator.setText(result);
@@ -682,7 +668,6 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                //TODO: compute account balance after deposit
                 //catch if amount entered is not integer (incorrect format)
                 try
                 {
@@ -866,9 +851,7 @@ public class GUI {
             }
         });
     }
-    protected Object makeObj(final String item)  {
-        return new Object() { public String toString() { return item; } };
-    }
+    
     //setLanguage for all buttons and labels
     protected void setLanguage(Map<String, String> language)
     {
