@@ -2,6 +2,7 @@ package ATM.Client;
 
 import ATM.Constants.Constants;
 import ATM.Utilities.ATMSSLContext;
+import ATM.Utilities.JSON;
 import ATM.Utilities.LogHelper;
 
 import javax.net.ssl.SSLHandshakeException;
@@ -61,6 +62,17 @@ public class ATMClientSocket extends ATMSSLContext implements AutoCloseable {
         } catch (IOException e) {
             LogHelper.log(Level.SEVERE, "I/O error occurs when creating the output stream or the socket is not connected.", e);
         }
+    }
+
+    public void write(String... str){
+        if(str.length < 1)
+            return;
+
+        JSON j = new JSON(str[0]);
+        for(int i = 1; i < str.length; i+=2) {
+            j.add(str[i], i + 1 < str.length ? str[i + 1] : "");
+        }
+        write(j.toString());
     }
 
     public void close() {

@@ -638,6 +638,7 @@ public class User
         if (UID == null) {
             LogHelper.log(Level.SEVERE, "Failed Login attempt, Attempted Username: " + username);
             //return null;
+            return false;
         }
         // Check if user is already logged in
         if (this.loginStatus || getLoginStatusFromDB(username)) {

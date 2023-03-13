@@ -32,7 +32,7 @@ public class ClientTest {
         // Create User
         //JSONObject createUserTest = new JSONObject(client.listen(new JSON(Constants.User.CreateUser).add(Constants.User.Username, "abc123").add(Constants.User.Password, "123123").add(Constants.User.Email, "pureinc933@gmail.com").toString()));
 
-        JSONObject jo = new JSONObject(client.listen(new JSON(Constants.User.Login).add(Constants.User.Password, "123123").add(Constants.User.Username, "test").toString()));
+        JSONObject jo = new JSONObject(client.listen(Constants.User.Login, Constants.User.Password, "123123", Constants.User.Username, "test"));
 
         //forget pin
         //JSONObject ForgetPin = new JSONObject(client.listen(new JSON(Constants.User.ForgetPin).add(Constants.User.Username, "test").toString()));
@@ -115,5 +115,9 @@ public class ClientTest {
         JSONObject logout = new JSONObject(client.listen(new JSON(Constants.User.Logout).toString()));
 
         client.close();
+    }
+
+    @org.junit.Test
+    public void listen() {
     }
 }

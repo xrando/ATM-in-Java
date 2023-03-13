@@ -12,11 +12,12 @@ import java.security.cert.CertificateException;
 import java.util.logging.Level;
 
 public class Client {
-    private ATMClientSocket socket;
+    private final ATMClientSocket socket;
 
     public Client() {
+        ATMClientSocket s = null;
         try {
-            socket = new ATMClientSocket(); //start new instance of client socket
+            s = new ATMClientSocket(); //start new instance of client socket
         } catch (IOException e) {
             LogHelper.log(Level.SEVERE, "Server is not ready, or wrong host IP / port number.", e);
         } catch (CertificateException e) {
@@ -29,10 +30,17 @@ public class Client {
             LogHelper.log(Level.SEVERE, "Password might be incorrect.", e);
         } catch (KeyManagementException e) {
             LogHelper.log(Level.SEVERE, "Key expired or failed authorization.", e);
+        } finally {
+            this.socket = s;
         }
     }
 
     public String listen(String input) {
+        this.socket.write(input);
+        return socket.read();
+    }
+
+    public String listen(String... input) {
         this.socket.write(input);
         return socket.read();
     }
