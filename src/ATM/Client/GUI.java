@@ -272,10 +272,6 @@ public class GUI {
                         JSONObject SelectAccount = JSON.tryParse(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, 0));
 
                         //populate dropdownlists with data
-                        //populate create new user dropdownlist
-                        ddlNewUserAccount.addItem("savings");
-                        ddlNewUserAccount.addItem("current");
-
                         //Send request to server to get all accounts of current users
                         //Retrieve All User Accounts
                         JSONObject retrieveAccounts = JSON.tryParse(client.listen(Constants.Account.AllAccounts));
@@ -597,6 +593,9 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                //populate create new user dropdownlist
+                ddlNewUserAccount.addItem("savings");
+                ddlNewUserAccount.addItem("current");
                 //attach create new user screen
                 setScreen(base,NewUser);
             }
