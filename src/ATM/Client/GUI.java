@@ -8,6 +8,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.logging.Level;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -226,11 +228,10 @@ public class GUI {
             entry("46", "忘记密码")
     );
 
-    public GUI() throws Exception
+    public GUI(Client client) throws Exception
     {
         final String[] language = new String[]{"eng"};
-        //init client object
-        Client client = new Client();
+
         //Create event listener for login button
         btnLogin.addActionListener(new ActionListener()
         {
@@ -935,12 +936,20 @@ public class GUI {
     }
 
     public static void main(String[] args) throws Exception {
-        GUI UI = new GUI();
+        Client client = new Client();
+        GUI UI = new GUI(client);
         JFrame frame = new JFrame("Pure ATM");
         frame.setContentPane(UI.getBase());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
         frame.setResizable(false);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                client.close();
+            }
+        });
     }
 }

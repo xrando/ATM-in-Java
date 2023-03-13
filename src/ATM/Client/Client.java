@@ -1,5 +1,6 @@
 package ATM.Client;
 
+import ATM.Bank.User;
 import ATM.Constants.Constants;
 import ATM.Utilities.LogHelper;
 

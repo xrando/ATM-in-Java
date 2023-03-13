@@ -89,7 +89,7 @@ public class Server {
                                     account.retrieveAccountTransactions();
                                 }
                                 else {
-                                    socket.write(Constants.Stream.RES, Constants.Account.SelectedAccount, null);
+                                    socket.write(Constants.Stream.RES, Constants.Account.SelectedAccount, "");
                                 }
 
                             }
@@ -104,7 +104,7 @@ public class Server {
 
                             case Constants.Account.AllAccounts -> {
                                 if (account == null) {
-                                    socket.write(Constants.Stream.RES, Constants.Account.AllAccounts,null);
+                                    socket.write(Constants.Stream.RES, Constants.Account.AllAccounts,"");
                                     break;
                                 }
 
