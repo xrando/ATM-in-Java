@@ -12,7 +12,7 @@ import java.util.logging.Level;
 
 public class JSON {
     private final JSONObject jsonObject = new JSONObject();
-    public JSON(String type){
+    public <T> JSON(T type){
         this.jsonObject.put(Constants.JSON.Type, type);
     }
 

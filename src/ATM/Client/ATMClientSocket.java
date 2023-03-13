@@ -51,7 +51,7 @@ public class ATMClientSocket extends ATMSSLContext implements AutoCloseable {
     }
 
     //push the String to outputstream and add EOF
-    public void write(String s) {
+    private void write(String s) {
         try {
             this.sslSocket.getOutputStream().write(s.getBytes());
             this.sslSocket.getOutputStream().write(Constants.Stream.EOF.getBytes());
@@ -64,13 +64,14 @@ public class ATMClientSocket extends ATMSSLContext implements AutoCloseable {
         }
     }
 
-    public void write(String... str){
+    @SafeVarargs
+    public final <T> void write(T... str){
         if(str.length < 1)
             return;
 
         JSON j = new JSON(str[0]);
         for(int i = 1; i < str.length; i+=2) {
-            j.add(str[i], i + 1 < str.length ? str[i + 1] : "");
+            j.add(str[i].toString(), i + 1 < str.length ? str[i + 1] : "");
         }
         write(j.toString());
     }
@@ -81,5 +82,9 @@ public class ATMClientSocket extends ATMSSLContext implements AutoCloseable {
         } catch (IOException e) {
             LogHelper.log(Level.WARNING, "I/O error occurs when closing this socket.", e);
         }
+    }
+
+    public String getIP() {
+        return sslSocket.getRemoteSocketAddress().toString();
     }
 }

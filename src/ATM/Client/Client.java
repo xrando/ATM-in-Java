@@ -35,12 +35,13 @@ public class Client {
         }
     }
 
-    public String listen(String input) {
+/*    public String listen(String input) {
         this.socket.write(input);
         return socket.read();
-    }
+    }*/
 
-    public String listen(String... input) {
+    @SafeVarargs
+    public final <T> String listen(T... input) {
         this.socket.write(input);
         return socket.read();
     }
