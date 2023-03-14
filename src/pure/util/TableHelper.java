@@ -1,4 +1,4 @@
-package ATM.Utilities;
+package pure.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +12,7 @@ public class TableHelper {
     private String Vertical;
     private String Joint;
     private String[] Headers;
-    private List<String[]> Rows = new ArrayList<>();
+    private final List<String[]> Rows = new ArrayList<>();
     private boolean isCenter = false;
     private boolean isClearScreen;
 
@@ -23,6 +23,18 @@ public class TableHelper {
     public TableHelper(boolean isCenter, boolean isVerticalLines) {
         setCenter(isCenter);
         setShowVerticalLines(isVerticalLines);
+    }
+
+    public final static void clearConsole() {
+        try {
+            final String os = System.getProperty("os.name");
+            if (os.contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            }
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void setCenter(boolean isCenter) {
@@ -43,7 +55,7 @@ public class TableHelper {
     }
 
     public void print(boolean isAppend) {
-        if (this.isClearScreen == true) {
+        if (this.isClearScreen) {
             clearConsole();
             System.out.flush();
         }
@@ -113,17 +125,5 @@ public class TableHelper {
 
     public void setClearScreen(boolean clearScreen) {
         isClearScreen = clearScreen;
-    }
-
-    public final static void clearConsole() {
-        try {
-            final String os = System.getProperty("os.name");
-            if (os.contains("Windows")) {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            }
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-
     }
 }

@@ -1,4 +1,4 @@
-package ATM.Bank;
+package pure.bank;
 
 import java.io.File;
 import java.sql.*;
@@ -102,6 +102,19 @@ public class sqliteDatabase {
         }
     }
 
+    public static void main(String[] args) {
+        sqliteDatabase app = new sqliteDatabase();
+        File f = new File("./Resources/db/atm.db");
+        if (f.exists() && !f.isDirectory()) {
+            connect();
+            createNewTable();
+        } else {
+            createNewDatabase("atm.db");
+            System.out.print("Creating Table");
+            createNewTable();
+        }
+    }
+
     public void insert(String username, String password, String salt, String email, String phone, boolean loginStatus) {
         String sql = "INSERT INTO users(username,password,salt,email,phone,loginStatus) VALUES(?,?,?,?,?,?)";
 
@@ -122,7 +135,7 @@ public class sqliteDatabase {
     public void selectAll() {
         String sql = "SELECT username, email, phone FROM users";
 
-        try (Connection conn = this.connect();
+        try (Connection conn = connect();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
@@ -134,23 +147,6 @@ public class sqliteDatabase {
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        }
-    }
-
-    public static void main(String[] args) {
-        sqliteDatabase app = new sqliteDatabase();
-        File f = new File("./Resources/db/atm.db");
-        if (f.exists() && !f.isDirectory()) {
-            app.connect();
-            createNewTable();
-        } else {
-            createNewDatabase("atm.db");
-            try {
-                System.out.print("Creating Table");
-                createNewTable();
-            } finally {
-                //app.selectAll();
-            }
         }
     }
 }

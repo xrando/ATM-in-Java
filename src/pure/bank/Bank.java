@@ -1,40 +1,35 @@
-package ATM.Bank;
+package pure.bank;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Bank
-{
+public class Bank {
     private String BankName;
-    private ArrayList<User> BankUsers;
-    private ArrayList<Account> BankAccounts;
+    private final ArrayList<User> BankUsers;
+    private final ArrayList<Account> BankAccounts;
+
     //Create a new ATM.Bank.Bank object with empty bank users and bank accounts
-    public Bank(String NewBankName)
-    {
+    public Bank(String NewBankName) {
         this.BankName = NewBankName;
         this.BankUsers = new ArrayList<User>();
         this.BankAccounts = new ArrayList<Account>();
     }
-    public String generateNewUserUID()
-    {
+
+    public String generateNewUserUID() {
         Random rand = new Random();
-        String UID="";
-        boolean IsUnique=false;
-        while (!IsUnique)
-        {
+        String UID = "";
+        boolean IsUnique = false;
+        while (!IsUnique) {
             //Generate new random 6 digit ATM.ATM.Bank.Bank.User UID
-            for (int i=0;i<6;i++)
-            {
-                UID += ((Integer)rand.nextInt(10)).toString();
+            for (int i = 0; i < 6; i++) {
+                UID += ((Integer) rand.nextInt(10)).toString();
             }
             //Set IsUnique flag to true
-            IsUnique=true;
+            IsUnique = true;
             //Check if new ATM.ATM.Bank.Bank.User UID is unique
-            for (User user : this.BankUsers)
-            {
+            for (User user : this.BankUsers) {
                 //If ATM.ATM.Bank.Bank.User UID already exists
-                if (UID.compareTo(user.getUID()) == 0)
-                {
+                if (UID.compareTo(user.getUID()) == 0) {
                     //Set IsUnique flag to false
                     IsUnique = false;
                     break;
@@ -43,26 +38,22 @@ public class Bank
         }
         return UID;
     }
-    public String generateNewAccountUID()
-    {
+
+    public String generateNewAccountUID() {
         Random rand = new Random();
-        String UID="";
-        boolean IsUnique=false;
-        while (!IsUnique)
-        {
+        String UID = "";
+        boolean IsUnique = false;
+        while (!IsUnique) {
             //Generate new random 10 digit ATM.ATM.Bank.Bank.Account UID
-            for (int i=0;i<10;i++)
-            {
-                UID += ((Integer)rand.nextInt(10)).toString();
+            for (int i = 0; i < 10; i++) {
+                UID += ((Integer) rand.nextInt(10)).toString();
             }
             //Set IsUnique flag to true
-            IsUnique=true;
+            IsUnique = true;
             //Check if new ATM.ATM.Bank.Bank.Account UID is unique
-            for (Account account : this.BankAccounts)
-            {
+            for (Account account : this.BankAccounts) {
                 //If ATM.ATM.Bank.Bank.Account UID already exists
-                if (UID.compareTo(account.getUID()) == 0)
-                {
+                if (UID.compareTo(account.getUID()) == 0) {
                     //Set IsUnique flag to false
                     IsUnique = false;
                     break;
@@ -71,32 +62,30 @@ public class Bank
         }
         return UID;
     }
+
     //Add an account to bank accounts
-    public void AddAccount(Account NewAccount)
-    {
+    public void AddAccount(Account NewAccount) {
         this.BankAccounts.add(NewAccount);
     }
-    public User addBankUser(String Username, String password, String Useremail,String Userphone)
-    {
+
+    public User addBankUser(String Username, String password, String Useremail, String Userphone) {
         //Create a new ATM.ATM.Bank.Bank.User object and add to list
-        User NewUser = new User(Username,password,Useremail,Userphone,this);
+        User NewUser = new User(Username, password, Useremail, Userphone, this);
         this.BankUsers.add(NewUser);
 
         //Create a savings account for the user
-        Account NewAccount = new Account("Savings",NewUser);
+        Account NewAccount = new Account("Savings", NewUser);
         NewUser.AddAccount(NewAccount);
         this.AddAccount(NewAccount);
         return NewUser;
     }
+
     //Get ATM.ATM.Bank.Bank.User object associated with a particular UserId and password, login if valid
-    public User UserLogin(String UserId, String password)
-    {
+    public User UserLogin(String UserId, String password) {
         //Search through list of Bankusers
-        for (User user : this.BankUsers)
-        {
+        for (User user : this.BankUsers) {
             //Check if UserId is correct
-            if (user.getUID().compareTo(UserId)==0 && user.validatePassword(password, user.getUID()))
-            {
+            if (user.getUID().compareTo(UserId) == 0 && user.validatePassword(password, user.getUID())) {
                 return user;
             }
         }
@@ -104,13 +93,11 @@ public class Bank
         return null;
     }
 
-    public String getBankName()
-    {
+    public String getBankName() {
         return BankName;
     }
 
-    public void setBankName(String bankName)
-    {
+    public void setBankName(String bankName) {
         BankName = bankName;
     }
 }

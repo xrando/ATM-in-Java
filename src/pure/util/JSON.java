@@ -1,9 +1,11 @@
-package ATM.Utilities;
+package pure.util;
 
-import ATM.Bank.Account;
-import ATM.Bank.Transaction;
-import ATM.Constants.Constants;
-import org.json.*;
+import pure.bank.Account;
+import pure.bank.Transaction;
+import pure.constants.Constants;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,17 +14,9 @@ import java.util.logging.Level;
 
 public class JSON {
     private final JSONObject jsonObject = new JSONObject();
-    public <T> JSON(T type){
-        this.jsonObject.put(Constants.JSON.Type, type);
-    }
 
-    public <T> JSON add(String key, T t){
-        try{
-            this.jsonObject.put(key, t);
-        } catch (JSONException e) {
-            LogHelper.log(Level.SEVERE, "Error when adding JSON string.", e);
-        }
-        return this;
+    public <T> JSON(T type) {
+        this.jsonObject.put(Constants.JSON.Type, type);
     }
 
     public static JSONObject tryParse(String input) {
@@ -33,10 +27,6 @@ public class JSON {
             LogHelper.log(Level.SEVERE, "Failed to parse string [" + input + "] to JSON.", e);
         }
         return jo;
-    }
-
-    public String toString(){
-        return this.jsonObject.toString();
     }
 
     public static String parseTransactionsToString(ArrayList<Transaction> transactions) {
@@ -70,5 +60,18 @@ public class JSON {
             ja.put(map);
         });
         return ja;
+    }
+
+    public <T> JSON add(String key, T t) {
+        try {
+            this.jsonObject.put(key, t);
+        } catch (JSONException e) {
+            LogHelper.log(Level.SEVERE, "Error when adding JSON string.", e);
+        }
+        return this;
+    }
+
+    public String toString() {
+        return this.jsonObject.toString();
     }
 }

@@ -1,9 +1,9 @@
-package ATM.Client;
+package pure.test;
 
-import ATM.Constants.Constants;
-
+import pure.constants.Constants;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import pure.client.Client;
 
 public class ClientTest {
 
@@ -12,8 +12,7 @@ public class ClientTest {
             null, null, Constants.SSL.PROTOCOL) {
         @Override
         public <T> String listen(T... input) {
-            this.getSocket().write(input);
-            return getSocket().read();
+            return null;
         }
     };
 

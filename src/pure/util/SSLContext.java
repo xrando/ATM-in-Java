@@ -1,4 +1,4 @@
-package ATM.Utilities;
+package pure.util;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;

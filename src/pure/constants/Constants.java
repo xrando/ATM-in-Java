@@ -1,12 +1,12 @@
-package ATM.Constants;
+package pure.constants;
 
-import ATM.Utilities.ConfigurationManager;
-
+import pure.util.ConfigurationManager;
 
 import java.util.ArrayList;
 
 public abstract class Constants {
     public static final String CONFIG_FILE_NAME = "config.properties";
+
     public abstract static class Stream {
         public final static String EOF = "over";
         public final static String EOS = "exit";

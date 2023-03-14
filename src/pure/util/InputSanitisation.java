@@ -1,4 +1,4 @@
-package ATM.Utilities;
+package pure.util;
 
 public class InputSanitisation {
     public static String validEmail(String email) {
@@ -41,6 +41,7 @@ public class InputSanitisation {
             return "true";
         }
     }
+
     public static void main(String[] args) {
         System.out.println(validEmail("test@test.com"));
         System.out.println(validPin("123456"));

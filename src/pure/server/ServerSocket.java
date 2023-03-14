@@ -1,8 +1,8 @@
-package ATM.Server;
+package pure.server;
 
-import ATM.Client.ClientSocket;
-import ATM.Utilities.SSLContext;
-import ATM.Utilities.LogHelper;
+import pure.client.ClientSocket;
+import pure.util.LogHelper;
+import pure.util.SSLContext;
 
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
@@ -28,18 +28,18 @@ public class ServerSocket extends SSLContext implements AutoCloseable {
         return sslServerSocket != null;
     }
 
-    public ClientSocket accept() {
-        ClientSocket atmSocket = null;
+    public final ClientSocket accept() {
+        ClientSocket socket = null;
         try {
             SSLSocket sslSocket = (SSLSocket) sslServerSocket.accept();
-            atmSocket = new ClientSocket(sslSocket);
+            socket = new ClientSocket(sslSocket);
         } catch (IOException e) {
             LogHelper.log(Level.SEVERE, "I/O error occurred while waiting for connection.", e);
         }
-        return atmSocket;
+        return socket;
     }
 
-    public void close() {
+    public final void close() {
         try {
             this.sslServerSocket.close();
         } catch (IOException e) {

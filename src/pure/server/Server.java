@@ -1,8 +1,7 @@
-package ATM.Client;
+package pure.server;
 
-import ATM.Constants.Constants;
-import ATM.Utilities.Listenable;
-import ATM.Utilities.LogHelper;
+import pure.util.Listenable;
+import pure.util.LogHelper;
 
 import java.io.IOException;
 import java.security.KeyManagementException;
@@ -12,38 +11,35 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.logging.Level;
 
-public abstract class Client implements Listenable, AutoCloseable {
-    private final ClientSocket socket;
+public abstract class Server implements Listenable {
+    private final pure.server.ServerSocket serverSocket;
 
-    public Client(String host, int port, String keyStoreType, String keyStorePath, String keyStorePass,
+    public Server(int port, String keyStoreType, String keyStorePath, String keyStorePass,
                   String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) {
-        ClientSocket s = null;
+        pure.server.ServerSocket ss = null;
         try {
-            s = new ClientSocket(host, port, keyStoreType, keyStorePath, keyStorePass,
-                    keyManagerAlgorithm, trustManagerAlgorithm, protocol); //start new instance of client socket
+            ss = new ServerSocket(port, keyStoreType, keyStorePath, keyStorePass,
+                    keyManagerAlgorithm, trustManagerAlgorithm, protocol);
         } catch (IOException e) {
-            LogHelper.log(Level.SEVERE, "Server is not ready, or wrong host IP / port number.", e);
+            LogHelper.log(Level.SEVERE, "Check port number.", e);
+        } catch (NullPointerException e) {
+            LogHelper.log(Level.SEVERE, "Failed to generate ssl server socket.", e);
         } catch (CertificateException e) {
             LogHelper.log(Level.SEVERE, "Could not load certificate.", e);
         } catch (NoSuchAlgorithmException e) {
             LogHelper.log(Level.SEVERE, "No Provider supports a KeyManagerFactorySpi implementation for the specified algorithm", e);
         } catch (KeyStoreException e) {
-            LogHelper.log(Level.SEVERE, "Failed to laod keystore.", e);
+            LogHelper.log(Level.SEVERE, "Failed to load keystore.", e);
         } catch (UnrecoverableKeyException e) {
             LogHelper.log(Level.SEVERE, "Password might be incorrect.", e);
         } catch (KeyManagementException e) {
             LogHelper.log(Level.SEVERE, "Key expired or failed authorization.", e);
         } finally {
-            this.socket = s;
+            this.serverSocket = ss;
         }
     }
 
-    public final ClientSocket getSocket() {
-        return socket;
-    }
-
-    public final void close() {
-        this.socket.write(Constants.Stream.EOS);
-        this.socket.close();
+    public ServerSocket getServerSocket() {
+        return serverSocket;
     }
 }

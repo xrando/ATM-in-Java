@@ -1,9 +1,9 @@
-package ATM.Client;
+package pure.client;
 
-import ATM.Constants.Constants;
-import ATM.Utilities.SSLContext;
-import ATM.Utilities.JSON;
-import ATM.Utilities.LogHelper;
+import pure.constants.Constants;
+import pure.util.JSON;
+import pure.util.LogHelper;
+import pure.util.SSLContext;
 
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
@@ -50,7 +50,7 @@ public class ClientSocket extends SSLContext implements AutoCloseable {
         return a.toString();
     }
 
-    //push the String to outputstream and add EOF
+    //push the String to output stream and add EOF
     private void write(String s) {
         try {
             this.sslSocket.getOutputStream().write(s.getBytes());
@@ -65,12 +65,12 @@ public class ClientSocket extends SSLContext implements AutoCloseable {
     }
 
     @SafeVarargs
-    public final <T> void write(T... str){
-        if(str.length < 1)
+    public final <T> void write(T... str) {
+        if (str.length < 1)
             return;
 
         JSON j = new JSON(str[0]);
-        for(int i = 1; i < str.length; i+=2) {
+        for (int i = 1; i < str.length; i += 2) {
             j.add(str[i].toString(), i + 1 < str.length ? str[i + 1] : "");
         }
         write(j.toString());

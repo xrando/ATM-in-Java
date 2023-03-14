@@ -1,4 +1,4 @@
-package ATM.Utilities;
+package pure.util;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,7 +12,7 @@ public abstract class LogHelper {
     private final static Logger LOGGER;
 
     static {
-        LOGGER = Logger.getLogger("ATM");
+        LOGGER = Logger.getLogger("pure");
         try {
             Files.createDirectories(Paths.get(ConfigurationManager.GetConfig("LogLocation")));
             FileHandler fileHandler = new FileHandler(ConfigurationManager.GetConfig("LogLocation") + LocalDate.now() + ".log", true);
@@ -24,10 +24,11 @@ public abstract class LogHelper {
         }
     }
 
-    public static void log(Level level, String message, Exception exception){
-        LOGGER.log(level,message,exception);
+    public static void log(Level level, String message, Exception exception) {
+        LOGGER.log(level, message, exception);
     }
-    public static void log(Level level, String message){
-        LOGGER.log(level,message);
+
+    public static void log(Level level, String message) {
+        LOGGER.log(level, message);
     }
 }

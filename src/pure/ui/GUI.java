@@ -1,20 +1,18 @@
-package ATM.Client;
+package pure.ui;
 
-import ATM.Constants.Constants;
-import ATM.Utilities.JSON;
-import ATM.Utilities.LogHelper;
-import ATM.Utilities.InputSanitisation;
+import pure.constants.Constants;
+import pure.client.Client;
+import pure.util.InputSanitisation;
+import pure.util.JSON;
+import pure.util.LogHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.logging.Level;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
+import java.util.logging.Level;
 
 import static java.util.Map.entry;
 
@@ -128,7 +126,7 @@ public class GUI {
     private JLabel lblNewUserValidator;
     private JLabel lblDepositAmountValidator;
     private JScrollPane AllTransactionScoller;
-    private Map<String, String> English = Map.ofEntries(
+    private final Map<String, String> English = Map.ofEntries(
             entry("0", "Username:"),
             entry("1", "Password:"),
             entry("2", "Login"),
@@ -178,7 +176,7 @@ public class GUI {
             entry("46", "Forget Password")
     );
 
-    private Map<String, String> Chinese = Map.ofEntries(
+    private final Map<String, String> Chinese = Map.ofEntries(
             entry("0", "用户名:"),
             entry("1", "密码:"),
             entry("2", "登录"),
@@ -228,45 +226,37 @@ public class GUI {
             entry("46", "忘记密码")
     );
 
-    public GUI(Client client)
-    {
+    public GUI(Client client) {
         final String[] language = new String[]{"eng"};
 
         //Create event listener for login button
-        btnLogin.addActionListener(new ActionListener()
-        {
+        btnLogin.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //Input validation
                 String pinValid = InputSanitisation.validPin(txtPassword.getText());
                 //System.out.println(pinValid);
                 String nameValid = InputSanitisation.validNameString(txtUsername.getText());
                 //System.out.println(nameValid);
                 //if input pass validation
-                if (pinValid.equals("true")&&nameValid.equals("true"))
-                {
+                if (pinValid.equals("true") && nameValid.equals("true")) {
                     //test account username: test, pw:123123
                     //init json object to store replies from server
                     JSONObject jo = JSON.tryParse(client.listen(Constants.User.Login, Constants.User.Password, txtPassword.getText(), Constants.User.Username, txtUsername.getText()));
 
                     //Get user input from textbox and on successful login, show main menu
-                    if (jo.get(Constants.User.LoginStatus).toString().toLowerCase().equals("true"))
-                    {
+                    if (jo.get(Constants.User.LoginStatus).toString().equalsIgnoreCase("true")) {
                         lblLoginValidator.setText("");
-                        if(language[0].equals("eng"))
-                        {
+                        if (language[0].equals("eng")) {
                             //set welcome msg
                             lblWelcomeMessage.setText("Welcome " + txtUsername.getText());
-                        }
-                        else
-                        {
+                        } else {
                             //set welcome msg
                             lblWelcomeMessage.setText("欢迎 " + txtUsername.getText());
                         }
                         //attach main menu screen
-                        setScreen(base,main);
-                        setScreen(screen,menu);
+                        setScreen(base, main);
+                        setScreen(screen, menu);
                         //Onlogin
                         //Select User Account
                         JSONObject SelectAccount = JSON.tryParse(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, 0));
@@ -283,72 +273,57 @@ public class GUI {
                             System.out.print(Constants.Account.UserID + " : " + joo2.get(Constants.Account.UserID) + "\n");*/
 
                             //populate dropdownlists with user accounts
-                            ddlAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
-                            ddlAccount.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
-                            ddlaccount.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
-                            ddlTAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : "+ joo2.get(Constants.Account.AccountId));
+                            ddlAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
+                            ddlAccount.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
+                            ddlaccount.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
+                            ddlTAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
                         });
-                    }
-                    else
-                    {
+                    } else {
                         lblLoginValidator.setText("Wrong credentials");
                     }
-                }
-                else
-                {
-                    if (!pinValid.equals("true"))
-                    {
+                } else {
+                    if (!pinValid.equals("true")) {
                         lblLoginValidator.setText(pinValid);
-                    }
-                    else if (!nameValid.equals("true"))
-                    {
+                    } else if (!nameValid.equals("true")) {
                         lblLoginValidator.setText(nameValid);
                     }
                 }
             }
         });
         //Create event listener for logout button
-        btnLogout.addActionListener(new ActionListener()
-        {
+        btnLogout.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //sent request to server to logout
                 JSONObject logout = JSON.tryParse(client.listen(Constants.User.Logout));
                 txtUsername.setText("");
                 txtPassword.setText("");
                 //re-attach login screen
-                setScreen(base,login);
+                setScreen(base, login);
             }
         });
         //Create event listener for back button
-        btnBack.addActionListener(new ActionListener()
-        {
+        btnBack.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //re-attach main menu
-                setScreen(screen,menu);
+                setScreen(screen, menu);
             }
         });
         //Create event listener for view transactions button
-        btnViewTransactions.addActionListener(new ActionListener()
-        {
+        btnViewTransactions.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //attach view transaction screen
-                setScreen(screen,ViewTransactions);
+                setScreen(screen, ViewTransactions);
             }
         });
         //Create event listener for withdrawal button
-        btnWithdrawal.addActionListener(new ActionListener()
-        {
+        btnWithdrawal.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //attach withdrawal screen
-                setScreen(screen,Withdrawal);
+                setScreen(screen, Withdrawal);
                 String choice = ddlAccounts.getItemAt(ddlAccounts.getSelectedIndex()).toString();
                 //send select account request to server
                 new JSONObject(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, String.valueOf(ddlAccounts.getSelectedIndex())));
@@ -359,13 +334,11 @@ public class GUI {
             }
         });
         //Create event listener for deposit button
-        btnDeposit.addActionListener(new ActionListener()
-        {
+        btnDeposit.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //attach deposit screen
-                setScreen(screen,Deposit);
+                setScreen(screen, Deposit);
                 String choice = ddlAccounts.getItemAt(ddlAccounts.getSelectedIndex()).toString();
                 //send select account request to server
                 new JSONObject(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, ddlAccounts.getSelectedIndex()));
@@ -376,13 +349,11 @@ public class GUI {
             }
         });
         //Create event listener for bank transfer button
-        btnBankTransfer.addActionListener(new ActionListener()
-        {
+        btnBankTransfer.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //attach bank transfer screen
-                setScreen(screen,BankTransfer);
+                setScreen(screen, BankTransfer);
                 String choice = ddlAccounts.getItemAt(ddlAccounts.getSelectedIndex()).toString();
                 //send select account request to server
                 new JSONObject(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, ddlAccounts.getSelectedIndex()));
@@ -393,11 +364,9 @@ public class GUI {
             }
         });
         //Create event listener for settings button
-        btnSettings.addActionListener(new ActionListener()
-        {
+        btnSettings.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //send Get User Info request
                 JSONObject GetUserInfo = JSON.tryParse(client.listen(Constants.User.GetUserInformation));
                 //populate fields with current user data
@@ -405,43 +374,32 @@ public class GUI {
                 txtEmailAddress.setText(GetUserInfo.get(Constants.User.Email).toString());
                 txtPhoneNumber.setText(GetUserInfo.get(Constants.User.Phone).toString());
                 //attach settings screen
-                setScreen(screen,Settings);
+                setScreen(screen, Settings);
             }
         });
         //Create event listener for change password button
-        btnChangePassword.addActionListener(new ActionListener()
-        {
+        btnChangePassword.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //attach change password screen
-                setScreen(screen,ChangePassword);
+                setScreen(screen, ChangePassword);
             }
         });
         //Create event listener for update password button
-        btnUpdatePassword.addActionListener(new ActionListener()
-        {
+        btnUpdatePassword.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //Input validation
                 String result = InputSanitisation.validPin(txtOldPassword.getText());
                 String result1 = InputSanitisation.validPin(txtNewPassword.getText());
                 String result2 = InputSanitisation.validPin(txtConfirmPassword.getText());
-                if (!InputSanitisation.validPin(txtOldPassword.getText()).equals("true"))
-                {
+                if (!InputSanitisation.validPin(txtOldPassword.getText()).equals("true")) {
                     lblConfirmPasswordValidator.setText("Old password is invalid. " + result);
-                }
-                else if (!InputSanitisation.validPin(txtNewPassword.getText()).equals("true"))
-                {
+                } else if (!InputSanitisation.validPin(txtNewPassword.getText()).equals("true")) {
                     lblConfirmPasswordValidator.setText("New password is invalid. " + result1);
-                }
-                else if (!InputSanitisation.validPin(txtConfirmPassword.getText()).equals("true"))
-                {
+                } else if (!InputSanitisation.validPin(txtConfirmPassword.getText()).equals("true")) {
                     lblConfirmPasswordValidator.setText("Confirm password is invalid. " + result2);
-                }
-                else if(txtNewPassword.getText().equals(txtConfirmPassword.getText()))
-                {
+                } else if (txtNewPassword.getText().equals(txtConfirmPassword.getText())) {
                     //send request to server for password change
                     JSONObject jo = JSON.tryParse(client.listen(Constants.User.ChangePin
                             , Constants.User.oldPin, txtOldPassword.getText()
@@ -451,9 +409,7 @@ public class GUI {
                     } else {
                         lblConfirmPasswordValidator.setText("Password changed successfully");
                     }
-                }
-                else
-                {
+                } else {
                     lblConfirmPasswordValidator.setText("Ensure that new password and confirm password entered are the same");
                 }
                 //clear textbox
@@ -464,58 +420,43 @@ public class GUI {
             }
         });
         //Create event listener for save changes button
-        btnSaveChanges.addActionListener(new ActionListener()
-        {
+        btnSaveChanges.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //if phone number entered is not integer (incorrect format)
-                try
-                {
+                try {
                     Integer.parseInt(txtPhoneNumber.getText());
                     //send request to update particulars
                     JSONObject jo = JSON.tryParse(client.listen(Constants.User.UpdateUser, Constants.User.Username, txtUserName.getText(), Constants.User.Email, txtEmailAddress.getText(), Constants.User.Phone, txtPhoneNumber.getText()));
                     //display updated message if changes found
                     lblChangeSuccessful.setText("Particulars updated!");
-                }
-                catch (NumberFormatException ex)
-                {
+                } catch (NumberFormatException ex) {
                     //log
                     LogHelper.log(Level.SEVERE, "Phone number must be an integer.", ex);
                     //validator label
-                    if(language[0].equals("eng"))
-                    {
+                    if (language[0].equals("eng")) {
                         lblChangeSuccessful.setText("Phone number must be an integer.");
-                    }
-                    else
-                    {
+                    } else {
                         lblChangeSuccessful.setText("电话号码必须是整数.");
                     }
                 }
             }
         });
         //Create event listener for confirm withdrawal button
-        btnConfirmWithdrawal.addActionListener(new ActionListener()
-        {
+        btnConfirmWithdrawal.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //if amount entered is not integer (incorrect format)
-                try
-                {
+                try {
                     //input validation to check if input withdrawal amount is higher than current balance
-                    if(Double.parseDouble(lblAccountBalance.getText().substring(1))<Double.parseDouble(txtWithdrawalAmount.getText()))
-                    {
+                    if (Double.parseDouble(lblAccountBalance.getText().substring(1)) < Double.parseDouble(txtWithdrawalAmount.getText())) {
                         //display error message
                         lblWithdrawalAmountValidator.setText("Amount entered must not exceed current account balance");
-                    }
-                    else
-                    {
+                    } else {
                         Integer.parseInt(txtWithdrawalAmount.getText());
                         //set transaction note to withdrawal if left empty
-                        String note="Withdrawal";
-                        if (!txtWithdrawalNote.getText().equals(""))
-                        {
+                        String note = "Withdrawal";
+                        if (!txtWithdrawalNote.getText().equals("")) {
                             note = txtWithdrawalNote.getText();
                         }
                         //create new transaction entry
@@ -524,88 +465,71 @@ public class GUI {
                         //update lblAccountBalance with updated account balance
                         lblAccountBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
                     }
-                }
-                catch (NumberFormatException ex)
-                {
+                } catch (NumberFormatException ex) {
                     //log
                     LogHelper.log(Level.SEVERE, "Withdrawal amount must be in integer.", ex);
                     //validator label
-                    if(language[0].equals("eng"))
-                    {
+                    if (language[0].equals("eng")) {
                         lblWithdrawalAmountValidator.setText("Withdrawal amount must be in integer.");
-                    }
-                    else
-                    {
+                    } else {
                         lblWithdrawalAmountValidator.setText("取款金额必须为整数.");
                     }
                 }
             }
         });
         //Create event listener for language button
-        btnChangeLang.addActionListener(new ActionListener()
-        {
+        btnChangeLang.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //attach change language screen
-                setScreen(base,changeLanguage);
+                setScreen(base, changeLanguage);
             }
         });
         //set language to chinese
-        btnChinese.addActionListener(new ActionListener()
-        {
+        btnChinese.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 language[0] = "chi";
                 setLanguage(Chinese);
-                setScreen(base,login);
+                setScreen(base, login);
             }
         });
         //set language to english
-        btnEnglish.addActionListener(new ActionListener()
-        {
+        btnEnglish.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 language[0] = "eng";
                 setLanguage(English);
-                setScreen(base,login);
+                setScreen(base, login);
             }
         });
         //TODO: view account summary (to remove?)
-        btnViewAccountSummary.addActionListener(new ActionListener()
-        {
+        btnViewAccountSummary.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //Send request to server to get account summary information for current user
                 //JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.AllAccountSummary).toString()));
                 //populate view account summary screen with data
                 //AccountSummary.setText(jo.toString());
                 //attach view account summary screen
-                setScreen(screen,ViewAccountSummary);
+                setScreen(screen, ViewAccountSummary);
             }
         });
         //go to create new user page
-        btnNewUser.addActionListener(new ActionListener()
-        {
+        btnNewUser.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //populate create new user dropdownlist
                 ddlNewUserAccount.addItem("savings");
                 ddlNewUserAccount.addItem("current");
                 //attach create new user screen
-                setScreen(base,NewUser);
+                setScreen(base, NewUser);
             }
         });
         //submit create new user request
-        btnCreateNewUser.addActionListener(new ActionListener()
-        {
+        btnCreateNewUser.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //send request to create new user to server
                 String username = txtNewUsername.getText();
                 String password = txtNewUserPassword.getText();
@@ -625,8 +549,7 @@ public class GUI {
                 //    return;
                 //}
 
-                if (result.equals("true")&&emailResult.equals("true"))
-                {
+                if (result.equals("true") && emailResult.equals("true")) {
                     JSONObject jo = JSON.tryParse(client.listen(Constants.User.CreateUser
                             , Constants.User.Username, txtNewUsername.getText()
                             , Constants.User.Password, txtNewUserPassword.getText()
@@ -636,15 +559,10 @@ public class GUI {
                     lblNewUserValidator.setText("User created successfully");
                     //attach login screen
                     //setScreen(base,login);
-                }
-                else
-                {
-                    if (!result.equals("true"))
-                    {
+                } else {
+                    if (!result.equals("true")) {
                         lblNewUserValidator.setText(result);
-                    }
-                    else if(!emailResult.equals("true"))
-                    {
+                    } else if (!emailResult.equals("true")) {
                         lblNewUserValidator.setText(emailResult);
                     }
                 }
@@ -652,35 +570,26 @@ public class GUI {
             }
         });
         //back to login screen
-        btnNewUserBack.addActionListener(new ActionListener()
-        {
+        btnNewUserBack.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                setScreen(base,login);
+            public void actionPerformed(ActionEvent e) {
+                setScreen(base, login);
             }
         });
-        btnConfirmDeposit.addActionListener(new ActionListener()
-        {
+        btnConfirmDeposit.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //catch if amount entered is not integer (incorrect format)
-                try
-                {
+                try {
                     //input validation to check if input deposit amount is higher than current balance
-                    if(Double.parseDouble(lblAccountbalance.getText().substring(1))<Double.parseDouble(txtDepositAmount.getText()))
-                    {
+                    if (Double.parseDouble(lblAccountbalance.getText().substring(1)) < Double.parseDouble(txtDepositAmount.getText())) {
                         lblDepositAmountValidator.setText("Amount entered must not exceed current account balance");
-                    }
-                    else
-                    {
+                    } else {
                         Integer.parseInt(txtDepositAmount.getText());
                         //create new transaction entry
                         //set transaction note to deposit if left empty
-                        String note="Deposit";
-                        if (!txtDepositNote.getText().equals(""))
-                        {
+                        String note = "Deposit";
+                        if (!txtDepositNote.getText().equals("")) {
                             note = txtDepositNote.getText();
                         }
                         //create new transaction entry
@@ -691,39 +600,28 @@ public class GUI {
                     }
 
 
-                }
-                catch (NumberFormatException ex)
-                {
+                } catch (NumberFormatException ex) {
                     //log
                     LogHelper.log(Level.SEVERE, "Deposit amount must be in integer.", ex);
                     //validator label
-                    if(language[0].equals("eng"))
-                    {
+                    if (language[0].equals("eng")) {
                         lblWithdrawalAmountValidator.setText("Deposit amount must be in integer.");
-                    }
-                    else
-                    {
+                    } else {
                         lblWithdrawalAmountValidator.setText("入金金额必须为整数.");
                     }
                 }
 
             }
         });
-        btnTransfer.addActionListener(new ActionListener()
-        {
+        btnTransfer.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 //catch if amount entered is not integer (incorrect format)
-                try
-                {
+                try {
                     //input validation to check if input transfer amount is higher than current balance
-                    if(Double.parseDouble(lblAccBalance.getText().substring(1))<Double.parseDouble(txtTransferAmount.getText()))
-                    {
+                    if (Double.parseDouble(lblAccBalance.getText().substring(1)) < Double.parseDouble(txtTransferAmount.getText())) {
                         lblTransferAmountValidator.setText("Amount entered must not exceed current account balance");
-                    }
-                    else
-                    {
+                    } else {
                         Integer.parseInt(txtTransferAmount.getText());
                         //create new transaction entry
                         JSONObject transfer = new JSONObject(client.listen(Constants.Transaction.Transfer
@@ -733,29 +631,22 @@ public class GUI {
                         //update lblAccBalance with updated account balance
                         lblAccBalance.setText("$" + transfer.get(Constants.Account.GetAccountBalance).toString());
                     }
-                }
-                catch (NumberFormatException ex)
-                {
+                } catch (NumberFormatException ex) {
                     //log
                     LogHelper.log(Level.SEVERE, "Transfer amount must be in integer.", ex);
                     //validator label
-                    if(language[0].equals("eng"))
-                    {
+                    if (language[0].equals("eng")) {
                         lblTransferAmountValidator.setText("Transfer amount must be in integer.");
-                    }
-                    else
-                    {
+                    } else {
                         lblTransferAmountValidator.setText("转账金额必须为整数.");
                     }
                 }
             }
         });
         //add action listener for withdrawal dropdownlist
-        ddlAccounts.addActionListener(new ActionListener()
-        {
+        ddlAccounts.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 String choice = ddlAccounts.getItemAt(ddlAccounts.getSelectedIndex()).toString();
                 //send select account request to server
                 JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, ddlAccounts.getSelectedIndex()));
@@ -766,11 +657,9 @@ public class GUI {
             }
         });
         //add action listener for transaction history dropdownlist
-        ddlTAccounts.addActionListener(new ActionListener()
-        {
+        ddlTAccounts.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 String choice = ddlTAccounts.getItemAt(ddlTAccounts.getSelectedIndex()).toString();
                 //send select acc request to server
                 JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, ddlTAccounts.getSelectedIndex()));
@@ -789,7 +678,7 @@ public class GUI {
                     System.out.print(Constants.Transaction.TimeStamp + " : " + joo.get(Constants.Transaction.TimeStamp) + "\n");
 
                     //append new transactions to text area
-                    AllTransactions.append("  Transaction Note: "+ joo.get(Constants.Transaction.TransactionNote) + "\n");
+                    AllTransactions.append("  Transaction Note: " + joo.get(Constants.Transaction.TransactionNote) + "\n");
                     AllTransactions.append("  Amount: $" + joo.get(Constants.Transaction.Amount) + "\n");
                     AllTransactions.append("  Transaction Date: " + joo.get(Constants.Transaction.date) + "\n");
                     AllTransactions.append("  Transaction Time: " + joo.get(Constants.Transaction.TimeStamp) + "\n");
@@ -800,11 +689,9 @@ public class GUI {
             }
         });
         //add action listener for deposit dropdownlist
-        ddlAccount.addActionListener(new ActionListener()
-        {
+        ddlAccount.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 String choice = ddlAccount.getItemAt(ddlAccount.getSelectedIndex()).toString();
                 //send select account request to server
                 JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SelectAccount
@@ -816,27 +703,20 @@ public class GUI {
             }
         });
         //add event listener for forget password
-        btnForgetPassword.addActionListener(new ActionListener()
-        {
+        btnForgetPassword.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if (txtUsername.getText().equals(""))
-                {
+            public void actionPerformed(ActionEvent e) {
+                if (txtUsername.getText().equals("")) {
                     lblLoginValidator.setText("Enter Username to change password!");
-                }
-                else
-                {
+                } else {
                     //send request to server to change password
                     JSONObject jo = JSON.tryParse(client.listen(Constants.User.ForgetPin, Constants.User.Username, txtUsername.getText()));
                 }
             }
         });
-        ddlaccount.addActionListener(new ActionListener()
-        {
+        ddlaccount.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 String choice = ddlaccount.getItemAt(ddlaccount.getSelectedIndex()).toString();
                 //send select account request to server
                 JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SelectAccount
@@ -848,10 +728,13 @@ public class GUI {
             }
         });
     }
-    
+
+    public static void main(String[] args) throws Exception {
+
+    }
+
     //setLanguage for all buttons and labels
-    protected void setLanguage(Map<String, String> language)
-    {
+    protected void setLanguage(Map<String, String> language) {
         //login
         lblUser.setText(language.get("0"));
         lblPass.setText(language.get("1"));
@@ -920,21 +803,16 @@ public class GUI {
         btnViewAccountSummary.setText(language.get("45"));
         lblViewAccountSummary.setText(language.get("45"));
     }
-    public JPanel getBase()
-    {
+
+    public JPanel getBase() {
         return base;
     }
 
-    protected void setScreen(JPanel cardLayoutBase, JPanel screenName)
-    {
+    protected void setScreen(JPanel cardLayoutBase, JPanel screenName) {
         //attach screen
         cardLayoutBase.removeAll();
         cardLayoutBase.add(screenName);
         cardLayoutBase.repaint();
         cardLayoutBase.revalidate();
-    }
-
-    public static void main(String[] args) throws Exception {
-
     }
 }

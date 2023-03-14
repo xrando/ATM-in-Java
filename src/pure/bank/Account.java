@@ -1,11 +1,11 @@
-package ATM.Bank;
+package pure.bank;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-
-import ATM.Utilities.TableHelper;
 
 public class Account {
     private String AccountName;
@@ -16,7 +16,7 @@ public class Account {
     private ArrayList<Transaction> AccountTransactions;
     //Create a new account
 
-    public Account(){
+    public Account() {
 
     }
 
@@ -34,17 +34,17 @@ public class Account {
         this.AccountTransactions = new ArrayList<Transaction>();
     }
 
-    public Account(int accountID){ //Created a new constructor to accept accountID
+    public Account(int accountID) { //Created a new constructor to accept accountID
         this.AccountName = "Default";
         this.accountID = Integer.toString(accountID);
 
     }
 
-    public Account(String accountID, String accountType,String userID) {
+    public Account(String accountID, String accountType, String userID) {
         //Set account name and account holder
         this.accountID = accountID;
-        this.accountType =accountType;
-        this.userID =userID;
+        this.accountType = accountType;
+        this.userID = userID;
         //Generate new account UID
         //this.UID = CurrentBank.generateNewAccountUID();
         //Initialize transactions
@@ -54,7 +54,9 @@ public class Account {
     public Account(String savings, User newUser) {
     }
 
-    public String getAccountType(){ return this.accountType;}
+    public String getAccountType() {
+        return this.accountType;
+    }
 
     public String getUID() {
         return this.userID;
@@ -69,17 +71,17 @@ public class Account {
     }
 
     public ArrayList<Transaction> retrieveAccountTransactions() {
-        ArrayList <Transaction> AccountTransactions = new ArrayList<Transaction>();
-        try{
+        ArrayList<Transaction> AccountTransactions = new ArrayList<Transaction>();
+        try {
             Connection conn = sqliteDatabase.connect();
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM transactions WHERE accountID = ?");
             ps.setString(1, this.accountID);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 //Add to AccountTransactions
                 //System.out.print(rs.getString("accountID"));
                 //System.out.print(rs.getString("amount"));
-                AccountTransactions.add(new Transaction(rs.getDouble("amount"), rs.getString("transactionNote"), rs.getString("date"), rs.getString("timeStamp"), rs.getString("payee") ,rs.getString("accountID")));
+                AccountTransactions.add(new Transaction(rs.getDouble("amount"), rs.getString("transactionNote"), rs.getString("date"), rs.getString("timeStamp"), rs.getString("payee"), rs.getString("accountID")));
             }
             conn.close();
         } catch (SQLException e) {
@@ -90,24 +92,23 @@ public class Account {
     }
 
     public double GetAccountBalance() {
-        double balance =0;
-        ArrayList <Transaction> AccountTransactions = new ArrayList<Transaction>();
+        double balance = 0;
+        ArrayList<Transaction> AccountTransactions = new ArrayList<Transaction>();
         AccountTransactions = this.retrieveAccountTransactions();
-        for(Transaction transaction : AccountTransactions)
-        {
-            balance+=transaction.getAmount();
+        for (Transaction transaction : AccountTransactions) {
+            balance += transaction.getAmount();
         }
         return balance;
     }
 
-    public List<Account> getTransactionAccount(String UID){
+    public List<Account> getTransactionAccount(String UID) {
         List<Account> accountList = new ArrayList<Account>();
-        try{
+        try {
             Connection conn = sqliteDatabase.connect();
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM accounts WHERE userID = ?");
             ps.setString(1, UID);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 accountList.add(new Account(rs.getString("accountID"),
                         rs.getString("accountType"),
                         rs.getString("userID")));
@@ -119,8 +120,8 @@ public class Account {
         return accountList;
     }
 
-    public boolean createAccount(int selection,String userID) {
-        String createType ="";
+    public boolean createAccount(int selection, String userID) {
+        String createType = "";
         switch (selection) {
             case 0:
                 createType = "savings";

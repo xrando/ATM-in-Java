@@ -1,31 +1,26 @@
-package ATM.Utilities;//mail
+package pure.util;//mail
+
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.speech.AudioException;
+import javax.speech.Central;
 import javax.speech.EngineException;
-import javax.swing.text.Document;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.*;
-//file
+import javax.speech.synthesis.Synthesizer;
+import javax.speech.synthesis.SynthesizerModeDesc;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-//TTS
+import java.io.IOException;
 import java.util.Locale;
-import javax.speech.Central;
-import javax.speech.synthesis.Synthesizer;
-import javax.speech.synthesis.SynthesizerModeDesc;
-public class Helper
-{
-    public static void WriteDoc(String content)
-    {
+import java.util.Properties;
+
+public class Helper {
+    public static void WriteDoc(String content) {
         try {
             File file = new File("Invoice.txt");
 
             // If file doesn't exist, then create it
-            if (!file.exists())
-            {
+            if (!file.exists()) {
                 file.createNewFile();
             }
 
@@ -35,13 +30,12 @@ public class Helper
             bw.close();
 
             System.out.println("File created successfully!");
-        }
-        catch (IOException e)
-        {
-            System.out.println("IO exception caught: "+e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO exception caught: " + e.getMessage());
         }
 
     }
+
     /*Sample message body for invoice
     StringBuilder str = new StringBuilder();
         str.append("ATM.ATM.Bank.Bank.Transaction Ref: " + "UID" + "\n\n");
@@ -57,8 +51,7 @@ public class Helper
                 "Pure ATM.Bank.Bank Ltd\n" +
                 "\n" +
                 "Please do not reply to this email as it is auto-generated.\n"); */
-    public static void SendMail(String ReceiverEmail, String Subject, String Body) 
-    {
+    public static void SendMail(String ReceiverEmail, String Subject, String Body) {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -80,13 +73,10 @@ public class Helper
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(ReceiverEmail));
             message.setSubject(Subject);
             //Format email body
-            if (Body != "")
-            {
+            if (Body != "") {
                 //Add text to email
                 message.setText(Body);
-            }
-            else
-            {
+            } else {
                 //Attach invoice to email
                 // Create the attachment
                 MimeBodyPart Attachment = new MimeBodyPart();
@@ -103,27 +93,20 @@ public class Helper
             //Log
             System.out.println("Email sent successfully!");
 
-        }
-        catch (AddressException e)
-        {
-            System.out.println("Address exception caught: "+e.getMessage());
-        }
-        catch (MessagingException e)
-        {
-            System.out.println("Messaging exception caught: "+e.getMessage());
-        }
-        catch (IOException e)
-        {
-            System.out.println("IO exception caught: "+e.getMessage());
+        } catch (AddressException e) {
+            System.out.println("Address exception caught: " + e.getMessage());
+        } catch (MessagingException e) {
+            System.out.println("Messaging exception caught: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO exception caught: " + e.getMessage());
         }
 
     }
+
     //sample
     //TextToSpeech.TTS("Hi my name is benjamin");
-    public static void TTS(String Text)
-    {
-        try
-        {
+    public static void TTS(String Text) {
+        try {
             //setting properties as Kevin Dictionary
             System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us" + ".cmu_us_kal.KevinVoiceDirectory");
             //registering speech engine
@@ -139,18 +122,12 @@ public class Helper
             synthesizer.waitEngineState(Synthesizer.QUEUE_EMPTY);
             //deallocating the Synthesizer
             synthesizer.deallocate();
-        }
-        catch (AudioException e)
-        {
-            System.out.println("Audio exception caught: "+e.getMessage());
-        }
-        catch (EngineException e)
-        {
-            System.out.println("Engine exception caught: "+e.getMessage());
-        }
-        catch (InterruptedException e)
-        {
-            System.out.println("Interrupted exception caught: "+e.getMessage());
+        } catch (AudioException e) {
+            System.out.println("Audio exception caught: " + e.getMessage());
+        } catch (EngineException e) {
+            System.out.println("Engine exception caught: " + e.getMessage());
+        } catch (InterruptedException e) {
+            System.out.println("Interrupted exception caught: " + e.getMessage());
         }
     }
 }

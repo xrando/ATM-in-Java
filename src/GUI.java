@@ -1,5 +1,5 @@
-import ATM.Client.Client;
-import ATM.Constants.Constants;
+import pure.client.Client;
+import pure.constants.Constants;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -15,7 +15,7 @@ public class GUI {
                 return getSocket().read();
             }
         };
-        ATM.Client.GUI UI = new ATM.Client.GUI(client);
+        pure.ui.GUI UI = new pure.ui.GUI(client);
         JFrame frame = new JFrame("Pure ATM");
         frame.setContentPane(UI.getBase());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

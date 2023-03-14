@@ -1,7 +1,7 @@
-package ATM.Utilities;
+package pure.util;
 
-import ATM.Bank.Bank;
-import ATM.Bank.User;
+import pure.bank.Bank;
+import pure.bank.User;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -29,15 +29,15 @@ public class CSVHelper {
             }
         }
         try {
-        FileWriter fw = new FileWriter(file, StandardCharsets.UTF_8, true);
-        if (file.length() == 0) {
-            // Create Header
-            for (int i = 0; i< User_Headers.length; i++) {
-                fw.append(User_Headers[i]);
-                if (i != User_Headers.length - 1) {
-                    fw.append(CSV_SEPARATOR);
+            FileWriter fw = new FileWriter(file, StandardCharsets.UTF_8, true);
+            if (file.length() == 0) {
+                // Create Header
+                for (int i = 0; i < User_Headers.length; i++) {
+                    fw.append(User_Headers[i]);
+                    if (i != User_Headers.length - 1) {
+                        fw.append(CSV_SEPARATOR);
+                    }
                 }
-            }
                 fw.append("\n");
             }
             //FileWriter fw = new FileWriter(file, true); //Append to EOF
@@ -82,6 +82,7 @@ public class CSVHelper {
             e.printStackTrace();
         }
     }
+
     // Sample usage TODO
     public static void main(String[] args) throws IOException {
         User test = new User("test", "test", "test", "test", new Bank("test"));

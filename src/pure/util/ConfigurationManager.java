@@ -1,6 +1,6 @@
-package ATM.Utilities;
+package pure.util;
 
-import ATM.Constants.Constants;
+import pure.constants.Constants;
 
 import java.io.IOException;
 import java.io.InputStream;

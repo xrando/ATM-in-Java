@@ -1,22 +1,20 @@
-package ATM.Bank;
+package pure.bank;
 
-import ATM.Utilities.Helper;
-import ATM.Utilities.TableHelper;
-
-import java.sql.*;
-import java.util.Date;
-import java.util.Scanner;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class Transaction {
-    private double Amount;
+    private final double Amount;
     private String timeStamp;
     private String date;
-    private String TransactionNote;
-    private String accountID;
-    private String payee;
+    private final String TransactionNote;
+    private final String accountID;
+    private final String payee;
 
     //Create a new transaction
     public Transaction(double NewAmount, String NewTransactionNote, String accountID) {
@@ -33,7 +31,7 @@ public class Transaction {
     }
 
     //Create a new transaction (with payee)
-    public Transaction(double NewAmount, String NewTransactionNote, String payee,String accountID) {
+    public Transaction(double NewAmount, String NewTransactionNote, String payee, String accountID) {
         //Set new transaction Amount
         this.Amount = NewAmount;
         //Set new transaction note
@@ -46,8 +44,8 @@ public class Transaction {
         this.payee = payee;
     }
 
-    public Transaction(){
-        this.Amount=0;
+    public Transaction() {
+        this.Amount = 0;
         //Set new transaction note
         this.TransactionNote = "NewTransactionNote";
         this.accountID = null;
@@ -56,13 +54,35 @@ public class Transaction {
 
     // Perhaps ATM.ATM.Bank.Bank.Transaction constructor can add a date and time stamp so that we don't have to access the database to get it for each transaction
     // Add a transaction ID as well
-    public Transaction(double amount, String transactionNote, String date, String timeStamp,String payee, String accountID) {
+    public Transaction(double amount, String transactionNote, String date, String timeStamp, String payee, String accountID) {
         this.Amount = amount;
         this.date = date;
         this.timeStamp = timeStamp;
         this.TransactionNote = transactionNote;
         this.accountID = accountID;
         this.payee = payee;
+    }
+
+    public static void transactionEmail(Transaction transactionDetails, String username, String email) {
+        // Send email to user with new password
+        String subject = "Transaction Alert";
+        String body = "Dear " + username + ",\n\n" +
+                "We refer to your Transaction dated " + transactionDetails.getTransactionDate() + ". We are pleased to confirm that the transaction was completed.\n\n" +
+                "Date & Time: " + transactionDetails.getTransactionDate() + " , " + transactionDetails.getTransactionTime() + "\n" +
+                "Amount: " + (-transactionDetails.getAmount()) + "\n" +
+                "From: " + transactionDetails.getAccountID() + "\n" +
+                "To: " + transactionDetails.getPayee() + "\n\n" +
+                "To view your transactions, login to your account to view your transaction history.\n" +
+                "If you did not request a password change, please contact us immediately.\n\n" +
+                "Pure Bank LTD\n" +
+                "pureinc933@gmail.com\n\n" +
+                "Please do not reply to this email as it is automatically generated.";
+        // Send email
+        //Helper.SendMail(email , subject, body);
+    }
+
+    public static void main(String[] args) {
+
     }
 
     public double getAmount() {
@@ -83,11 +103,12 @@ public class Transaction {
         String strTime = dateFormat.format(date);
         return strTime;
     }
-    public String getTransactionDate(){
+
+    public String getTransactionDate() {
         return this.date;
     }
 
-    public String getTransactionTime(){
+    public String getTransactionTime() {
         return this.timeStamp;
     }
 
@@ -102,9 +123,9 @@ public class Transaction {
         return TransactionNote;
     }
 
-    public boolean AddTransactionToSQL(Transaction transactionDetails){
+    public boolean AddTransactionToSQL(Transaction transactionDetails) {
         String sql = "INSERT INTO transactions( amount, timeStamp, transactionNote, date, payee,accountID) VALUES(?,?,?,?,?,?)";
-        if (transactionDetails.payee !="") {
+        if (transactionDetails.payee != "") {
             //deduct for account owner
             try (Connection conn = sqliteDatabase.connect();
                  PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -150,28 +171,6 @@ public class Transaction {
                 return false;
             }
         }
-    }
-
-    public static void transactionEmail(Transaction transactionDetails,String username, String email){
-        // Send email to user with new password
-        String subject = "Transaction Alert";
-        String body = "Dear " + username + ",\n\n" +
-                "We refer to your Transaction dated "+ transactionDetails.getTransactionDate() + ". We are pleased to confirm that the transaction was completed.\n\n" +
-                "Date & Time: " + transactionDetails.getTransactionDate() + " , " + transactionDetails.getTransactionTime() + "\n" +
-                "Amount: " + (-transactionDetails.getAmount()) +"\n"+
-                "From: " + transactionDetails.getAccountID() +"\n"+
-                "To: " + transactionDetails.getPayee() +"\n\n"+
-                "To view your transactions, login to your account to view your transaction history.\n" +
-                "If you did not request a password change, please contact us immediately.\n\n" +
-                "Pure Bank LTD\n"+
-                "pureinc933@gmail.com\n\n"+
-                "Please do not reply to this email as it is automatically generated.";
-        // Send email
-        //Helper.SendMail(email , subject, body);
-    }
-
-    public static void main(String[] args) {
-
     }
 }
 
