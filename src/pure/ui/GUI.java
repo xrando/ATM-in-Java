@@ -52,19 +52,19 @@ public class GUI {
     private JPanel ChangePassword;
     private JButton btnSaveChanges;
     private JLabel lblChangeSuccessful;
-    private JComboBox ddlAccounts;
-    private JLabel lblAccountBalance;
+    private JComboBox ddlWithdrawAccounts;
+    private JLabel lblWithdrawAccountBalance;
     private JTextField txtWithdrawalAmount;
     private JLabel lblWithdrawalAmountValidator;
     private JButton btnConfirmWithdrawal;
-    private JComboBox ddlAccount;
+    private JComboBox ddlDepositAccounts;
     private JTextField txtDepositAmount;
-    private JLabel lblAccountbalance;
+    private JLabel lblDepositAccountbalance;
     private JButton btnConfirmDeposit;
     private JLabel lblWelcomeMessage;
-    private JComboBox ddlaccount;
-    private JLabel lblAccBalance;
-    private JTextField txtTransferTo;
+    private JComboBox ddlTransferAccounts;
+    private JLabel lblTransferAccountBalance;
+    private JTextField txtTransferToAccount;
     private JTextField txtTransferAmount;
     private JButton btnTransfer;
     private JTextField txtWithdrawalNote;
@@ -78,21 +78,21 @@ public class GUI {
     private JLabel lblUser;
     private JLabel lblPass;
     private JLabel lblViewTransaction;
-    private JLabel lblwithdraw;
-    private JLabel lblwAcc;
-    private JLabel lblwTnote;
-    private JLabel lblwBal;
-    private JLabel lblwAmt;
-    private JLabel lbldeposit;
-    private JLabel lbldAcc;
-    private JLabel lbldTnote;
-    private JLabel lbldBalance;
-    private JLabel lbldAmt;
-    private JLabel lblbankTransfer;
-    private JLabel lbltAcc;
-    private JLabel lbltBalance;
-    private JLabel lbltransferAccount;
-    private JLabel lbltransferAmount;
+    private JLabel lblWithdraw;
+    private JLabel lblWithdrawAccount;
+    private JLabel lblWithdrawalNote;
+    private JLabel lblWithdrawalBalance;
+    private JLabel lblWithdrawalAmount;
+    private JLabel lblDeposit;
+    private JLabel lblDepositAccount;
+    private JLabel lblDepositNote;
+    private JLabel lblDepositBalance;
+    private JLabel lblDepositAmount;
+    private JLabel lblBankTransfer;
+    private JLabel lblTransferAccount;
+    private JLabel lblTransferBalance;
+    private JLabel lblTransferToAccount;
+    private JLabel lblTransferAmount;
     private JLabel lblsetting;
     private JLabel lblsUser;
     private JLabel lblEmail;
@@ -115,7 +115,7 @@ public class GUI {
     private JButton btnNewUserBack;
     private JLabel lblNewUserpw;
     private JLabel lblTransferAmountValidator;
-    private JComboBox ddlTAccounts;
+    private JComboBox ddlTransactionAccounts;
     private JButton btnForgetPassword;
     private JLabel lblNewUserEmail;
     private JTextField txtNewUserEmail;
@@ -273,10 +273,10 @@ public class GUI {
                             System.out.print(Constants.Account.UserID + " : " + joo2.get(Constants.Account.UserID) + "\n");*/
 
                             //populate dropdownlists with user accounts
-                            ddlAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
-                            ddlAccount.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
-                            ddlaccount.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
-                            ddlTAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
+                            ddlWithdrawAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
+                            ddlDepositAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
+                            ddlTransferAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
+                            ddlTransactionAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
                         });
                     } else {
                         lblLoginValidator.setText("Wrong credentials");
@@ -324,13 +324,13 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 //attach withdrawal screen
                 setScreen(screen, Withdrawal);
-                String choice = ddlAccounts.getItemAt(ddlAccounts.getSelectedIndex()).toString();
+                String choice = ddlWithdrawAccounts.getItemAt(ddlWithdrawAccounts.getSelectedIndex()).toString();
                 //send select account request to server
-                new JSONObject(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, String.valueOf(ddlAccounts.getSelectedIndex())));
+                new JSONObject(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, String.valueOf(ddlWithdrawAccounts.getSelectedIndex())));
                 //Onclick, send request to server to get balance of accountId selected
                 JSONObject jo = JSON.tryParse(client.listen(Constants.Account.GetAccountBalance, Constants.Account.AccountId, choice));
                 //update balance label to display updated balance amount
-                lblAccountBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
+                lblWithdrawAccountBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
             }
         });
         //Create event listener for deposit button
@@ -339,13 +339,13 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 //attach deposit screen
                 setScreen(screen, Deposit);
-                String choice = ddlAccounts.getItemAt(ddlAccounts.getSelectedIndex()).toString();
+                String choice = ddlDepositAccounts.getItemAt(ddlDepositAccounts.getSelectedIndex()).toString();
                 //send select account request to server
-                new JSONObject(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, ddlAccounts.getSelectedIndex()));
+                new JSONObject(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, ddlDepositAccounts.getSelectedIndex()));
                 //Onclick, send request to server to get balance of accountId selected
                 JSONObject jo = JSON.tryParse(client.listen(Constants.Account.GetAccountBalance, Constants.Account.AccountId, choice));
                 //update balance label to display updated balance amount
-                lblAccountbalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
+                lblDepositAccountbalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
             }
         });
         //Create event listener for bank transfer button
@@ -354,13 +354,13 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 //attach bank transfer screen
                 setScreen(screen, BankTransfer);
-                String choice = ddlAccounts.getItemAt(ddlAccounts.getSelectedIndex()).toString();
+                String choice = ddlTransactionAccounts.getItemAt(ddlTransactionAccounts.getSelectedIndex()).toString();
                 //send select account request to server
-                new JSONObject(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, ddlAccounts.getSelectedIndex()));
+                new JSONObject(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, ddlTransactionAccounts.getSelectedIndex()));
                 //Onclick, send request to server to get balance of accountId selected
                 JSONObject jo = JSON.tryParse(client.listen(Constants.Account.GetAccountBalance, Constants.Account.AccountId, choice));
                 //update balance label to display updated balance amount
-                lblAccBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
+                lblTransferAccountBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
             }
         });
         //Create event listener for settings button
@@ -449,7 +449,7 @@ public class GUI {
                 //if amount entered is not integer (incorrect format)
                 try {
                     //input validation to check if input withdrawal amount is higher than current balance
-                    if (Double.parseDouble(lblAccountBalance.getText().substring(1)) < Double.parseDouble(txtWithdrawalAmount.getText())) {
+                    if (Double.parseDouble(lblWithdrawAccountBalance.getText().substring(1)) < Double.parseDouble(txtWithdrawalAmount.getText())) {
                         //display error message
                         lblWithdrawalAmountValidator.setText("Amount entered must not exceed current account balance");
                     } else {
@@ -462,8 +462,8 @@ public class GUI {
                         //create new transaction entry
                         JSONObject jo = JSON.tryParse(client.listen(Constants.Transaction.Withdraw, Constants.Transaction.Amount, txtWithdrawalAmount.getText(), Constants.Transaction.TransactionNote, note));
 
-                        //update lblAccountBalance with updated account balance
-                        lblAccountBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
+                        //update lblWithdrawAccountBalance with updated account balance
+                        lblWithdrawAccountBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
                     }
                 } catch (NumberFormatException ex) {
                     //log
@@ -582,7 +582,7 @@ public class GUI {
                 //catch if amount entered is not integer (incorrect format)
                 try {
                     //input validation to check if input deposit amount is higher than current balance
-                    if (Double.parseDouble(lblAccountbalance.getText().substring(1)) < Double.parseDouble(txtDepositAmount.getText())) {
+                    if (Double.parseDouble(lblDepositAccountbalance.getText().substring(1)) < Double.parseDouble(txtDepositAmount.getText())) {
                         lblDepositAmountValidator.setText("Amount entered must not exceed current account balance");
                     } else {
                         Integer.parseInt(txtDepositAmount.getText());
@@ -595,8 +595,8 @@ public class GUI {
                         //create new transaction entry
                         JSONObject jo = JSON.tryParse(client.listen(Constants.Transaction.Deposit, Constants.Transaction.Amount, txtDepositAmount.getText(), Constants.Transaction.TransactionNote, note));
 
-                        //update lblAccountbalance with updated account balance
-                        lblAccountbalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
+                        //update lblDepositAccountbalance with updated account balance
+                        lblDepositAccountbalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
                     }
 
 
@@ -619,7 +619,7 @@ public class GUI {
                 //catch if amount entered is not integer (incorrect format)
                 try {
                     //input validation to check if input transfer amount is higher than current balance
-                    if (Double.parseDouble(lblAccBalance.getText().substring(1)) < Double.parseDouble(txtTransferAmount.getText())) {
+                    if (Double.parseDouble(lblTransferAccountBalance.getText().substring(1)) < Double.parseDouble(txtTransferAmount.getText())) {
                         lblTransferAmountValidator.setText("Amount entered must not exceed current account balance");
                     } else {
                         Integer.parseInt(txtTransferAmount.getText());
@@ -627,9 +627,9 @@ public class GUI {
                         JSONObject transfer = new JSONObject(client.listen(Constants.Transaction.Transfer
                                 , Constants.Transaction.Amount, txtTransferAmount.getText()
                                 , Constants.Transaction.TransactionNote, "Transfer"
-                                , Constants.Transaction.Payee, txtTransferTo.getText()));
-                        //update lblAccBalance with updated account balance
-                        lblAccBalance.setText("$" + transfer.get(Constants.Account.GetAccountBalance).toString());
+                                , Constants.Transaction.Payee, txtTransferToAccount.getText()));
+                        //update lblTransferAccountBalance with updated account balance
+                        lblTransferAccountBalance.setText("$" + transfer.get(Constants.Account.GetAccountBalance).toString());
                     }
                 } catch (NumberFormatException ex) {
                     //log
@@ -644,25 +644,25 @@ public class GUI {
             }
         });
         //add action listener for withdrawal dropdownlist
-        ddlAccounts.addActionListener(new ActionListener() {
+        ddlWithdrawAccounts.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String choice = ddlAccounts.getItemAt(ddlAccounts.getSelectedIndex()).toString();
+                String choice = ddlWithdrawAccounts.getItemAt(ddlWithdrawAccounts.getSelectedIndex()).toString();
                 //send select account request to server
-                JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, ddlAccounts.getSelectedIndex()));
+                JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, ddlWithdrawAccounts.getSelectedIndex()));
                 //Onclick, send request to server to get balance of accountId selected
                 JSONObject jo = JSON.tryParse(client.listen(Constants.Account.GetAccountBalance, Constants.Account.AccountId, choice));
                 //update balance label to display updated balance amount
-                lblAccountBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
+                lblWithdrawAccountBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
             }
         });
         //add action listener for transaction history dropdownlist
-        ddlTAccounts.addActionListener(new ActionListener() {
+        ddlTransactionAccounts.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String choice = ddlTAccounts.getItemAt(ddlTAccounts.getSelectedIndex()).toString();
+                String choice = ddlTransactionAccounts.getItemAt(ddlTransactionAccounts.getSelectedIndex()).toString();
                 //send select acc request to server
-                JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, ddlTAccounts.getSelectedIndex()));
+                JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, ddlTransactionAccounts.getSelectedIndex()));
                 //Onclick, send request to server to get transaction history of accountId selected
                 JSONObject jo = JSON.tryParse(client.listen(Constants.Account.TransactionHistory, Constants.Account.AccountId, choice));
                 //populate date to screen
@@ -689,17 +689,17 @@ public class GUI {
             }
         });
         //add action listener for deposit dropdownlist
-        ddlAccount.addActionListener(new ActionListener() {
+        ddlDepositAccounts.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String choice = ddlAccount.getItemAt(ddlAccount.getSelectedIndex()).toString();
+                String choice = ddlDepositAccounts.getItemAt(ddlDepositAccounts.getSelectedIndex()).toString();
                 //send select account request to server
                 JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SelectAccount
-                        , Constants.Account.SelectedAccount, ddlAccount.getSelectedIndex()));
+                        , Constants.Account.SelectedAccount, ddlDepositAccounts.getSelectedIndex()));
                 //Onclick, send request to server to get balance of accountId selected
                 JSONObject jo = JSON.tryParse(client.listen(Constants.Account.GetAccountBalance, Constants.Account.AccountId, choice));
                 //update balance label to display updated balance amount
-                lblAccountbalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
+                lblDepositAccountbalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
             }
         });
         //add event listener for forget password
@@ -714,17 +714,17 @@ public class GUI {
                 }
             }
         });
-        ddlaccount.addActionListener(new ActionListener() {
+        ddlTransferAccounts.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String choice = ddlaccount.getItemAt(ddlaccount.getSelectedIndex()).toString();
+                String choice = ddlTransferAccounts.getItemAt(ddlTransferAccounts.getSelectedIndex()).toString();
                 //send select account request to server
                 JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SelectAccount
-                        , Constants.Account.SelectedAccount, ddlaccount.getSelectedIndex()));
+                        , Constants.Account.SelectedAccount, ddlTransferAccounts.getSelectedIndex()));
                 //Onclick, send request to server to get balance of accountId selected
                 JSONObject jo = JSON.tryParse(client.listen(Constants.Account.GetAccountBalance, Constants.Account.AccountId, choice));
                 //update balance label to display updated balance amount
-                lblAccBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
+                lblTransferAccountBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
             }
         });
     }
@@ -753,25 +753,25 @@ public class GUI {
         //view transaction
         lblViewTransaction.setText(language.get("12"));
         //withdrawal
-        lblwithdraw.setText(language.get("13"));
-        lblwAcc.setText(language.get("14"));
-        lblwTnote.setText(language.get("15"));
-        lblwBal.setText(language.get("16"));
-        lblwAmt.setText(language.get("17"));
+        lblWithdraw.setText(language.get("13"));
+        lblWithdrawAccount.setText(language.get("14"));
+        lblWithdrawalNote.setText(language.get("15"));
+        lblWithdrawalBalance.setText(language.get("16"));
+        lblWithdrawalAmount.setText(language.get("17"));
         btnConfirmWithdrawal.setText(language.get("18"));
         //deposit
-        lbldeposit.setText(language.get("19"));
-        lbldAcc.setText(language.get("20"));
-        lbldTnote.setText(language.get("21"));
-        lbldBalance.setText(language.get("22"));
-        lbldAmt.setText(language.get("23"));
+        lblDeposit.setText(language.get("19"));
+        lblDepositAccount.setText(language.get("20"));
+        lblDepositNote.setText(language.get("21"));
+        lblDepositBalance.setText(language.get("22"));
+        lblDepositAmount.setText(language.get("23"));
         btnConfirmDeposit.setText(language.get("24"));
         //bank transfer
-        lblbankTransfer.setText(language.get("25"));
-        lbltAcc.setText(language.get("26"));
-        lbltBalance.setText(language.get("27"));
-        lbltransferAccount.setText(language.get("28"));
-        lbltransferAmount.setText(language.get("29"));
+        lblBankTransfer.setText(language.get("25"));
+        lblTransferAccount.setText(language.get("26"));
+        lblTransferBalance.setText(language.get("27"));
+        lblTransferToAccount.setText(language.get("28"));
+        lblTransferAmount.setText(language.get("29"));
         btnTransfer.setText(language.get("30"));
         //settings
         lblsetting.setText(language.get("31"));

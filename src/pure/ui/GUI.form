@@ -270,7 +270,7 @@
                       <text value="View Transactions"/>
                     </properties>
                   </component>
-                  <component id="f0fb4" class="javax.swing.JComboBox" binding="ddlTAccounts">
+                  <component id="f0fb4" class="javax.swing.JComboBox" binding="ddlTransactionAccounts">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -308,7 +308,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="d8dc6" class="javax.swing.JLabel" binding="lblwithdraw">
+                  <component id="d8dc6" class="javax.swing.JLabel" binding="lblWithdraw">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -317,7 +317,7 @@
                       <text value="Withdrawal"/>
                     </properties>
                   </component>
-                  <component id="d64c2" class="javax.swing.JLabel" binding="lblwAcc">
+                  <component id="d64c2" class="javax.swing.JLabel" binding="lblWithdrawAccount">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -326,13 +326,13 @@
                       <text value="Account:"/>
                     </properties>
                   </component>
-                  <component id="46614" class="javax.swing.JComboBox" binding="ddlAccounts">
+                  <component id="46614" class="javax.swing.JComboBox" binding="ddlWithdrawAccounts">
                     <constraints>
                       <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                   </component>
-                  <component id="d4bc1" class="javax.swing.JLabel" binding="lblwBal">
+                  <component id="d4bc1" class="javax.swing.JLabel" binding="lblWithdrawalBalance">
                     <constraints>
                       <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -341,7 +341,7 @@
                       <text value="Balance:"/>
                     </properties>
                   </component>
-                  <component id="bcbb0" class="javax.swing.JLabel" binding="lblAccountBalance">
+                  <component id="bcbb0" class="javax.swing.JLabel" binding="lblWithdrawAccountBalance">
                     <constraints>
                       <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -350,7 +350,7 @@
                       <text value=""/>
                     </properties>
                   </component>
-                  <component id="a6b2" class="javax.swing.JLabel" binding="lblwAmt">
+                  <component id="a6b2" class="javax.swing.JLabel" binding="lblWithdrawalAmount">
                     <constraints>
                       <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -384,7 +384,7 @@
                       <text value="Withdraw"/>
                     </properties>
                   </component>
-                  <component id="696ec" class="javax.swing.JLabel" binding="lblwTnote">
+                  <component id="696ec" class="javax.swing.JLabel" binding="lblWithdrawalNote">
                     <constraints>
                       <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -413,7 +413,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="12d4f" class="javax.swing.JLabel" binding="lbldeposit">
+                  <component id="12d4f" class="javax.swing.JLabel" binding="lblDeposit">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -422,7 +422,7 @@
                       <text value="Deposit"/>
                     </properties>
                   </component>
-                  <component id="5feda" class="javax.swing.JLabel" binding="lbldAcc">
+                  <component id="5feda" class="javax.swing.JLabel" binding="lblDepositAccount">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -431,13 +431,13 @@
                       <text value="Account:"/>
                     </properties>
                   </component>
-                  <component id="b8206" class="javax.swing.JComboBox" binding="ddlAccount">
+                  <component id="b8206" class="javax.swing.JComboBox" binding="ddlDepositAccounts">
                     <constraints>
                       <grid row="2" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                   </component>
-                  <component id="a372d" class="javax.swing.JLabel" binding="lbldBalance">
+                  <component id="a372d" class="javax.swing.JLabel" binding="lblDepositBalance">
                     <constraints>
                       <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -446,7 +446,7 @@
                       <text value="Balance:"/>
                     </properties>
                   </component>
-                  <component id="de2c2" class="javax.swing.JLabel" binding="lbldAmt">
+                  <component id="de2c2" class="javax.swing.JLabel" binding="lblDepositAmount">
                     <constraints>
                       <grid row="5" column="0" row-span="2" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -471,7 +471,7 @@
                       <text value="Deposit"/>
                     </properties>
                   </component>
-                  <component id="e8ca0" class="javax.swing.JLabel" binding="lbldTnote">
+                  <component id="e8ca0" class="javax.swing.JLabel" binding="lblDepositNote">
                     <constraints>
                       <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -488,7 +488,7 @@
                     </constraints>
                     <properties/>
                   </component>
-                  <component id="9670" class="javax.swing.JLabel" binding="lblAccountbalance">
+                  <component id="9670" class="javax.swing.JLabel" binding="lblDepositAccountbalance">
                     <constraints>
                       <grid row="4" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -518,7 +518,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="7a513" class="javax.swing.JLabel" binding="lblbankTransfer">
+                  <component id="7a513" class="javax.swing.JLabel" binding="lblBankTransfer">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -527,7 +527,7 @@
                       <text value="Bank Transfer"/>
                     </properties>
                   </component>
-                  <component id="4352b" class="javax.swing.JLabel" binding="lbltAcc">
+                  <component id="4352b" class="javax.swing.JLabel" binding="lblTransferAccount">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -536,13 +536,13 @@
                       <text value="Account:"/>
                     </properties>
                   </component>
-                  <component id="28e98" class="javax.swing.JComboBox" binding="ddlaccount">
+                  <component id="28e98" class="javax.swing.JComboBox" binding="ddlTransferAccounts">
                     <constraints>
                       <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                   </component>
-                  <component id="48a90" class="javax.swing.JLabel" binding="lbltBalance">
+                  <component id="48a90" class="javax.swing.JLabel" binding="lblTransferBalance">
                     <constraints>
                       <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -551,7 +551,7 @@
                       <text value="Balance:"/>
                     </properties>
                   </component>
-                  <component id="b7b37" class="javax.swing.JLabel" binding="lblAccBalance">
+                  <component id="b7b37" class="javax.swing.JLabel" binding="lblTransferAccountBalance">
                     <constraints>
                       <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -560,7 +560,7 @@
                       <text value=""/>
                     </properties>
                   </component>
-                  <component id="d2ab4" class="javax.swing.JLabel" binding="lbltransferAccount">
+                  <component id="d2ab4" class="javax.swing.JLabel" binding="lblTransferToAccount">
                     <constraints>
                       <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -569,7 +569,7 @@
                       <text value="Transfer to account:"/>
                     </properties>
                   </component>
-                  <component id="b9c6a" class="javax.swing.JTextField" binding="txtTransferTo">
+                  <component id="b9c6a" class="javax.swing.JTextField" binding="txtTransferToAccount">
                     <constraints>
                       <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
@@ -577,7 +577,7 @@
                     </constraints>
                     <properties/>
                   </component>
-                  <component id="2b32a" class="javax.swing.JLabel" binding="lbltransferAmount">
+                  <component id="2b32a" class="javax.swing.JLabel" binding="lblTransferAmount">
                     <constraints>
                       <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
