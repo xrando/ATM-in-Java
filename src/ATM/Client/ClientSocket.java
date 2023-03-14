@@ -1,7 +1,7 @@
 package ATM.Client;
 
 import ATM.Constants.Constants;
-import ATM.Utilities.ATMSSLContext;
+import ATM.Utilities.SSLContext;
 import ATM.Utilities.JSON;
 import ATM.Utilities.LogHelper;
 
@@ -15,16 +15,16 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.logging.Level;
 
-public class ATMClientSocket extends ATMSSLContext implements AutoCloseable {
+public class ClientSocket extends SSLContext implements AutoCloseable {
     private final SSLSocket sslSocket;
 
-    protected ATMClientSocket() throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
-        super(Constants.SSL.CLIENT_KEYSTORE, Constants.SSL.CLIENT_KEYSTORE_PASS);
-        sslSocket = (SSLSocket) SSLCONTEXT.getSocketFactory().createSocket(Constants.Socket.HOST, Constants.Socket.PORT);
+    protected ClientSocket(String host, int port, String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+        super(keyStoreType, keyStorePath, keyStorePass, keyManagerAlgorithm, trustManagerAlgorithm, protocol);
+        sslSocket = (SSLSocket) SSLCONTEXT.getSocketFactory().createSocket(host, port);
         sslSocket.setSoTimeout(Constants.Socket.TIMEOUT);
     }
 
-    public ATMClientSocket(SSLSocket sslSocket) {
+    public ClientSocket(SSLSocket sslSocket) {
         this.sslSocket = sslSocket;
     }
 

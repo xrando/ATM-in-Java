@@ -228,7 +228,7 @@ public class GUI {
             entry("46", "忘记密码")
     );
 
-    public GUI(Client client) throws Exception
+    public GUI(Client client)
     {
         final String[] language = new String[]{"eng"};
 
@@ -920,7 +920,7 @@ public class GUI {
         btnViewAccountSummary.setText(language.get("45"));
         lblViewAccountSummary.setText(language.get("45"));
     }
-    protected JPanel getBase()
+    public JPanel getBase()
     {
         return base;
     }
@@ -935,20 +935,6 @@ public class GUI {
     }
 
     public static void main(String[] args) throws Exception {
-        Client client = new Client();
-        GUI UI = new GUI(client);
-        JFrame frame = new JFrame("Pure ATM");
-        frame.setContentPane(UI.getBase());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-        frame.setResizable(false);
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                super.windowClosing(e);
-                client.close();
-            }
-        });
+
     }
 }

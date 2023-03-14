@@ -1,7 +1,7 @@
 package ATM.Client;
 
-import ATM.Bank.User;
 import ATM.Constants.Constants;
+import ATM.Utilities.Listenable;
 import ATM.Utilities.LogHelper;
 
 import java.io.IOException;
@@ -12,13 +12,15 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.logging.Level;
 
-public class Client {
-    private final ATMClientSocket socket;
+public abstract class Client implements Listenable, AutoCloseable {
+    private final ClientSocket socket;
 
-    public Client() {
-        ATMClientSocket s = null;
+    public Client(String host, int port, String keyStoreType, String keyStorePath, String keyStorePass,
+                  String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) {
+        ClientSocket s = null;
         try {
-            s = new ATMClientSocket(); //start new instance of client socket
+            s = new ClientSocket(host, port, keyStoreType, keyStorePath, keyStorePass,
+                    keyManagerAlgorithm, trustManagerAlgorithm, protocol); //start new instance of client socket
         } catch (IOException e) {
             LogHelper.log(Level.SEVERE, "Server is not ready, or wrong host IP / port number.", e);
         } catch (CertificateException e) {
@@ -36,18 +38,11 @@ public class Client {
         }
     }
 
-/*    public String listen(String input) {
-        this.socket.write(input);
-        return socket.read();
-    }*/
-
-    @SafeVarargs
-    public final <T> String listen(T... input) {
-        this.socket.write(input);
-        return socket.read();
+    public final ClientSocket getSocket() {
+        return socket;
     }
 
-    public void close() {
+    public final void close() {
         this.socket.write(Constants.Stream.EOS);
         this.socket.close();
     }

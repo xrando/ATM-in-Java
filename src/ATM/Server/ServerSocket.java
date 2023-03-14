@@ -1,8 +1,7 @@
 package ATM.Server;
 
-import ATM.Client.ATMClientSocket;
-import ATM.Constants.Constants;
-import ATM.Utilities.ATMSSLContext;
+import ATM.Client.ClientSocket;
+import ATM.Utilities.SSLContext;
 import ATM.Utilities.LogHelper;
 
 import javax.net.ssl.SSLServerSocket;
@@ -15,25 +14,25 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.logging.Level;
 
-public class ATMServerSocket extends ATMSSLContext implements AutoCloseable {
+public class ServerSocket extends SSLContext implements AutoCloseable {
     private final SSLServerSocket sslServerSocket;
 
-    protected ATMServerSocket() throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
-        super(Constants.SSL.SERVER_KEYSTORE, Constants.SSL.SERVER_KEYSTORE_PASS);
-        sslServerSocket = (SSLServerSocket) SSLCONTEXT.getServerSocketFactory().createServerSocket(Constants.Socket.PORT);
+    protected ServerSocket(int port, String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+        super(keyStoreType, keyStorePath, keyStorePass, keyManagerAlgorithm, trustManagerAlgorithm, protocol);
+        sslServerSocket = (SSLServerSocket) SSLCONTEXT.getServerSocketFactory().createServerSocket(port);
         sslServerSocket.setSoTimeout(0);
         sslServerSocket.setNeedClientAuth(true);
     }
 
-    protected boolean getSslServerSocketStatus() {
+    public boolean getSslServerSocketStatus() {
         return sslServerSocket != null;
     }
 
-    protected ATMClientSocket accept() {
-        ATMClientSocket atmSocket = null;
+    public ClientSocket accept() {
+        ClientSocket atmSocket = null;
         try {
             SSLSocket sslSocket = (SSLSocket) sslServerSocket.accept();
-            atmSocket = new ATMClientSocket(sslSocket);
+            atmSocket = new ClientSocket(sslSocket);
         } catch (IOException e) {
             LogHelper.log(Level.SEVERE, "I/O error occurred while waiting for connection.", e);
         }
