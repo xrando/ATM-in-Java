@@ -15,7 +15,7 @@ import java.security.cert.CertificateException;
  * @see javax.net.ssl.SSLContext
  */
 public abstract class SSLContext {
-    protected static javax.net.ssl.SSLContext SSLCONTEXT;
+    private final javax.net.ssl.SSLContext SSLCONTEXT;
 
     /**
      * Creates the SSL context for client/server.
@@ -51,13 +51,18 @@ public abstract class SSLContext {
         trustManagerFactory = TrustManagerFactory.getInstance(trustManagerAlgorithm == null ? TrustManagerFactory.getDefaultAlgorithm() : trustManagerAlgorithm);
         trustManagerFactory.init(keyStore);
 
-        SSLCONTEXT = javax.net.ssl.SSLContext.getInstance(protocol == null ? SSLCONTEXT.getProtocol() : protocol);
+        SSLCONTEXT = javax.net.ssl.SSLContext.getInstance(protocol == null ? javax.net.ssl.SSLContext.getDefault().getProtocol() : protocol);
         SSLCONTEXT.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
     }
 
+    public javax.net.ssl.SSLContext getSSLContext() {
+        return SSLCONTEXT;
+    }
+
     /**
-     * Empty constructor for child classes
+     * Empty constructor for child classes. SSLContext set to null.
      */
     protected SSLContext() {
+        SSLCONTEXT = null;
     }
 }

@@ -20,7 +20,7 @@ public class ClientSocket extends SSLContext implements AutoCloseable {
 
     protected ClientSocket(String host, int port, String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         super(keyStoreType, keyStorePath, keyStorePass, keyManagerAlgorithm, trustManagerAlgorithm, protocol);
-        sslSocket = (SSLSocket) SSLCONTEXT.getSocketFactory().createSocket(host, port);
+        sslSocket = (SSLSocket) getSSLContext().getSocketFactory().createSocket(host, port);
         sslSocket.setSoTimeout(Constants.Socket.TIMEOUT);
     }
 
