@@ -101,10 +101,9 @@ public class GUI {
     private JLabel lblnewPassword;
     private JLabel lblconfirmPassword;
     private JLabel lblchooseLang;
-    private JButton btnViewAccountSummary;
-    private JPanel ViewAccountSummary;
-    private JLabel lblViewAccountSummary;
-    private JTextArea AccountSummary;
+    private JButton btnTransactionLimit;
+    private JPanel TransactionLimit;
+    private JLabel lblTransactionLimit;
     private JButton btnNewUser;
     private JPanel NewUser;
     private JLabel lblCreateNewUser;
@@ -126,6 +125,11 @@ public class GUI {
     private JLabel lblNewUserValidator;
     private JLabel lblDepositAmountValidator;
     private JScrollPane AllTransactionScoller;
+    private JTextField txtNewTransactionLimitAmount;
+    private JButton btnUpdateTransactionLimit;
+    private JLabel lblCurrentTransactionLimit;
+    private JLabel lblCurrentTransactionLimitAmount;
+    private JLabel lblNewTransactionLimit;
     private final Map<String, String> English = Map.ofEntries(
             entry("0", "Username:"),
             entry("1", "Password:"),
@@ -503,16 +507,16 @@ public class GUI {
                 setScreen(base, login);
             }
         });
-        //TODO: view account summary (to remove?)
-        btnViewAccountSummary.addActionListener(new ActionListener() {
+        //go to set transaction limit page
+        btnTransactionLimit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Send request to server to get account summary information for current user
-                //JSONObject jo = JSON.tryParse(client.listen(new JSON(Constants.Account.AllAccountSummary).toString()));
-                //populate view account summary screen with data
-                //AccountSummary.setText(jo.toString());
+                //Send request to server to get transaction limit for current user
+                JSONObject jo = JSON.tryParse(client.listen(Constants.Account.GetTransactionLimit));
+                //populate label with data
+                lblCurrentTransactionLimitAmount.setText("$"+jo.get(Constants.Account.GetTransactionLimit).toString());
                 //attach view account summary screen
-                setScreen(screen, ViewAccountSummary);
+                setScreen(screen, TransactionLimit);
             }
         });
         //go to create new user page
@@ -727,6 +731,19 @@ public class GUI {
                 lblTransferAccountBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
             }
         });
+        btnUpdateTransactionLimit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!txtNewTransactionLimitAmount.equals(""))
+                {
+                    //send request to server to update transaction limit for current user
+                    JSONObject jo = JSON.tryParse(client.listen(Constants.Account.ChangeTransactionLimit,Constants.Account.ChangeTransactionLimit, txtNewTransactionLimitAmount.getText()));
+                    //get updated transaction limit
+                    JSONObject jo1 = JSON.tryParse(client.listen(Constants.Account.GetTransactionLimit));
+                    lblCurrentTransactionLimitAmount.setText("$"+jo1.get(Constants.Account.GetTransactionLimit).toString());
+                }
+            }
+        });
     }
 
     public static void main(String[] args) throws Exception {
@@ -800,8 +817,8 @@ public class GUI {
         lblNewUserPhoneNumber.setText(language.get("35"));
         lblNewUserAccount.setText(language.get("26"));
         //view account summary
-        btnViewAccountSummary.setText(language.get("45"));
-        lblViewAccountSummary.setText(language.get("45"));
+        btnTransactionLimit.setText(language.get("45"));
+        lblTransactionLimit.setText(language.get("45"));
     }
 
     public JPanel getBase() {
