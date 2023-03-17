@@ -62,7 +62,7 @@ public abstract class Constants {
         public static final String AccountType = "accountType";
         public static final String UserID = "userID";
         public static final String GetAccountBalance = "GetAccountBalance";
-
+        public static final String ChangeTransactionLimit = "changeTransactionLimit";
     }
 
     public abstract static class Transaction {

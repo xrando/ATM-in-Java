@@ -63,7 +63,9 @@ public class Account {
         return this.accountType;
     }
 
-    public String getTransactionLimit() { return this.transactionLimit; }
+    public String getTransactionLimit() {
+        return this.transactionLimit;
+    }
 
     public String getUID() {
         return this.userID;
@@ -73,8 +75,10 @@ public class Account {
         return this.accountID;
     }
 
-    public void changeTransactionLimit(int newTransactionLimit) {
+    public boolean changeTransactionLimit(int newTransactionLimit) {
         this.transactionLimit = Integer.toString(newTransactionLimit);
+        updateAccount();
+        return true;
     }
 
     public boolean updateAccount() {
@@ -107,11 +111,11 @@ public class Account {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 AccountTransactions.add(new Transaction(rs.getDouble("amount"),
-                                                        rs.getString("transactionNote"),
-                                                        rs.getString("date"),
-                                                        rs.getString("timeStamp"),
-                                                        rs.getString("payee"),
-                                                        rs.getString("accountID")));
+                        rs.getString("transactionNote"),
+                        rs.getString("date"),
+                        rs.getString("timeStamp"),
+                        rs.getString("payee"),
+                        rs.getString("accountID")));
             }
             conn.close();
         } catch (SQLException e) {

@@ -92,12 +92,12 @@ public class Server {
                                 case Constants.Transaction.Withdraw -> {
                                     //Negative to make value a withdrawal
                                     transaction = new Transaction(-(request.getDouble(Constants.Transaction.Amount)), request.getString(Constants.Transaction.TransactionNote), account.getAccountID());
-                                    transaction.AddTransactionToSQL(transaction,account);
+                                    transaction.AddTransactionToSQL(transaction, account);
                                     socket.write(Constants.Stream.RES, Constants.Transaction.Withdraw, "Withdrawal Complete", Constants.Account.GetAccountBalance, account.GetAccountBalance());
                                 }
                                 case Constants.Transaction.Deposit -> {
                                     transaction = new Transaction(request.getDouble(Constants.Transaction.Amount), request.getString(Constants.Transaction.TransactionNote), account.getAccountID());
-                                    transaction.AddTransactionToSQL(transaction,account);
+                                    transaction.AddTransactionToSQL(transaction, account);
                                     socket.write(Constants.Stream.RES, Constants.Transaction.Deposit, "Deposit Complete", Constants.Account.GetAccountBalance, account.GetAccountBalance());
                                 }
 
@@ -110,13 +110,19 @@ public class Server {
                                     socket.write(Constants.Stream.RES, Constants.Account.CreateAccount, account.createAccount(selection, user.getUID()));
                                 }
 
+                                case Constants.Account.ChangeTransactionLimit -> {
+                                    int newLimit = request.getInt(Constants.Account.ChangeTransactionLimit);
+                                    socket.write(Constants.Stream.RES, Constants.Account.ChangeTransactionLimit, account.changeTransactionLimit(newLimit));
+                                }
+
                                 case Constants.Transaction.Transfer -> {
                                     //Negative to deduct value
                                     transaction = new Transaction(-(request.getDouble(Constants.Transaction.Amount)), request.getString(Constants.Transaction.TransactionNote), request.getString(Constants.Transaction.Payee), account.getAccountID());
-                                    transaction.AddTransactionToSQL(transaction,account);
+                                    transaction.AddTransactionToSQL(transaction, account);
                                     //transaction.transactionEmail(transaction, user.getUsername(), user.getEmail());
                                     socket.write(Constants.Stream.RES, Constants.Transaction.Transfer, "Transfer Complete", Constants.Account.GetAccountBalance, account.GetAccountBalance());
                                 }
+
 
                                 // Get current user particulars (to allow users to see and update particulars in UI,
                                 // send over all current user particulars such as email, phone number etc)
