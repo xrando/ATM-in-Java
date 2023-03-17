@@ -92,12 +92,12 @@ public class Server {
                                 case Constants.Transaction.Withdraw -> {
                                     //Negative to make value a withdrawal
                                     transaction = new Transaction(-(request.getDouble(Constants.Transaction.Amount)), request.getString(Constants.Transaction.TransactionNote), account.getAccountID());
-                                    transaction.AddTransactionToSQL(transaction);
+                                    transaction.AddTransactionToSQL(transaction,account);
                                     socket.write(Constants.Stream.RES, Constants.Transaction.Withdraw, "Withdrawal Complete", Constants.Account.GetAccountBalance, account.GetAccountBalance());
                                 }
                                 case Constants.Transaction.Deposit -> {
                                     transaction = new Transaction(request.getDouble(Constants.Transaction.Amount), request.getString(Constants.Transaction.TransactionNote), account.getAccountID());
-                                    transaction.AddTransactionToSQL(transaction);
+                                    transaction.AddTransactionToSQL(transaction,account);
                                     socket.write(Constants.Stream.RES, Constants.Transaction.Deposit, "Deposit Complete", Constants.Account.GetAccountBalance, account.GetAccountBalance());
                                 }
 
@@ -113,7 +113,7 @@ public class Server {
                                 case Constants.Transaction.Transfer -> {
                                     //Negative to deduct value
                                     transaction = new Transaction(-(request.getDouble(Constants.Transaction.Amount)), request.getString(Constants.Transaction.TransactionNote), request.getString(Constants.Transaction.Payee), account.getAccountID());
-                                    transaction.AddTransactionToSQL(transaction);
+                                    transaction.AddTransactionToSQL(transaction,account);
                                     //transaction.transactionEmail(transaction, user.getUsername(), user.getEmail());
                                     socket.write(Constants.Stream.RES, Constants.Transaction.Transfer, "Transfer Complete", Constants.Account.GetAccountBalance, account.GetAccountBalance());
                                 }

@@ -1,16 +1,20 @@
 package pure.bank;
 
+import pure.util.LogHelper;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class Account {
     private String AccountName;
     private String UID;
     private String accountType;
+    private String transactionLimit;
     private String userID;
     private String accountID;
     private ArrayList<Transaction> AccountTransactions;
@@ -28,7 +32,10 @@ public class Account {
         this.accountType = Account.getAccountType();
 
         //Set Current Account's UID
-        this.UID = Account.getUID();
+        this.userID = Account.getUID();
+
+        //Set Transaction Limit
+        this.transactionLimit = Account.getTransactionLimit();
 
         //Initialize transactions
         this.AccountTransactions = new ArrayList<Transaction>();
@@ -40,14 +47,12 @@ public class Account {
 
     }
 
-    public Account(String accountID, String accountType, String userID) {
+    public Account(String accountID, String accountType, String transactionLimit, String userID) {
         //Set account name and account holder
         this.accountID = accountID;
         this.accountType = accountType;
         this.userID = userID;
-        //Generate new account UID
-        //this.UID = CurrentBank.generateNewAccountUID();
-        //Initialize transactions
+        this.transactionLimit = transactionLimit;
         this.AccountTransactions = new ArrayList<Transaction>();
     }
 
@@ -58,12 +63,35 @@ public class Account {
         return this.accountType;
     }
 
+    public String getTransactionLimit() { return this.transactionLimit; }
+
     public String getUID() {
         return this.userID;
     }
 
     public String getAccountID() {
         return this.accountID;
+    }
+
+    public void changeTransactionLimit(int newTransactionLimit) {
+        this.transactionLimit = Integer.toString(newTransactionLimit);
+    }
+
+    public boolean updateAccount() {
+        String sql = "UPDATE accounts SET accountType = ?, transactionLimit = ? , userID = ? WHERE accountID = ?";
+
+        try (Connection conn = sqliteDatabase.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, this.accountType);
+            pstmt.setString(2, this.transactionLimit);
+            pstmt.setString(3, this.userID);
+            pstmt.setString(4, this.accountID);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            LogHelper.log(Level.SEVERE, e.getMessage());
+            return false;
+        }
+        return true;
     }
 
     public ArrayList<Transaction> getAccountTransactions() {
@@ -78,10 +106,12 @@ public class Account {
             ps.setString(1, this.accountID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                //Add to AccountTransactions
-                //System.out.print(rs.getString("accountID"));
-                //System.out.print(rs.getString("amount"));
-                AccountTransactions.add(new Transaction(rs.getDouble("amount"), rs.getString("transactionNote"), rs.getString("date"), rs.getString("timeStamp"), rs.getString("payee"), rs.getString("accountID")));
+                AccountTransactions.add(new Transaction(rs.getDouble("amount"),
+                                                        rs.getString("transactionNote"),
+                                                        rs.getString("date"),
+                                                        rs.getString("timeStamp"),
+                                                        rs.getString("payee"),
+                                                        rs.getString("accountID")));
             }
             conn.close();
         } catch (SQLException e) {
@@ -101,16 +131,17 @@ public class Account {
         return balance;
     }
 
-    public List<Account> getTransactionAccount(String UID) {
+    public List<Account> getTransactionAccount(String userID) {
         List<Account> accountList = new ArrayList<Account>();
         try {
             Connection conn = sqliteDatabase.connect();
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM accounts WHERE userID = ?");
-            ps.setString(1, UID);
+            ps.setString(1, userID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 accountList.add(new Account(rs.getString("accountID"),
                         rs.getString("accountType"),
+                        rs.getString("transactionLimit"),
                         rs.getString("userID")));
             }
             conn.close();
@@ -132,11 +163,12 @@ public class Account {
             default:
                 return false;
         }
-        String sql = "INSERT INTO accounts( accountType, userID) VALUES(?,?)";
+        String sql = "INSERT INTO accounts( accountType, transactionLimit ,userID) VALUES(?,?,?)";
         try (Connection conn = sqliteDatabase.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, createType);
-            pstmt.setString(2, userID);
+            pstmt.setString(2, "1000");
+            pstmt.setString(3, userID);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

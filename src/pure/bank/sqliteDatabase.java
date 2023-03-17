@@ -85,10 +85,8 @@ public class sqliteDatabase {
 
         String[] sqlArray = {
                 "CREATE TABLE IF NOT EXISTS users(userID integer PRIMARY KEY, username text NOT NULL, password text NOT NULL, salt text NOT NULL, email text NOT NULL, phone text NOT NULL, loginStatus boolean NOT NULL)",
-                "CREATE TABLE IF NOT EXISTS accounts(accountID integer PRIMARY KEY, accountType text NOT NULL, userID integer NOT NULL, FOREIGN KEY(userID) REFERENCES users(userID))",
+                "CREATE TABLE IF NOT EXISTS accounts(accountID integer PRIMARY KEY, accountType text NOT NULL, transactionLimit integer NOT NULL, userID integer NOT NULL, FOREIGN KEY(userID) REFERENCES users(userID))",
                 "CREATE TABLE IF NOT EXISTS transactions(transactionID integer PRIMARY KEY, amount real NOT NULL, timeStamp text NOT NULL, transactionNote text NULL, date text NOT NULL, payee text NULL,accountID text NOT NULL, FOREIGN KEY(accountID) REFERENCES accounts(accountID))"
-                //"CREATE TABLE IF NOT EXIST bank(bankUser integer PRIMARY KEY,bankName text NOT NULL,bankAccounts text NOT NULL)",
-
         };
 
         try (Connection conn = DriverManager.getConnection(url);

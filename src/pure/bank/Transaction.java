@@ -123,53 +123,65 @@ public class Transaction {
         return TransactionNote;
     }
 
-    public boolean AddTransactionToSQL(Transaction transactionDetails) {
+    public boolean AddTransactionToSQL(Transaction transactionDetails, Account account) throws IllegalArgumentException {
         String sql = "INSERT INTO transactions( amount, timeStamp, transactionNote, date, payee,accountID) VALUES(?,?,?,?,?,?)";
-        if (transactionDetails.payee != "") {
-            //deduct for account owner
-            try (Connection conn = sqliteDatabase.connect();
-                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setDouble(1, (-transactionDetails.Amount));
-                pstmt.setString(2, transactionDetails.timeStamp);
-                pstmt.setString(3, transactionDetails.TransactionNote);
-                pstmt.setString(4, transactionDetails.date);
-                pstmt.setString(5, transactionDetails.payee);
-                pstmt.setString(6, transactionDetails.accountID);
-                pstmt.executeUpdate();
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-                return false;
+        try {
+            if (transactionDetails.Amount > Double.valueOf(account.getTransactionLimit())) {
+                throw new IllegalArgumentException("Value Entered is greater than transaction limit");
+            } else {
+                // 2-way Transfer
+                if (transactionDetails.payee != "") {
+                    //deduct for account owner
+                    try (Connection conn = sqliteDatabase.connect();
+                         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                        pstmt.setDouble(1, (-transactionDetails.Amount));
+                        pstmt.setString(2, transactionDetails.timeStamp);
+                        pstmt.setString(3, transactionDetails.TransactionNote);
+                        pstmt.setString(4, transactionDetails.date);
+                        pstmt.setString(5, transactionDetails.payee);
+                        pstmt.setString(6, transactionDetails.accountID);
+                        pstmt.executeUpdate();
+                    } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                        return false;
+                    }
+                    //add to payee account
+                    try (Connection conn = sqliteDatabase.connect();
+                         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                        pstmt.setDouble(1, transactionDetails.Amount);
+                        pstmt.setString(2, transactionDetails.timeStamp);
+                        pstmt.setString(3, transactionDetails.TransactionNote);
+                        pstmt.setString(4, transactionDetails.date);
+                        pstmt.setString(5, transactionDetails.accountID);
+                        pstmt.setString(6, transactionDetails.payee);
+                        pstmt.executeUpdate();
+                    } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                        return false;
+                    }
+                    return true;
+                }
+                // 1-way Transfer
+                else {
+                    try (Connection conn = sqliteDatabase.connect();
+                         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                        pstmt.setDouble(1, transactionDetails.Amount);
+                        pstmt.setString(2, transactionDetails.timeStamp);
+                        pstmt.setString(3, transactionDetails.TransactionNote);
+                        pstmt.setString(4, transactionDetails.date);
+                        pstmt.setString(5, transactionDetails.payee);
+                        pstmt.setString(6, transactionDetails.accountID);
+                        pstmt.executeUpdate();
+                        return true;
+                    } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                        return false;
+                    }
+                }
             }
-            //add to payee account
-            try (Connection conn = sqliteDatabase.connect();
-                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setDouble(1, transactionDetails.Amount);
-                pstmt.setString(2, transactionDetails.timeStamp);
-                pstmt.setString(3, transactionDetails.TransactionNote);
-                pstmt.setString(4, transactionDetails.date);
-                pstmt.setString(5, transactionDetails.accountID);
-                pstmt.setString(6, transactionDetails.payee);
-                pstmt.executeUpdate();
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-                return false;
-            }
-            return true;
-        } else {
-            try (Connection conn = sqliteDatabase.connect();
-                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setDouble(1, transactionDetails.Amount);
-                pstmt.setString(2, transactionDetails.timeStamp);
-                pstmt.setString(3, transactionDetails.TransactionNote);
-                pstmt.setString(4, transactionDetails.date);
-                pstmt.setString(5, transactionDetails.payee);
-                pstmt.setString(6, transactionDetails.accountID);
-                pstmt.executeUpdate();
-                return true;
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-                return false;
-            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return false;
         }
     }
 }

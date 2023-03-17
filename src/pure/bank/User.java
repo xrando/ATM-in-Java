@@ -112,7 +112,7 @@ public class User {
             } else {
                 Account account = new Account();
                 Transaction transaction = new Transaction(amount, depositReason[reasonI], String.valueOf(ranIndex + 1), String.valueOf(ranIndex2 + 1));
-                transaction.AddTransactionToSQL(transaction);
+                transaction.AddTransactionToSQL(transaction, account);
             }
         }
         System.out.println("Done");
@@ -127,7 +127,7 @@ public class User {
             int ranIndex = new SecureRandom().nextInt(100);
             Account account = new Account();
             Transaction transaction = new Transaction(amount, depositReason[reasonI], String.valueOf(ranIndex + 1));
-            transaction.AddTransactionToSQL(transaction);
+            transaction.AddTransactionToSQL(transaction, account);
         }
         System.out.println("Done");
     }
@@ -154,9 +154,19 @@ public class User {
         //String password = sc.nextLine();
 
         // ATM.ATM.Bank.Bank.User is initialised with data from database after login
-        //User test2 = new User();
-        //test2.forgetPin("test");
-        //test2.Login("test", "123123");
+          User test2 = new User();
+        // test2.forgetPin("test");
+        test2.Login("test5", "123123");
+        test2.getUserFromDatabase();
+         Account account = new Account();
+        System.out.println(test2.Accounts.toString());
+        account = test2.Accounts.get(0);
+        // account.changeTransactionLimit(5000);
+        // account.updateAccount();
+        // System.out.println(account.getTransactionLimit());
+        Transaction transactionDetail = new Transaction(7000,"Over Limit","1","2");
+        System.out.println(transactionDetail.AddTransactionToSQL(transactionDetail,account));
+
         //test2.changePin("135518", "123123");
         //test2.logout();
 
@@ -817,7 +827,7 @@ public class User {
         Account TransactionAccount = new Account();
         this.Accounts = TransactionAccount.getTransactionAccount(this.UID);
         for (Account account : this.Accounts) {
-            System.out.println("Account ID: " + account.getAccountID() + " Account Type: " + account.getAccountType());
+            System.out.println("Account ID: " + account.getAccountID() + " Transaction Limit: " + account.getTransactionLimit() + " Account Type: " + account.getAccountType());
         }
     }
 
