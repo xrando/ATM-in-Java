@@ -115,6 +115,10 @@ public class Server {
                                     socket.write(Constants.Stream.RES, Constants.Account.ChangeTransactionLimit, account.changeTransactionLimit(newLimit));
                                 }
 
+                                case Constants.Account.GetTransactionLimit -> {
+                                    socket.write(Constants.Stream.RES, Constants.Account.GetTransactionLimit, account.getTransactionLimit());
+                                }
+
                                 case Constants.Transaction.Transfer -> {
                                     //Negative to deduct value
                                     transaction = new Transaction(-(request.getDouble(Constants.Transaction.Amount)), request.getString(Constants.Transaction.TransactionNote), request.getString(Constants.Transaction.Payee), account.getAccountID());
