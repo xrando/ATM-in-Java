@@ -816,7 +816,7 @@
                     </constraints>
                     <properties>
                       <foreground color="-16777216"/>
-                      <text value="Transaction Limit"/>
+                      <text value="Set Transaction Limit"/>
                     </properties>
                   </component>
                   <component id="a15b8" class="javax.swing.JLabel" binding="lblCurrentTransactionLimit">
@@ -825,7 +825,7 @@
                     </constraints>
                     <properties>
                       <foreground color="-16777216"/>
-                      <text value="Current Transaction Limit :"/>
+                      <text value="Current Transaction Limit:"/>
                     </properties>
                   </component>
                   <component id="a0555" class="javax.swing.JLabel" binding="lblCurrentTransactionLimitAmount">
@@ -843,7 +843,7 @@
                     </constraints>
                     <properties>
                       <foreground color="-16777216"/>
-                      <text value="New Transaction Limit :"/>
+                      <text value="New Transaction Limit:"/>
                     </properties>
                   </component>
                   <component id="cd28f" class="javax.swing.JTextField" binding="txtNewTransactionLimitAmount">

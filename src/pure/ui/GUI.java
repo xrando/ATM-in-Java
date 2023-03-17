@@ -176,8 +176,11 @@ public class GUI {
             entry("42", "English"),
             entry("43", "Chinese"),
             entry("44", "Create New User"),
-            entry("45", "View Account Summary"),
-            entry("46", "Forget Password")
+            entry("45", "Set Transaction Limit"),
+            entry("46", "Forget Password"),
+            entry("47", "Current Transaction Limit:"),
+            entry("48", "New Transaction Limit:"),
+            entry("49", "Update Transaction Limit")
     );
 
     private final Map<String, String> Chinese = Map.ofEntries(
@@ -226,8 +229,11 @@ public class GUI {
             entry("42", "英语"),
             entry("43", "中文"),
             entry("44", "创建新用户"),
-            entry("45", "查看帐户摘要"),
-            entry("46", "忘记密码")
+            entry("45", "设定交易限额"),
+            entry("46", "忘记密码"),
+            entry("47", "当前交易限额:"),
+            entry("48", "新交易限额:"),
+            entry("49","更新交易限额")
     );
 
     public GUI(Client client) {
@@ -515,7 +521,7 @@ public class GUI {
                 JSONObject jo = JSON.tryParse(client.listen(Constants.Account.GetTransactionLimit));
                 //populate label with data
                 lblCurrentTransactionLimitAmount.setText("$"+jo.get(Constants.Account.GetTransactionLimit).toString());
-                //attach view account summary screen
+                //attach transaction limit screen
                 setScreen(screen, TransactionLimit);
             }
         });
@@ -816,9 +822,12 @@ public class GUI {
         lblNewUserEmail.setText(language.get("34"));
         lblNewUserPhoneNumber.setText(language.get("35"));
         lblNewUserAccount.setText(language.get("26"));
-        //view account summary
+        //view transaction limit
         btnTransactionLimit.setText(language.get("45"));
         lblTransactionLimit.setText(language.get("45"));
+        lblCurrentTransactionLimit.setText(language.get("47"));
+        lblNewTransactionLimit.setText(language.get("48"));
+        btnUpdateTransactionLimit.setText(language.get("49"));
     }
 
     public JPanel getBase() {
