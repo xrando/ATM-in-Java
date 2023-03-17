@@ -265,7 +265,7 @@ public class User {
         this.Username = username;
     }
 
-    protected String getPassword() {
+    public String getPassword() {
         return Password;
     }
 
