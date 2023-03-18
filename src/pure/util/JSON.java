@@ -7,9 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 
 public class JSON {
@@ -43,7 +41,17 @@ public class JSON {
             map.put(Constants.Transaction.Amount, String.valueOf(transaction.getAmount()));
             ja.put(map);
         });
-        return ja;
+
+        // convert JSONArray to List
+        List<Object> list = Arrays.asList(ja.toList().toArray());
+
+        // reverse the List
+        Collections.reverse(list);
+
+        // convert List back to JSONArray
+        JSONArray reversedJsonArray = new JSONArray(list);
+
+        return reversedJsonArray;
     }
 
     public static String parseAccountsToString(List<Account> accounts) {
