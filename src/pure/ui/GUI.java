@@ -130,6 +130,12 @@ public class GUI {
     private JLabel lblCurrentTransactionLimit;
     private JLabel lblCurrentTransactionLimitAmount;
     private JLabel lblNewTransactionLimit;
+    private JLabel lblTransactionLimitAmmountTransfer;
+    private JLabel lblTransactionLimitTransfer;
+    private JLabel lblTransactionLimitAmountDeposit;
+    private JLabel lblTransactionLimitDeposit;
+    private JLabel lblTransactionLimitAmountWithdrawal;
+    private JLabel lblTransactionLimitWithdrawal;
     private final Map<String, String> English = Map.ofEntries(
             entry("0", "Username:"),
             entry("1", "Password:"),
@@ -287,8 +293,15 @@ public class GUI {
                             ddlDepositAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
                             ddlTransferAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
                             ddlTransactionAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
-                            System.out.println("Count");
                         });
+                        //populate transaction limit labels
+                        //Send request to server to get transaction limit for current user
+                        JSONObject jo1 = JSON.tryParse(client.listen(Constants.Account.GetTransactionLimit));
+                        //populate label with data
+                        lblTransactionLimitAmmountTransfer.setText("$"+jo1.get(Constants.Account.GetTransactionLimit).toString());
+                        lblTransactionLimitAmountDeposit.setText("$"+jo1.get(Constants.Account.GetTransactionLimit).toString());
+                        lblTransactionLimitAmountWithdrawal.setText("$"+jo1.get(Constants.Account.GetTransactionLimit).toString());
+
                     } else {
                         lblLoginValidator.setText("Wrong credentials");
                     }
@@ -505,6 +518,8 @@ public class GUI {
                         //clear input fields
                         txtWithdrawalNote.setText("");
                         txtWithdrawalAmount.setText("");
+                        //clear validator
+                        lblWithdrawalAmountValidator.setText("");
                     }
                 } catch (NumberFormatException ex) {
                     //log
@@ -778,7 +793,13 @@ public class GUI {
                     JSONObject jo = JSON.tryParse(client.listen(Constants.Account.ChangeTransactionLimit,Constants.Account.ChangeTransactionLimit, txtNewTransactionLimitAmount.getText()));
                     //get updated transaction limit
                     JSONObject jo1 = JSON.tryParse(client.listen(Constants.Account.GetTransactionLimit));
+                    //update label with data
                     lblCurrentTransactionLimitAmount.setText("$"+jo1.get(Constants.Account.GetTransactionLimit).toString());
+                    lblTransactionLimitAmmountTransfer.setText("$"+jo1.get(Constants.Account.GetTransactionLimit).toString());
+                    lblTransactionLimitAmountDeposit.setText("$"+jo1.get(Constants.Account.GetTransactionLimit).toString());
+                    lblTransactionLimitAmountWithdrawal.setText("$"+jo1.get(Constants.Account.GetTransactionLimit).toString());
+                    //clear input
+                    txtNewTransactionLimitAmount.setText("");
                 }
             }
         });
@@ -860,6 +881,10 @@ public class GUI {
         lblCurrentTransactionLimit.setText(language.get("47"));
         lblNewTransactionLimit.setText(language.get("48"));
         btnUpdateTransactionLimit.setText(language.get("49"));
+        //transaction lbl
+        lblTransactionLimitTransfer.setText(language.get("47"));
+        lblTransactionLimitDeposit.setText(language.get("47"));
+        lblTransactionLimitWithdrawal.setText(language.get("47"));
     }
 
     public JPanel getBase() {
