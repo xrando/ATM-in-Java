@@ -565,7 +565,7 @@ public class GUI {
                             , Constants.User.Password, txtNewUserPassword.getText()
                             , Constants.User.Email, txtNewUserEmail.getText()
                             , Constants.User.Phone, txtNewUserPhoneNumber.getText()
-                            , Constants.User.Accounts, /*ddlNewUserAccount.getItemAt(ddlNewUserAccount.getSelectedIndex()))*/ddlNewUserAccount.getSelectedIndex()));
+                            , Constants.Account.CreateAccount, ddlNewUserAccount.getSelectedIndex()));
                     lblNewUserValidator.setText("User created successfully");
                     //attach login screen
                     //setScreen(base,login);
