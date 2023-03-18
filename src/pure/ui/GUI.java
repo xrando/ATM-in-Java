@@ -136,6 +136,16 @@ public class GUI {
     private JLabel lblTransactionLimitDeposit;
     private JLabel lblTransactionLimitAmountWithdrawal;
     private JLabel lblTransactionLimitWithdrawal;
+    private JButton btnViewAccountSummary;
+    private JPanel ViewAccountSummary;
+    private JLabel lblViewAccountSummary;
+    private JTextArea AccountSummary;
+    private JButton btnOpenNewAccount;
+    private JPanel OpenNewAccount;
+    private JLabel lblOpenNewAccount;
+    private JComboBox ddlOpenNewAccount;
+    private JButton btnOpenAccount;
+    private JLabel lblNewAccountCreationValidator;
     private final Map<String, String> English = Map.ofEntries(
             entry("0", "Username:"),
             entry("1", "Password:"),
@@ -186,7 +196,8 @@ public class GUI {
             entry("46", "Forget Password"),
             entry("47", "Current Transaction Limit:"),
             entry("48", "New Transaction Limit:"),
-            entry("49", "Update Transaction Limit")
+            entry("49", "Update Transaction Limit"),
+            entry("50","View Account Summary")
     );
 
     private final Map<String, String> Chinese = Map.ofEntries(
@@ -239,7 +250,8 @@ public class GUI {
             entry("46", "忘记密码"),
             entry("47", "当前交易限额:"),
             entry("48", "新交易限额:"),
-            entry("49","更新交易限额")
+            entry("49","更新交易限额"),
+            entry("50","查看帐户摘要")
     );
 
     public GUI(Client client) {
@@ -301,6 +313,9 @@ public class GUI {
                         lblTransactionLimitAmmountTransfer.setText("$"+jo1.get(Constants.Account.GetTransactionLimit).toString());
                         lblTransactionLimitAmountDeposit.setText("$"+jo1.get(Constants.Account.GetTransactionLimit).toString());
                         lblTransactionLimitAmountWithdrawal.setText("$"+jo1.get(Constants.Account.GetTransactionLimit).toString());
+                        //populate open new account ddl
+                        ddlOpenNewAccount.addItem("savings");
+                        ddlOpenNewAccount.addItem("current");
 
                     } else {
                         lblLoginValidator.setText("Wrong credentials");
@@ -351,10 +366,10 @@ public class GUI {
                 ja.forEach(record -> {
                     JSONObject joo = new JSONObject(record.toString());
                     //debug
-                    System.out.print(Constants.Transaction.TransactionNote + " : " + joo.get(Constants.Transaction.TransactionNote) + "\t");
+                    /*System.out.print(Constants.Transaction.TransactionNote + " : " + joo.get(Constants.Transaction.TransactionNote) + "\t");
                     System.out.print(Constants.Transaction.Amount + " : " + joo.get(Constants.Transaction.Amount) + "\t");
                     System.out.print(Constants.Transaction.date + " : " + joo.get(Constants.Transaction.date) + "\n");
-                    System.out.print(Constants.Transaction.TimeStamp + " : " + joo.get(Constants.Transaction.TimeStamp) + "\n");
+                    System.out.print(Constants.Transaction.TimeStamp + " : " + joo.get(Constants.Transaction.TimeStamp) + "\n");*/
 
                     //append new transactions to text area
                     AllTransactions.append("  Transaction Note: " + joo.get(Constants.Transaction.TransactionNote) + "\n");
@@ -790,7 +805,9 @@ public class GUI {
                 if(!txtNewTransactionLimitAmount.equals(""))
                 {
                     //send request to server to update transaction limit for current user
-                    JSONObject jo = JSON.tryParse(client.listen(Constants.Account.ChangeTransactionLimit,Constants.Account.ChangeTransactionLimit, txtNewTransactionLimitAmount.getText()));
+                    JSONObject jo = JSON.tryParse(client.listen(Constants.Account.ChangeTransactionLimit,
+                            Constants.Account.ChangeTransactionLimit,
+                            txtNewTransactionLimitAmount.getText()));
                     //get updated transaction limit
                     JSONObject jo1 = JSON.tryParse(client.listen(Constants.Account.GetTransactionLimit));
                     //update label with data
@@ -801,6 +818,43 @@ public class GUI {
                     //clear input
                     txtNewTransactionLimitAmount.setText("");
                 }
+            }
+        });
+        btnViewAccountSummary.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //populate account summary data
+                JSONObject jo = JSON.tryParse(client.listen(Constants.Account.GetAccountSummary));
+                JSONArray ja = new JSONArray(jo.get(Constants.Account.GetAccountSummary).toString());
+                //clear text area
+                AccountSummary.setText("");
+                ja.forEach(record -> {
+                    JSONObject joo = new JSONObject(record.toString());
+                    //append account summary to textarea
+                    AccountSummary.append("Account type: " + joo.get(Constants.Account.AccountType) + "\n");
+                    AccountSummary.append("Account ID: " + joo.get(Constants.Account.AccountId) + "\n");
+                    AccountSummary.append("Balance: $" + joo.get(Constants.Account.Balance) + "\n");
+                });
+                //attach account summary screen
+                setScreen(screen, ViewAccountSummary);
+            }
+        });
+        btnOpenNewAccount.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //clear validator
+                lblNewAccountCreationValidator.setText("");
+                //attach open new account screen
+                setScreen(screen, OpenNewAccount);
+            }
+        });
+        btnOpenAccount.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //send request to open account for current user
+                JSONObject jo = JSON.tryParse(client.listen(Constants.Account.CreateAccount
+                        , Constants.Account.CreateAccount, ddlOpenNewAccount.getSelectedIndex()));
+                lblNewAccountCreationValidator.setText("Account Opened Successfully!");
             }
         });
     }
@@ -885,6 +939,9 @@ public class GUI {
         lblTransactionLimitTransfer.setText(language.get("47"));
         lblTransactionLimitDeposit.setText(language.get("47"));
         lblTransactionLimitWithdrawal.setText(language.get("47"));
+        //view account summary
+        btnViewAccountSummary.setText(language.get("50"));
+        lblViewAccountSummary.setText(language.get("50"));
     }
 
     public JPanel getBase() {
