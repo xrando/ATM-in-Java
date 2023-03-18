@@ -5,48 +5,48 @@ import static org.junit.Assert.*;
 import pure.bank.User;
 import java.security.SecureRandom;
 
-class UserTest {
+public class UserTest {
 
     static User test = new User("test", "123123");
 
     @Before
-    void login(){
+    public void login(){
         test.Login("test", "123123");
     }
 
     @After
-    void logout(){
+    public void logout(){
         test.logout();
     }
 
     @Test
-    void testlogin() {
+    public void testlogin() {
         //assertTrue(test.Login("test", "123123"));
         assertTrue(test.getLoginStatus());
     }
 
     @Test
-    void testlogout() {
+    public void testlogout() {
         test.logout();
         assertFalse(test.getLoginStatus());
         assertFalse(test.getLoginStatusFromDB("test"));
     }
 
     @Test
-    void testPasswordAndHash(){
+    public void testPasswordAndHash(){
         String salt = test.getSalt();
         String pass = test.generatePasswordHash("123123", salt);
         assertEquals(pass, test.getPassword());
     }
 
     @Test
-    void testValidatePassword(){
+    public void testValidatePassword(){
         String UID = test.getUID();
         test.validatePassword("123123", UID);
     }
 
     @Test
-    void testGetSalt(){ // Probably not needed
+    public void testGetSalt(){ // Probably not needed
         // Salt must be different each time
         for (int i = 0; i < 100; i++) {
             String salt = test.generateSalt();
@@ -57,7 +57,7 @@ class UserTest {
 
     // Test for changePin
     @Test
-    void testChangePin(){
+    public void testChangePin(){
         String oldpin = "123123";
         String newPin = "123456";
         test.changePin(oldpin, newPin);
@@ -70,7 +70,7 @@ class UserTest {
 
     // Test create user
     @Test
-    void testCreateUser(){
+    public void testCreateUser(){
         // Generate random number of length at most 6
         int random = new SecureRandom().nextInt() % 1000000;
         String Username = "test" + random;
@@ -95,7 +95,7 @@ class UserTest {
 
     // Test Update User()
     @Test
-    void testUpdateEmail(){
+    public void testUpdateEmail(){
         String oldEmail = test.getEmail();
         // Generate a random number of length at most 3
         int random = new SecureRandom().nextInt() % 1000;
@@ -114,7 +114,7 @@ class UserTest {
 
     // Test Check User Exists (test)
     @Test
-    void testCheckUserExists(){
+    public void testCheckUserExists(){
         String testUID = test.getUID();
         assertEquals(testUID, test.CheckUserExist("test"));
     }

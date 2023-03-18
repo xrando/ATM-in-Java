@@ -717,7 +717,7 @@ public class User {
         User user = new User(username, password);
         Account account = new Account();
         //validate user input
-        if (ValidatePin(password) && ValidateUserName(username)) {
+        if (ValidatePin(password) && ValidateUserName(username) && ValidateEmail(email)) {
             user.UID = user.genUID();
             user.Salt = user.generateSalt();
             user.Password = user.generatePasswordHash(password, user.Salt);
