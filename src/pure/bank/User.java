@@ -713,7 +713,7 @@ public class User {
         }
     }
 
-    public boolean CreateUser(String username, String password, String email, int AccType) {
+    public boolean CreateUser(String username, String password, String email,String phone, int AccType) {
         User user = new User(username, password);
         Account account = new Account();
         //validate user input
@@ -723,7 +723,7 @@ public class User {
             user.Password = user.generatePasswordHash(password, user.Salt);
             user.email = email;
             // May remove
-            user.phone = "0";
+            user.phone = phone;
             account.createAccount(AccType, user.UID);
             //System.out.println("Password: " + password);
             insertUser(user);

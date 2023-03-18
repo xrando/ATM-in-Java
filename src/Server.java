@@ -49,7 +49,7 @@ public class Server {
                                 }
                                 case Constants.User.CreateUser -> {
                                     User tmpuser = new User();
-                                    socket.write(Constants.Stream.RES, Constants.User.CreateUser, tmpuser.CreateUser(request.getString(Constants.User.Username), request.getString(Constants.User.Password), request.getString(Constants.User.Email), request.getInt(Constants.Account.CreateAccount)));
+                                    socket.write(Constants.Stream.RES, Constants.User.CreateUser, tmpuser.CreateUser(request.getString(Constants.User.Username), request.getString(Constants.User.Password), request.getString(Constants.User.Email),request.getString(Constants.User.Phone), request.getInt(Constants.Account.CreateAccount)));
                                 }
                                 case Constants.User.ForgetPin -> {
                                     User tmpuser = new User();

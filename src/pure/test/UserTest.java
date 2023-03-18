@@ -77,20 +77,22 @@ public class UserTest {
         System.out.print("Username: " + Username);
         User test2 = new User(Username, "123123");
 
-        assertTrue(test2.CreateUser(Username, "123123", "test@test.com",0));
+        assertTrue(test2.CreateUser(Username, "123123", "test@test.com","98765432", 0));
         // Login with new user
         assertTrue(test2.Login(Username, "123123"));
         assertTrue(test2.logout());
 
         // Create User with same username should fail
-        assertFalse(test2.CreateUser(Username, "123123", "test@test.com",0));
+        assertFalse(test2.CreateUser(Username, "123123", "test@test.com","0", 0));
 
         // Create User with pin < 6 and > 6 should fail
-        assertFalse(test2.CreateUser("test3", "123", "test@test.com", 0));
-        assertFalse(test2.CreateUser("test3", "123123123", "test@test.com", 0));
+        assertFalse(test2.CreateUser("test3", "123", "test@test.com", "0", 0));
+        assertFalse(test2.CreateUser("test3", "123123123", "test@test.com", "0", 0));
 
         // Create User with email that is not valid should fail
-        assertFalse(test2.CreateUser("test3", "123123", "testtest.com", 0));
+        assertFalse(test2.CreateUser("test3", "123123", "testtest.com", "0", 0));
+
+
     }
 
     // Test Update User()
