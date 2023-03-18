@@ -163,12 +163,14 @@ public class User {
         account = test2.Accounts.get(0);
         // account.changeTransactionLimit(5000);
         // account.updateAccount();
-        // System.out.println(account.getTransactionLimit());
-        Transaction transactionDetail = new Transaction(7000,"Over Limit","1","2");
+        System.out.println("Limit" + account.getTransactionLimit());
+        System.out.println("Balance: "+account.GetAccountBalance());
+        Transaction transactionDetail = new Transaction(-7000,"Over Limit","1","2");
         System.out.println(transactionDetail.AddTransactionToSQL(transactionDetail,account));
+        System.out.println("Balance: "+account.GetAccountBalance());
 
         //test2.changePin("135518", "123123");
-        //test2.logout();
+        test2.logout();
 
         //test2.forgetPin("test");
 

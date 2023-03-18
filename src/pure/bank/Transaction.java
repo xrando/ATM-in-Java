@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.lang.Math;
 
 public class Transaction {
     private final double Amount;
@@ -125,12 +126,13 @@ public class Transaction {
 
     public boolean AddTransactionToSQL(Transaction transactionDetails, Account account) throws IllegalArgumentException {
         String sql = "INSERT INTO transactions( amount, timeStamp, transactionNote, date, payee,accountID) VALUES(?,?,?,?,?,?)";
-        try {
-            if (transactionDetails.Amount > Double.valueOf(account.getTransactionLimit())) {
-                throw new IllegalArgumentException("Value Entered is greater than transaction limit");
-            } else {
-                // 2-way Transfer
-                if (transactionDetails.payee != "") {
+
+        // 2-way Transfer
+        if (transactionDetails.payee != "") {
+            try {
+                if (Math.abs(transactionDetails.Amount) > Double.valueOf(account.getTransactionLimit())) {
+                    throw new IllegalArgumentException("Value Entered is greater than transaction limit");
+                } else {
                     //deduct for account owner
                     try (Connection conn = sqliteDatabase.connect();
                          PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -159,30 +161,39 @@ public class Transaction {
                         System.out.println(e.getMessage());
                         return false;
                     }
-                    return true;
                 }
-                // 1-way Transfer
-                else {
-                    try (Connection conn = sqliteDatabase.connect();
-                         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                        pstmt.setDouble(1, transactionDetails.Amount);
-                        pstmt.setString(2, transactionDetails.timeStamp);
-                        pstmt.setString(3, transactionDetails.TransactionNote);
-                        pstmt.setString(4, transactionDetails.date);
-                        pstmt.setString(5, transactionDetails.payee);
-                        pstmt.setString(6, transactionDetails.accountID);
-                        pstmt.executeUpdate();
-                        return true;
-                    } catch (SQLException e) {
-                        System.out.println(e.getMessage());
-                        return false;
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                return false;
+            }
+        }
+        // 1-way Transfer
+        else {
+            if (transactionDetails.getAmount() < 0) {
+                try {
+                    if (Math.abs(transactionDetails.Amount) > Double.valueOf(account.getTransactionLimit())) {
+                        throw new IllegalArgumentException("Value Entered is greater than transaction limit");
                     }
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                    return false;
                 }
             }
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            return false;
+            try (Connection conn = sqliteDatabase.connect();
+                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setDouble(1, transactionDetails.Amount);
+                pstmt.setString(2, transactionDetails.timeStamp);
+                pstmt.setString(3, transactionDetails.TransactionNote);
+                pstmt.setString(4, transactionDetails.date);
+                pstmt.setString(5, transactionDetails.payee);
+                pstmt.setString(6, transactionDetails.accountID);
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                return false;
+            }
         }
+        return true;
     }
 }
 
