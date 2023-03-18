@@ -591,23 +591,18 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 //catch if amount entered is not integer (incorrect format)
                 try {
-                    //input validation to check if input deposit amount is higher than current balance
-                    if (Double.parseDouble(lblDepositAccountbalance.getText().substring(1)) < Double.parseDouble(txtDepositAmount.getText())) {
-                        lblDepositAmountValidator.setText("Amount entered must not exceed current account balance");
-                    } else {
-                        Integer.parseInt(txtDepositAmount.getText());
-                        //create new transaction entry
-                        //set transaction note to deposit if left empty
-                        String note = "Deposit";
-                        if (!txtDepositNote.getText().equals("")) {
-                            note = txtDepositNote.getText();
-                        }
-                        //create new transaction entry
-                        JSONObject jo = JSON.tryParse(client.listen(Constants.Transaction.Deposit, Constants.Transaction.Amount, txtDepositAmount.getText(), Constants.Transaction.TransactionNote, note));
-
-                        //update lblDepositAccountbalance with updated account balance
-                        lblDepositAccountbalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
+                    Integer.parseInt(txtDepositAmount.getText());
+                    //create new transaction entry
+                    //set transaction note to deposit if left empty
+                    String note = "Deposit";
+                    if (!txtDepositNote.getText().equals("")) {
+                        note = txtDepositNote.getText();
                     }
+                    //create new transaction entry
+                    JSONObject jo = JSON.tryParse(client.listen(Constants.Transaction.Deposit, Constants.Transaction.Amount, txtDepositAmount.getText(), Constants.Transaction.TransactionNote, note));
+
+                    //update lblDepositAccountbalance with updated account balance
+                    lblDepositAccountbalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
 
 
                 } catch (NumberFormatException ex) {
