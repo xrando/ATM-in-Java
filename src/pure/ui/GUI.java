@@ -287,6 +287,7 @@ public class GUI {
                             ddlDepositAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
                             ddlTransferAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
                             ddlTransactionAccounts.addItem(joo2.get(Constants.Account.AccountType) + " : " + joo2.get(Constants.Account.AccountId));
+                            System.out.println("Count");
                         });
                     } else {
                         lblLoginValidator.setText("Wrong credentials");
@@ -324,6 +325,33 @@ public class GUI {
         btnViewTransactions.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //populate records
+                String choice = ddlTransactionAccounts.getItemAt(ddlTransactionAccounts.getSelectedIndex()).toString();
+                //send select acc request to server
+                JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SelectAccount, Constants.Account.SelectedAccount, ddlTransactionAccounts.getSelectedIndex()));
+                //Onclick, send request to server to get transaction history of accountId selected
+                JSONObject jo = JSON.tryParse(client.listen(Constants.Account.TransactionHistory, Constants.Account.AccountId, choice));
+                //populate date to screen
+                JSONArray ja = new JSONArray(jo.get(Constants.Account.TransactionHistory).toString());
+                //clear text area
+                AllTransactions.setText("");
+                ja.forEach(record -> {
+                    JSONObject joo = new JSONObject(record.toString());
+                    //debug
+                    System.out.print(Constants.Transaction.TransactionNote + " : " + joo.get(Constants.Transaction.TransactionNote) + "\t");
+                    System.out.print(Constants.Transaction.Amount + " : " + joo.get(Constants.Transaction.Amount) + "\t");
+                    System.out.print(Constants.Transaction.date + " : " + joo.get(Constants.Transaction.date) + "\n");
+                    System.out.print(Constants.Transaction.TimeStamp + " : " + joo.get(Constants.Transaction.TimeStamp) + "\n");
+
+                    //append new transactions to text area
+                    AllTransactions.append("  Transaction Note: " + joo.get(Constants.Transaction.TransactionNote) + "\n");
+                    AllTransactions.append("  Amount: $" + joo.get(Constants.Transaction.Amount) + "\n");
+                    AllTransactions.append("  Transaction Date: " + joo.get(Constants.Transaction.date) + "\n");
+                    AllTransactions.append("  Transaction Time: " + joo.get(Constants.Transaction.TimeStamp) + "\n");
+                    AllTransactions.append("\n\n");
+                });
+                //set scroller to focus to top
+                AllTransactions.setCaretPosition(0);
                 //attach view transaction screen
                 setScreen(screen, ViewTransactions);
             }
@@ -474,6 +502,9 @@ public class GUI {
 
                         //update lblWithdrawAccountBalance with updated account balance
                         lblWithdrawAccountBalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
+                        //clear input fields
+                        txtWithdrawalNote.setText("");
+                        txtWithdrawalAmount.setText("");
                     }
                 } catch (NumberFormatException ex) {
                     //log
@@ -603,6 +634,9 @@ public class GUI {
 
                     //update lblDepositAccountbalance with updated account balance
                     lblDepositAccountbalance.setText("$" + jo.get(Constants.Account.GetAccountBalance).toString());
+                    //clear input fields
+                    txtDepositNote.setText("");
+                    txtDepositAmount.setText("");
 
 
                 } catch (NumberFormatException ex) {
@@ -635,6 +669,9 @@ public class GUI {
                                 , Constants.Transaction.Payee, txtTransferToAccount.getText()));
                         //update lblTransferAccountBalance with updated account balance
                         lblTransferAccountBalance.setText("$" + transfer.get(Constants.Account.GetAccountBalance).toString());
+                        //clear input fields
+                        txtTransferToAccount.setText("");
+                        txtTransferAmount.setText("");
                     }
                 } catch (NumberFormatException ex) {
                     //log
