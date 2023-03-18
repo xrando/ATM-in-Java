@@ -41,7 +41,7 @@ public class GUI {
     private JPanel Deposit;
     private JPanel BankTransfer;
     private JPanel Settings;
-    private JTextField txtUserName;
+    private JLabel lblUserName;
     private JTextField txtEmailAddress;
     private JTextField txtPhoneNumber;
     private JButton btnChangePassword;
@@ -146,6 +146,7 @@ public class GUI {
     private JComboBox ddlOpenNewAccount;
     private JButton btnOpenAccount;
     private JLabel lblNewAccountCreationValidator;
+    private JScrollPane AccountSummaryScroller;
     private final Map<String, String> English = Map.ofEntries(
             entry("0", "Username:"),
             entry("1", "Password:"),
@@ -197,7 +198,9 @@ public class GUI {
             entry("47", "Current Transaction Limit:"),
             entry("48", "New Transaction Limit:"),
             entry("49", "Update Transaction Limit"),
-            entry("50","View Account Summary")
+            entry("50","View Account Summary"),
+            entry("51","Open New Account"),
+            entry("52","Open Account")
     );
 
     private final Map<String, String> Chinese = Map.ofEntries(
@@ -251,7 +254,9 @@ public class GUI {
             entry("47", "当前交易限额:"),
             entry("48", "新交易限额:"),
             entry("49","更新交易限额"),
-            entry("50","查看帐户摘要")
+            entry("50","查看帐户摘要"),
+            entry("51","开设新帐户"),
+            entry("52","开户口")
     );
 
     public GUI(Client client) {
@@ -436,7 +441,7 @@ public class GUI {
                 //send Get User Info request
                 JSONObject GetUserInfo = JSON.tryParse(client.listen(Constants.User.GetUserInformation));
                 //populate fields with current user data
-                txtUserName.setText(GetUserInfo.get(Constants.User.Username).toString());
+                lblUserName.setText(GetUserInfo.get(Constants.User.Username).toString());
                 txtEmailAddress.setText(GetUserInfo.get(Constants.User.Email).toString());
                 txtPhoneNumber.setText(GetUserInfo.get(Constants.User.Phone).toString());
                 //attach settings screen
@@ -482,7 +487,6 @@ public class GUI {
                 txtOldPassword.setText("");
                 txtNewPassword.setText("");
                 txtConfirmPassword.setText("");
-
             }
         });
         //Create event listener for save changes button
@@ -492,10 +496,26 @@ public class GUI {
                 //if phone number entered is not integer (incorrect format)
                 try {
                     Integer.parseInt(txtPhoneNumber.getText());
-                    //send request to update particulars
-                    JSONObject jo = JSON.tryParse(client.listen(Constants.User.UpdateUser, Constants.User.Username, txtUserName.getText(), Constants.User.Email, txtEmailAddress.getText(), Constants.User.Phone, txtPhoneNumber.getText()));
-                    //display updated message if changes found
-                    lblChangeSuccessful.setText("Particulars updated!");
+                    //Input Validation
+                    //validate phone
+                    String phoneResult = InputSanitisation.validPhone(txtPhoneNumber.getText());
+                    // validate email
+                    String emailResult = InputSanitisation.validEmail(txtEmailAddress.getText());
+                    if (phoneResult.equals("true") && emailResult.equals("true"))
+                    {
+                        //send request to update particulars
+                        JSONObject jo = JSON.tryParse(client.listen(Constants.User.UpdateUser, Constants.User.Username, lblUserName.getText(), Constants.User.Email, txtEmailAddress.getText(), Constants.User.Phone, txtPhoneNumber.getText()));
+                        //display updated message if changes found
+                        lblChangeSuccessful.setText("Particulars updated!");
+                    }
+                    else
+                    {
+                        if (!emailResult.equals("true")) {
+                            lblChangeSuccessful.setText(emailResult);
+                        } else if (!phoneResult.equals("true")) {
+                            lblChangeSuccessful.setText(phoneResult);
+                        }
+                    }
                 } catch (NumberFormatException ex) {
                     //log
                     LogHelper.log(Level.SEVERE, "Phone number must be an integer.", ex);
@@ -605,21 +625,10 @@ public class GUI {
                 String username = txtNewUsername.getText();
                 String password = txtNewUserPassword.getText();
                 String email = txtNewUserEmail.getText();
-
                 //Input Validation
                 String result = InputSanitisation.validPin(password);
-                //if (!result.equals("valid")) {
-                //    lblNewUserValidator.setText(result);
-                //    return;
-                //}
-
                 // validate email
                 String emailResult = InputSanitisation.validEmail(email);
-                //if (!emailResult.equals("valid")) {
-                //    lblNewUserValidator.setText(emailResult);
-                //    return;
-                //}
-
                 if (result.equals("true") && emailResult.equals("true")) {
                     JSONObject jo = JSON.tryParse(client.listen(Constants.User.CreateUser
                             , Constants.User.Username, txtNewUsername.getText()
@@ -627,17 +636,26 @@ public class GUI {
                             , Constants.User.Email, txtNewUserEmail.getText()
                             , Constants.User.Phone, txtNewUserPhoneNumber.getText()
                             , Constants.Account.CreateAccount, ddlNewUserAccount.getSelectedIndex()));
-                    lblNewUserValidator.setText("User created successfully");
+                    //2secs delay before redirection
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException err) {
+                        Thread.currentThread().interrupt();
+                    }
+                    //clear input
+                    txtNewUsername.setText("");
+                    txtNewUserPassword.setText("");
+                    txtNewUserEmail.setText("");
+                    txtNewUserPhoneNumber.setText("");
                     //attach login screen
-                    //setScreen(base,login);
+                    setScreen(base,login);
                 } else {
-                    if (!result.equals("true")) {
-                        lblNewUserValidator.setText(result);
-                    } else if (!emailResult.equals("true")) {
+                    if (!emailResult.equals("true")) {
                         lblNewUserValidator.setText(emailResult);
+                    } else if (!result.equals("true")) {
+                        lblNewUserValidator.setText(result);
                     }
                 }
-
             }
         });
         //back to login screen
@@ -835,6 +853,8 @@ public class GUI {
                     AccountSummary.append("Account ID: " + joo.get(Constants.Account.AccountId) + "\n");
                     AccountSummary.append("Balance: $" + joo.get(Constants.Account.Balance) + "\n");
                 });
+                //set scroller to focus to top
+                AccountSummary.setCaretPosition(0);
                 //attach account summary screen
                 setScreen(screen, ViewAccountSummary);
             }
@@ -942,6 +962,9 @@ public class GUI {
         //view account summary
         btnViewAccountSummary.setText(language.get("50"));
         lblViewAccountSummary.setText(language.get("50"));
+        btnOpenNewAccount.setText(language.get("51"));
+        lblOpenNewAccount.setText(language.get("51"));
+        btnOpenAccount.setText(language.get("52"));
     }
 
     public JPanel getBase() {
