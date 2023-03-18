@@ -62,6 +62,22 @@ public class JSON {
         return ja;
     }
 
+    public static String parseAccountsSummaryToString(List<Account> accounts) {
+        return parseAccountsSummary(accounts).toString();
+    }
+
+    public static JSONArray parseAccountsSummary(List<Account> accounts) {
+        JSONArray ja = new JSONArray();
+        accounts.forEach(account -> {
+            HashMap<String, String> map = new HashMap<>();
+            map.put(Constants.Account.AccountId, account.getAccountID());
+            map.put(Constants.Account.AccountType, account.getAccountType());
+            map.put(Constants.Account.Balance, String.valueOf((account.GetAccountBalance())));
+            ja.put(map);
+        });
+        return ja;
+    }
+
     public <T> JSON add(String key, T t) {
         try {
             this.jsonObject.put(key, t);

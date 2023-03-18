@@ -105,6 +105,11 @@ public class Server {
                                     socket.write(Constants.Stream.RES, Constants.Account.GetAccountBalance, account.GetAccountBalance());
                                 }
 
+                                case Constants.Account.GetAccountSummary -> {
+                                    List<Account> accountsList = account.getTransactionAccount(account.getUID());
+                                    socket.write(Constants.Stream.RES, Constants.Account.GetAccountSummary, JSON.parseAccountsSummaryToString(accountsList));
+                                }
+
                                 case Constants.Account.CreateAccount -> {
                                     int selection = request.getInt(Constants.Account.CreateAccount);
                                     socket.write(Constants.Stream.RES, Constants.Account.CreateAccount, account.createAccount(selection, user.getUID()));
