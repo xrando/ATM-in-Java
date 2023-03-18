@@ -625,23 +625,19 @@ public class GUI {
                 String username = txtNewUsername.getText();
                 String password = txtNewUserPassword.getText();
                 String email = txtNewUserEmail.getText();
+                String number = txtNewUserPhoneNumber.getText();
                 //Input Validation
-                String result = InputSanitisation.validPin(password);
-                // validate email
+                String UsernameResult = InputSanitisation.validNameString(username);
+                String PasswordResult = InputSanitisation.validPin(password);
                 String emailResult = InputSanitisation.validEmail(email);
-                if (result.equals("true") && emailResult.equals("true")) {
+                String numberResult = InputSanitisation.validPhone(number);
+                if (PasswordResult.equals("true") && emailResult.equals("true") && UsernameResult.equals("true") && numberResult.equals("true")) {
                     JSONObject jo = JSON.tryParse(client.listen(Constants.User.CreateUser
                             , Constants.User.Username, txtNewUsername.getText()
                             , Constants.User.Password, txtNewUserPassword.getText()
                             , Constants.User.Email, txtNewUserEmail.getText()
-                            , Constants.User.Phone, txtNewUserPhoneNumber.getText()
+                            , Constants.User.Phone, txtNewUserPhoneNumber.getText().equals("") ? "0" : txtNewUserPhoneNumber.getText()
                             , Constants.Account.CreateAccount, ddlNewUserAccount.getSelectedIndex()));
-                    //2secs delay before redirection
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException err) {
-                        Thread.currentThread().interrupt();
-                    }
                     //clear input
                     txtNewUsername.setText("");
                     txtNewUserPassword.setText("");
@@ -650,10 +646,17 @@ public class GUI {
                     //attach login screen
                     setScreen(base,login);
                 } else {
-                    if (!emailResult.equals("true")) {
+                    if (!UsernameResult.equals("true")) {
+                        lblNewUserValidator.setText(UsernameResult);
+                    }
+                    else if (!PasswordResult.equals("true")) {
+                        lblNewUserValidator.setText(PasswordResult);
+                    }
+                    else if (!emailResult.equals("true")) {
                         lblNewUserValidator.setText(emailResult);
-                    } else if (!result.equals("true")) {
-                        lblNewUserValidator.setText(result);
+                    }
+                    else if (!numberResult.equals("true")) {
+                        lblNewUserValidator.setText(numberResult);
                     }
                 }
             }
