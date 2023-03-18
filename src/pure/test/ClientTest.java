@@ -1,10 +1,9 @@
 package pure.test;
 
 import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
+import static org.junit.Assert.*;
 import pure.constants.Constants;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import pure.client.Client;
 
 public class ClientTest {
@@ -19,7 +18,7 @@ public class ClientTest {
         }
     };
 
-    @Ignore
+    @BeforeClass
     //@BeforeClass
     public static void login() {
         c.listen(Constants.User.Login, Constants.User.Username, "test", Constants.User.Password, "123123");

@@ -1,22 +1,20 @@
 package pure.test;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.*;
+import static org.junit.Assert.*;
 import pure.bank.User;
-import static org.junit.jupiter.api.Assertions.*;
 import java.security.SecureRandom;
 
 class UserTest {
 
     static User test = new User("test", "123123");
 
-    @BeforeEach
+    @Before
     void login(){
         test.Login("test", "123123");
     }
 
-    @AfterEach
+    @After
     void logout(){
         test.logout();
     }

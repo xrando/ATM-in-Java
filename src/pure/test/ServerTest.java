@@ -1,10 +1,9 @@
 package pure.test;
 
-import org.junit.Test;
+import org.junit.*;
+import static org.junit.Assert.*;
 import pure.client.ClientSocket;
 import pure.constants.Constants;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import pure.server.Server;
 
 public class ServerTest {
