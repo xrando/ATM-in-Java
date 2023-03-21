@@ -438,6 +438,8 @@ public class GUI {
         btnSettings.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //clear validator
+                lblChangeSuccessful.setText("");
                 //send Get User Info request
                 JSONObject GetUserInfo = JSON.tryParse(client.listen(Constants.User.GetUserInformation));
                 //populate fields with current user data
