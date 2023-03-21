@@ -72,10 +72,10 @@ public class UserTest {
     @Test
     public void testCreateUser(){
         // Generate random number of length at most 6
-        int random = new SecureRandom().nextInt() % 1000000;
-        String Username = "test" + random;
-        System.out.print("Username: " + Username);
+        String Username = "test";
         User test2 = new User(Username, "123123");
+        String UID = test2.genUID();
+        Username = Username + UID;
 
         assertTrue(test2.CreateUser(Username, "123123", "test@test.com","98765432", 0));
         // Login with new user
@@ -87,7 +87,8 @@ public class UserTest {
 
         // Create User with pin < 6 and > 6 should fail
         assertFalse(test2.CreateUser("test3", "123", "test@test.com", "0", 0));
-        assertFalse(test2.CreateUser("test3", "123123123", "test@test.com", "0", 0));
+        assertFalse(test2.CreateUser("test4", "123123123", "test@test.com", "0", 0));
+        assertFalse(test2.CreateUser("test5", "12312", "test@test.com", "0", 0));
 
         // Create User with email that is not valid should fail
         assertFalse(test2.CreateUser("test3", "123123", "testtest.com", "0", 0));

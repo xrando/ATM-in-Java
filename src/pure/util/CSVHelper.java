@@ -85,7 +85,7 @@ public class CSVHelper {
 
     // Sample usage TODO
     public static void main(String[] args) throws IOException {
-        User test = new User("test", "test", "test", "test", new Bank("test"));
+//        User test = new User("test", "test", "test", "test", new Bank("test"));
         //writeToCSV("test.csv", test.UserToArray());
     }
 }

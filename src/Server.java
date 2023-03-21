@@ -146,7 +146,7 @@ public class Server {
                                     user.setPhone(request.getString(Constants.User.Phone));
 
                                     // Logout to update user information
-                                    //socket.write(new JSON(Constants.Stream.RES, Constants.User.UpdateUser, "User information updated").toString());
+                                    socket.write(Constants.Stream.RES, Constants.User.UpdateUser, "User information updated");
                                 }
                                 case Constants.Stream.EOS -> flag = false;
                             }
