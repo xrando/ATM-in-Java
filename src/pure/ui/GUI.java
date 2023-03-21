@@ -880,6 +880,15 @@ public class GUI {
                 JSONObject jo = JSON.tryParse(client.listen(Constants.Account.CreateAccount
                         , Constants.Account.CreateAccount, ddlOpenNewAccount.getSelectedIndex()));
                 lblNewAccountCreationValidator.setText("Account Opened Successfully!");
+                //Send request to server to get all accounts of current users
+                //update dropdownlists
+                JSONObject retrieveAccounts = JSON.tryParse(client.listen(Constants.Account.AllAccounts));
+                JSONArray ja2 = new JSONArray(retrieveAccounts.get(Constants.Account.AllAccounts).toString());
+                JSONObject joo3 = new JSONObject(ja2.get(ja2.length()-1).toString());
+                ddlWithdrawAccounts.addItem(joo3.get(Constants.Account.AccountType) + " : " + joo3.get(Constants.Account.AccountId));
+                ddlDepositAccounts.addItem(joo3.get(Constants.Account.AccountType) + " : " + joo3.get(Constants.Account.AccountId));
+                ddlTransferAccounts.addItem(joo3.get(Constants.Account.AccountType) + " : " + joo3.get(Constants.Account.AccountId));
+                ddlTransactionAccounts.addItem(joo3.get(Constants.Account.AccountType) + " : " + joo3.get(Constants.Account.AccountId));
             }
         });
     }
