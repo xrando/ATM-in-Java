@@ -126,7 +126,7 @@ public class Server {
 
                                 case Constants.Transaction.Transfer -> {
                                     //Negative to deduct value
-                                    transaction = new Transaction(-(request.getDouble(Constants.Transaction.Amount)), request.getString(Constants.Transaction.TransactionNote), request.getString(Constants.Transaction.Payee), account.getAccountID());
+                                    transaction = new Transaction(-(request.getDouble(Constants.Transaction.Amount)), request.getString(Constants.Transaction.TransactionNote), account.getAccountID(), request.getString(Constants.Transaction.Payee));
                                     transaction.AddTransactionToSQL(transaction, account);
                                     //transaction.transactionEmail(transaction, user.getUsername(), user.getEmail());
                                     socket.write(Constants.Stream.RES, Constants.Transaction.Transfer, "Transfer Complete", Constants.Account.GetAccountBalance, account.GetAccountBalance());
