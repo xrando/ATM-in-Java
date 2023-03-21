@@ -1,5 +1,7 @@
+import org.json.JSONObject;
 import pure.client.Client;
 import pure.constants.Constants;
+import pure.util.JSON;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -25,6 +27,8 @@ public class GUI {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                //sent request to server to logout
+                JSONObject logout = JSON.tryParse(client.listen(Constants.User.Logout));
                 super.windowClosing(e);
                 client.close();
             }
