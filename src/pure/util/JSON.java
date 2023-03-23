@@ -17,7 +17,7 @@ public class JSON {
     private final JSONObject jsonObject = new JSONObject();
 
     public <T> JSON(T type) {
-        this.jsonObject.put(Constants.JSON.Type, type);
+        this.jsonObject.put(Constants.JSON.TYPE, type);
     }
 
     /**
@@ -43,10 +43,10 @@ public class JSON {
         JSONArray ja = new JSONArray();
         transactions.forEach(transaction -> {
             HashMap<String, String> map = new HashMap<>();
-            map.put(Constants.Transaction.date, transaction.getTransactionDate());
-            map.put(Constants.Transaction.TimeStamp, transaction.getTransactionTime());
-            map.put(Constants.Transaction.TransactionNote, transaction.getTransactionNote());
-            map.put(Constants.Transaction.Amount, String.valueOf(transaction.getAmount()));
+            map.put(Constants.Transaction.DATE, transaction.getTransactionDate());
+            map.put(Constants.Transaction.TIME_STAMP, transaction.getTransactionTime());
+            map.put(Constants.Transaction.TRANSACTION_NOTE, transaction.getTransactionNote());
+            map.put(Constants.Transaction.AMOUNT, String.valueOf(transaction.getAmount()));
             ja.put(map);
         });
 
@@ -69,9 +69,9 @@ public class JSON {
         JSONArray ja = new JSONArray();
         accounts.forEach(account -> {
             HashMap<String, String> map = new HashMap<>();
-            map.put(Constants.Account.AccountId, account.getAccountID());
-            map.put(Constants.Account.AccountType, account.getAccountType());
-            map.put(Constants.Account.UserID, account.getUID());
+            map.put(Constants.Account.ACCOUNT_ID, account.getAccountID());
+            map.put(Constants.Account.ACCOUNT_TYPE, account.getAccountType());
+            map.put(Constants.Account.USER_ID, account.getUID());
             ja.put(map);
         });
         return ja;
@@ -85,9 +85,9 @@ public class JSON {
         JSONArray ja = new JSONArray();
         accounts.forEach(account -> {
             HashMap<String, String> map = new HashMap<>();
-            map.put(Constants.Account.AccountId, account.getAccountID());
-            map.put(Constants.Account.AccountType, account.getAccountType());
-            map.put(Constants.Account.Balance, String.valueOf((account.GetAccountBalance())));
+            map.put(Constants.Account.ACCOUNT_ID, account.getAccountID());
+            map.put(Constants.Account.ACCOUNT_TYPE, account.getAccountType());
+            map.put(Constants.Account.BALANCE, String.valueOf((account.GetAccountBalance())));
             ja.put(map);
         });
         return ja;

@@ -29,7 +29,7 @@ public class GUI {
             @Override
             public void windowClosing(WindowEvent e) {
                 //sent request to server to logout
-                JSONObject logout = JSON.tryParse(client.listen(Constants.User.Logout));
+                JSONObject logout = JSON.tryParse(client.listen(Constants.User.LOGOUT));
                 super.windowClosing(e);
                 client.close();
             }

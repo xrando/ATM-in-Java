@@ -36,54 +36,54 @@ public class Server {
                             //try to get the request type.
                             String type = "";
                             try {
-                                type = request.getString(Constants.JSON.Type);
+                                type = request.getString(Constants.JSON.TYPE);
                             } catch (JSONException e) {
-                                LogHelper.log(Level.SEVERE, "No such key in JSON Object: [" + Constants.JSON.Type + "].", e);
+                                LogHelper.log(Level.SEVERE, "No such key in JSON Object: [" + Constants.JSON.TYPE + "].", e);
                             }
 
                             //switch cases based on the request type.
                             switch (type) {
-                                case Constants.User.Login -> {
+                                case Constants.User.LOGIN -> {
                                     user = new User();
-                                    socket.write(Constants.Stream.RES, Constants.User.LoginStatus, user.Login(request.getString(Constants.User.Username), request.getString(Constants.User.Password)));
+                                    socket.write(Constants.Stream.RES, Constants.User.LOGIN_STATUS, user.Login(request.getString(Constants.User.USERNAME), request.getString(Constants.User.PASSWORD)));
                                     user.getUserFromDatabase();
                                 }
-                                case Constants.User.Logout ->
-                                        socket.write(Constants.Stream.RES, Constants.User.LoginStatus, user.logout());
+                                case Constants.User.LOGOUT ->
+                                        socket.write(Constants.Stream.RES, Constants.User.LOGIN_STATUS, user.logout());
 
-                                case Constants.User.ChangePin -> {
-                                    socket.write(Constants.Stream.RES, Constants.User.ChangePin, user.changePin(request.getString(Constants.User.oldPin), request.getString(Constants.User.newPin)));
-                                    System.out.println(request.getString(Constants.User.oldPin));
-                                    System.out.println(request.getString(Constants.User.newPin));
+                                case Constants.User.CHANGE_PIN -> {
+                                    socket.write(Constants.Stream.RES, Constants.User.CHANGE_PIN, user.changePin(request.getString(Constants.User.OLD_PIN), request.getString(Constants.User.NEW_PIN)));
+                                    System.out.println(request.getString(Constants.User.OLD_PIN));
+                                    System.out.println(request.getString(Constants.User.NEW_PIN));
                                 }
-                                case Constants.User.CreateUser -> {
+                                case Constants.User.CREATE_USER -> {
                                     User tmpuser = new User();
-                                    socket.write(Constants.Stream.RES, Constants.User.CreateUser, tmpuser.CreateUser(request.getString(Constants.User.Username), request.getString(Constants.User.Password), request.getString(Constants.User.Email),request.getString(Constants.User.Phone), request.getInt(Constants.Account.CreateAccount)));
+                                    socket.write(Constants.Stream.RES, Constants.User.CREATE_USER, tmpuser.CreateUser(request.getString(Constants.User.USERNAME), request.getString(Constants.User.PASSWORD), request.getString(Constants.User.EMAIL),request.getString(Constants.User.PHONE), request.getInt(Constants.Account.CREATE_ACCOUNT)));
                                 }
-                                case Constants.User.ForgetPin -> {
+                                case Constants.User.FORGET_PIN -> {
                                     User tmpuser = new User();
-                                    socket.write(Constants.Stream.RES, Constants.User.ForgetPin, tmpuser.forgetPin(request.getString(Constants.User.Username)));
+                                    socket.write(Constants.Stream.RES, Constants.User.FORGET_PIN, tmpuser.forgetPin(request.getString(Constants.User.USERNAME)));
                                 }
-                                case Constants.Account.SelectAccount -> {
-                                    int selectAccount = request.getInt(Constants.Account.SelectedAccount);
+                                case Constants.Account.SELECT_ACCOUNT -> {
+                                    int selectAccount = request.getInt(Constants.Account.SELECTED_ACCOUNT);
                                     if (user.getAccounts().size() > 0) {
                                         account = new Account(user.getAccounts().get(selectAccount));
                                         System.out.println("Selected AccountID:" + account.getAccountID() + ", Account type:" + account.getAccountType());
-                                        socket.write(Constants.Stream.RES, Constants.Account.SelectedAccount, account.getAccountID());
+                                        socket.write(Constants.Stream.RES, Constants.Account.SELECTED_ACCOUNT, account.getAccountID());
                                         account.retrieveAccountTransactions();
                                     } else {
-                                        socket.write(Constants.Stream.RES, Constants.Account.SelectedAccount, "");
+                                        socket.write(Constants.Stream.RES, Constants.Account.SELECTED_ACCOUNT, "");
                                     }
 
                                 }
-                                case Constants.Account.TransactionHistory -> {
+                                case Constants.Account.TRANSACTION_HISTORY -> {
                                     ArrayList<Transaction> transactions = account.getAccountTransactions();
-                                    socket.write(Constants.Stream.RES, Constants.Account.TransactionHistory, JSON.parseTransactionsToString(transactions));
+                                    socket.write(Constants.Stream.RES, Constants.Account.TRANSACTION_HISTORY, JSON.parseTransactionsToString(transactions));
                                 }
 
-                                case Constants.Account.AllAccounts -> {
+                                case Constants.Account.ALL_ACCOUNTS -> {
                                     if (account == null) {
-                                        socket.write(Constants.Stream.RES, Constants.Account.AllAccounts, "");
+                                        socket.write(Constants.Stream.RES, Constants.Account.ALL_ACCOUNTS, "");
                                         break;
                                     }
 
@@ -91,67 +91,67 @@ public class Server {
                                     for (int i = 0; i < accounts.size(); i++) {
                                         System.out.println(accounts.get(i).getAccountID() + " " + accounts.get(i).getAccountType() + " " + accounts.get(i).getUID());
                                     }
-                                    socket.write(Constants.Stream.RES, Constants.Account.AllAccounts, JSON.parseAccountsToString(accounts));
+                                    socket.write(Constants.Stream.RES, Constants.Account.ALL_ACCOUNTS, JSON.parseAccountsToString(accounts));
                                 }
 
-                                case Constants.Transaction.Withdraw -> {
+                                case Constants.Transaction.WITHDRAW -> {
                                     //Negative to make value a withdrawal
-                                    transaction = new Transaction(-(request.getDouble(Constants.Transaction.Amount)), request.getString(Constants.Transaction.TransactionNote), account.getAccountID());
+                                    transaction = new Transaction(-(request.getDouble(Constants.Transaction.AMOUNT)), request.getString(Constants.Transaction.TRANSACTION_NOTE), account.getAccountID());
                                     transaction.AddTransactionToSQL(transaction, account);
-                                    socket.write(Constants.Stream.RES, Constants.Transaction.Withdraw, "Withdrawal Complete", Constants.Account.GetAccountBalance, account.GetAccountBalance());
+                                    socket.write(Constants.Stream.RES, Constants.Transaction.WITHDRAW, "Withdrawal Complete", Constants.Account.GET_ACCOUNT_BALANCE, account.GetAccountBalance());
                                 }
-                                case Constants.Transaction.Deposit -> {
-                                    transaction = new Transaction(request.getDouble(Constants.Transaction.Amount), request.getString(Constants.Transaction.TransactionNote), account.getAccountID());
+                                case Constants.Transaction.DEPOSIT -> {
+                                    transaction = new Transaction(request.getDouble(Constants.Transaction.AMOUNT), request.getString(Constants.Transaction.TRANSACTION_NOTE), account.getAccountID());
                                     transaction.AddTransactionToSQL(transaction, account);
-                                    socket.write(Constants.Stream.RES, Constants.Transaction.Deposit, "Deposit Complete", Constants.Account.GetAccountBalance, account.GetAccountBalance());
+                                    socket.write(Constants.Stream.RES, Constants.Transaction.DEPOSIT, "Deposit Complete", Constants.Account.GET_ACCOUNT_BALANCE, account.GetAccountBalance());
                                 }
 
-                                case Constants.Account.GetAccountBalance -> {
-                                    socket.write(Constants.Stream.RES, Constants.Account.GetAccountBalance, account.GetAccountBalance());
+                                case Constants.Account.GET_ACCOUNT_BALANCE -> {
+                                    socket.write(Constants.Stream.RES, Constants.Account.GET_ACCOUNT_BALANCE, account.GetAccountBalance());
                                 }
 
-                                case Constants.Account.GetAccountSummary -> {
+                                case Constants.Account.GET_ACCOUNT_SUMMARY -> {
                                     List<Account> accountsList = account.getTransactionAccount(account.getUID());
-                                    socket.write(Constants.Stream.RES, Constants.Account.GetAccountSummary, JSON.parseAccountsSummaryToString(accountsList));
+                                    socket.write(Constants.Stream.RES, Constants.Account.GET_ACCOUNT_SUMMARY, JSON.parseAccountsSummaryToString(accountsList));
                                 }
 
-                                case Constants.Account.CreateAccount -> {
-                                    int selection = request.getInt(Constants.Account.CreateAccount);
-                                    socket.write(Constants.Stream.RES, Constants.Account.CreateAccount, account.createAccount(selection, user.getUID()));
+                                case Constants.Account.CREATE_ACCOUNT -> {
+                                    int selection = request.getInt(Constants.Account.CREATE_ACCOUNT);
+                                    socket.write(Constants.Stream.RES, Constants.Account.CREATE_ACCOUNT, account.createAccount(selection, user.getUID()));
                                 }
 
-                                case Constants.Account.ChangeTransactionLimit -> {
-                                    int newLimit = request.getInt(Constants.Account.ChangeTransactionLimit);
-                                    socket.write(Constants.Stream.RES, Constants.Account.ChangeTransactionLimit, account.changeTransactionLimit(newLimit));
+                                case Constants.Account.CHANGE_TRANSACTION_LIMIT -> {
+                                    int newLimit = request.getInt(Constants.Account.CHANGE_TRANSACTION_LIMIT);
+                                    socket.write(Constants.Stream.RES, Constants.Account.CHANGE_TRANSACTION_LIMIT, account.changeTransactionLimit(newLimit));
                                 }
 
-                                case Constants.Account.GetTransactionLimit -> {
-                                    socket.write(Constants.Stream.RES, Constants.Account.GetTransactionLimit, account.getTransactionLimit());
+                                case Constants.Account.GET_TRANSACTION_LIMIT -> {
+                                    socket.write(Constants.Stream.RES, Constants.Account.GET_TRANSACTION_LIMIT, account.getTransactionLimit());
                                 }
 
-                                case Constants.Transaction.Transfer -> {
+                                case Constants.Transaction.TRANSFER -> {
                                     //Negative to deduct value
-                                    transaction = new Transaction(-(request.getDouble(Constants.Transaction.Amount)), request.getString(Constants.Transaction.TransactionNote), account.getAccountID(), request.getString(Constants.Transaction.Payee));
+                                    transaction = new Transaction(-(request.getDouble(Constants.Transaction.AMOUNT)), request.getString(Constants.Transaction.TRANSACTION_NOTE), account.getAccountID(), request.getString(Constants.Transaction.PAYEE));
                                     transaction.AddTransactionToSQL(transaction, account);
                                     //transaction.transactionEmail(transaction, user.getUsername(), user.getEmail());
-                                    socket.write(Constants.Stream.RES, Constants.Transaction.Transfer, "Transfer Complete", Constants.Account.GetAccountBalance, account.GetAccountBalance());
+                                    socket.write(Constants.Stream.RES, Constants.Transaction.TRANSFER, "Transfer Complete", Constants.Account.GET_ACCOUNT_BALANCE, account.GetAccountBalance());
                                 }
 
 
                                 // Get current user particulars (to allow users to see and update particulars in UI,
                                 // send over all current user particulars such as email, phone number etc)
                                 // Done, Name, phone and email will now be accessible
-                                case Constants.User.GetUserInformation ->
-                                        socket.write(Constants.Stream.RES, Constants.User.Username, user.getUsername(), Constants.User.Email, user.getEmail(), Constants.User.Phone, user.getPhone());
+                                case Constants.User.GET_USER_INFORMATION ->
+                                        socket.write(Constants.Stream.RES, Constants.User.USERNAME, user.getUsername(), Constants.User.EMAIL, user.getEmail(), Constants.User.PHONE, user.getPhone());
 
                                 // Update user particulars (to allow users to update particulars in UI)
-                                case Constants.User.UpdateUser -> {
-                                    user.setUsername(request.getString(Constants.User.Username));
-                                    user.setEmail(request.getString(Constants.User.Email));
-                                    user.setPhone(request.getString(Constants.User.Phone));
+                                case Constants.User.UPDATE_USER -> {
+                                    user.setUsername(request.getString(Constants.User.USERNAME));
+                                    user.setEmail(request.getString(Constants.User.EMAIL));
+                                    user.setPhone(request.getString(Constants.User.PHONE));
 
                                     // Logout to update user information
-                                    socket.write(Constants.Stream.RES, Constants.User.UpdateUser, "User information updated");
+                                    socket.write(Constants.Stream.RES, Constants.User.UPDATE_USER, "User information updated");
                                 }
                                 // set flag to false when exit UI, breaks the loop and close the socket connection.
                                 case Constants.Stream.EOS -> flag = false;
