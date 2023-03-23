@@ -14,7 +14,7 @@ import java.security.cert.CertificateException;
  *
  * @see javax.net.ssl.SSLContext
  */
-public abstract class SSLContext {
+public class SSLContext {
     private final javax.net.ssl.SSLContext SSLCONTEXT;
 
     /**
@@ -32,7 +32,7 @@ public abstract class SSLContext {
      * @throws NoSuchAlgorithmException  if no Provider supports a SSLContextSpi implementation for the specified protocol. Check Config if "Protocol=TLSV1.3" exists
      * @throws UnrecoverableKeyException if the key cannot be recovered (e.g. the given password is wrong).
      */
-    protected SSLContext(String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) throws KeyManagementException, KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
+    public SSLContext(String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) throws KeyManagementException, KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
         KeyStore keyStore;
         InputStream stream;
         char[] trustStorePassword;
@@ -57,12 +57,5 @@ public abstract class SSLContext {
 
     public javax.net.ssl.SSLContext getSSLContext() {
         return SSLCONTEXT;
-    }
-
-    /**
-     * Empty constructor for child classes. SSLContext set to null.
-     */
-    protected SSLContext() {
-        SSLCONTEXT = null;
     }
 }

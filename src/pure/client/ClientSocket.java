@@ -28,12 +28,12 @@ import java.util.logging.Level;
  * @see SSLSocket
  * @see SSLContext
  * */
-public class ClientSocket extends SSLContext implements AutoCloseable {
+public class ClientSocket implements AutoCloseable {
     private final SSLSocket sslSocket;
 
     protected ClientSocket(String host, int port, String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol, int timeout) throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
-        super(keyStoreType, keyStorePath, keyStorePass, keyManagerAlgorithm, trustManagerAlgorithm, protocol);
-        sslSocket = (SSLSocket) getSSLContext().getSocketFactory().createSocket(host, port);
+        javax.net.ssl.SSLContext sslContext = new SSLContext(keyStoreType, keyStorePath, keyStorePass, keyManagerAlgorithm, trustManagerAlgorithm, protocol).getSSLContext();
+        sslSocket = (SSLSocket) sslContext.getSocketFactory().createSocket(host, port);
         sslSocket.setSoTimeout(timeout);
     }
 

@@ -1,6 +1,7 @@
 package pure.server;
 
 import pure.client.ClientSocket;
+import pure.util.Listenable;
 import pure.util.LogHelper;
 import pure.util.SSLContext;
 
@@ -24,18 +25,22 @@ import java.util.logging.Level;
  * @see ClientSocket
  * */
 
-public class ServerSocket extends SSLContext {
+public abstract class ServerSocket implements Listenable<String> {
     private final SSLServerSocket sslServerSocket;
 
-    protected ServerSocket(int port, String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
-        super(keyStoreType, keyStorePath, keyStorePass, keyManagerAlgorithm, trustManagerAlgorithm, protocol);
-        sslServerSocket = (SSLServerSocket) getSSLContext().getServerSocketFactory().createServerSocket(port);
+    public ServerSocket(int port, String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+        javax.net.ssl.SSLContext sslContext = new SSLContext(keyStoreType, keyStorePath, keyStorePass, keyManagerAlgorithm, trustManagerAlgorithm, protocol).getSSLContext();
+        sslServerSocket = (SSLServerSocket) sslContext.getServerSocketFactory().createServerSocket(port);
         sslServerSocket.setSoTimeout(0);
         sslServerSocket.setNeedClientAuth(true);
     }
 
     public boolean getSslServerSocketStatus() {
         return sslServerSocket != null;
+    }
+
+    public SSLServerSocket getSslServerSocket() {
+        return sslServerSocket;
     }
 
     /**

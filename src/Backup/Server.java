@@ -1,10 +1,8 @@
-package Backup;
+/*
+package pure.server;
 
-import ATM.Constants.Constants.Socket;
-import ATM.Constants.Constants.Stream;
-import Backup.ATMServerSocket;
-import Backup.ATMSocket;
-import ATM.Utilities.LogHelper;
+import pure.util.Listenable;
+import pure.util.LogHelper;
 
 import java.io.IOException;
 import java.security.KeyManagementException;
@@ -14,36 +12,48 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.logging.Level;
 
-//to be removed
-public class Server {
-    public void listen() throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
-        //start new instance of serversocket. This need not be recreated as it uses multi-threading to handle different client sockets
+*/
+/**
+ * An abstract class containing {@link ServerSocket} with {@link Listenable} undefined.
+ * *//*
 
+public abstract class Server implements Listenable<String> {
+    private final pure.server.ServerSocket serverSocket;
 
-        ATMServerSocket ss = new ATMServerSocket(Socket.PORT);
-        //SSLServerSocket ss = (SSLServerSocket) Security.sslContext(SSL.KEYSTORE, SSL.KEYSTOREPASS).getServerSocketFactory().createServerSocket(Socket.PORT);
+    */
+/**
+     * It creates the object of {@link ServerSocket} and handles its exceptions.
+     * <br><br>
+     * The action to be taken ({@link Listenable}) is defined here.
+     * *//*
 
-        while (true) { //server should run non-stop
-            ATMSocket socket = ss.accept(); //accept new client sockets and
-            new Thread(() -> { //start new thread to handle each client sockets
-                try (socket) { //autocloseable
-                    while (true) {
-                        /*once server receives a client request, it MUST respond to the client to continue*/
-                        String clientInput = socket.read(); //receive client request as String
-                        System.out.println("Received: " + clientInput);
-                        //Sample below:
-                        if (clientInput.equals(Stream.EOS)) { //need an exit code to safely end the connection
-                            socket.write(clientInput); //response to client
-                            break;
-                        } else
-                            socket.write("You sent: " + clientInput);
-                        //End of sample
-                        //TODO: (replace the sample codes) switch statement to handle different requests
-                    }
-                } catch (IOException e) {
-                    LogHelper.LOGGER.log(Level.SEVERE, e.getMessage(), e);
-                }
-            }).start();
+    public Server(int port, String keyStoreType, String keyStorePath, String keyStorePass,
+                  String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) {
+        pure.server.ServerSocket ss = null;
+        try {
+            ss = new ServerSocket(port, keyStoreType, keyStorePath, keyStorePass,
+                    keyManagerAlgorithm, trustManagerAlgorithm, protocol);
+        } catch (IOException e) {
+            LogHelper.log(Level.SEVERE, "Check port number.", e);
+        } catch (NullPointerException e) {
+            LogHelper.log(Level.SEVERE, "Failed to generate ssl server socket.", e);
+        } catch (CertificateException e) {
+            LogHelper.log(Level.SEVERE, "Could not load certificate.", e);
+        } catch (NoSuchAlgorithmException e) {
+            LogHelper.log(Level.SEVERE, "No Provider supports a KeyManagerFactorySpi implementation for the specified algorithm", e);
+        } catch (KeyStoreException e) {
+            LogHelper.log(Level.SEVERE, "Failed to load keystore.", e);
+        } catch (UnrecoverableKeyException e) {
+            LogHelper.log(Level.SEVERE, "Password might be incorrect.", e);
+        } catch (KeyManagementException e) {
+            LogHelper.log(Level.SEVERE, "Key expired or failed authorization.", e);
+        } finally {
+            this.serverSocket = ss;
         }
     }
+
+    public ServerSocket getServerSocket() {
+        return serverSocket;
+    }
 }
+*/
