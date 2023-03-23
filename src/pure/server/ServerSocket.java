@@ -24,7 +24,7 @@ import java.util.logging.Level;
  * @see ClientSocket
  * */
 
-public class ServerSocket extends SSLContext implements AutoCloseable {
+public class ServerSocket extends SSLContext {
     private final SSLServerSocket sslServerSocket;
 
     protected ServerSocket(int port, String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
