@@ -1,5 +1,6 @@
 package pure.test;
 
+import org.json.JSONObject;
 import org.junit.*;
 import static org.junit.Assert.*;
 import pure.constants.Constants;
@@ -11,8 +12,8 @@ public class ClientTest {
     static Client c = new Client(Constants.Socket.HOST, Constants.Socket.PORT, null, Constants.SSL.CLIENT_KEYSTORE, Constants.SSL.CLIENT_KEYSTORE_PASS,
             null, null, Constants.SSL.PROTOCOL, Constants.Socket.TIMEOUT) {
         @Override
-        public <T> String listen(T... input) {
-            this.getSocket().writeRaw((String) input[0]);
+        public <T> JSONObject listen(T... input) {
+            this.getSocket().write(input);
             return getSocket().read();
         }
     };
@@ -24,6 +25,6 @@ public class ClientTest {
 
     @Test
     public void testCommunication() {
-        assertEquals("HELLO", c.listen("Hello"));
+        assertEquals("Hello", c.listen("Hello").getString(Constants.JSON.TYPE));
     }
 }

@@ -5,9 +5,9 @@ package pure.util;
  * <br><br>
  * For server/client implementation, this represents the action to be taken during the communication.
  * **/
-public interface Listenable {
+public interface Listenable <R> {
     /**
      * @param input represents the information needed for socket communications.
      * */
-    <T> String listen(T... input);
+    <T> R listen(T... input);
 }

@@ -1,5 +1,6 @@
 package pure.client;
 
+import org.json.JSONObject;
 import pure.constants.Constants;
 import pure.util.JSON;
 import pure.util.LogHelper;
@@ -47,7 +48,7 @@ public class ClientSocket extends SSLContext implements AutoCloseable {
     /**
      * read the input stream until hits the EOF constant, return as String.
      * */
-    public String read() {
+    public String readRaw() {
         byte[] buf = new byte[1024];
         int b;
         StringBuilder a = new StringBuilder();
@@ -66,6 +67,10 @@ public class ClientSocket extends SSLContext implements AutoCloseable {
             LogHelper.log(Level.WARNING, "There are no bytes buffered on the socket, or all buffered bytes have been consumed by read.", e);
         }
         return a.toString();
+    }
+
+    public JSONObject read() {
+        return JSON.tryParse(readRaw());
     }
 
     /**

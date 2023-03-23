@@ -1,7 +1,6 @@
 import org.json.JSONObject;
 import pure.client.Client;
 import pure.constants.Constants;
-import pure.util.JSON;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -13,7 +12,7 @@ public class GUI {
                 null, null, Constants.SSL.PROTOCOL, Constants.Socket.TIMEOUT) {
             @SafeVarargs
             @Override
-            public final <T> String listen(T... input) {
+            public final <T> JSONObject listen(T... input) {
                 this.getSocket().write(input);
                 return getSocket().read();
             }
@@ -29,7 +28,7 @@ public class GUI {
             @Override
             public void windowClosing(WindowEvent e) {
                 //sent request to server to logout
-                JSONObject logout = JSON.tryParse(client.listen(Constants.User.LOGOUT));
+                client.listen(Constants.User.LOGOUT);
                 super.windowClosing(e);
                 client.close();
             }

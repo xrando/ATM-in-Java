@@ -27,11 +27,8 @@ public class Server {
                         Account account = null;
                         Transaction transaction;
                         while (flag) {
-                            //receive client request as String
-                            String clientInput = socket.read();
-
-                            //try parse request string into json object
-                            JSONObject request = JSON.tryParse(clientInput);
+                            //receive client request
+                            JSONObject request = socket.read();
 
                             //try to get the request type.
                             String type = "";

@@ -1,5 +1,6 @@
 package pure.test;
 
+import org.json.JSONObject;
 import org.junit.*;
 import static org.junit.Assert.*;
 import pure.client.ClientSocket;
@@ -14,9 +15,9 @@ public class ServerTest {
             while (this.getServerSocket().getSslServerSocketStatus()) {
                 ClientSocket socket = this.getServerSocket().accept();
                 new Thread(() -> {
-                    String clientInput = socket.read();
+                    JSONObject clientInput = socket.read();
                     System.out.println(clientInput);
-                    socket.writeRaw(clientInput.toUpperCase());
+                    socket.write(clientInput.getString(Constants.JSON.TYPE));
                 }).start();
             }
             return "Server Down";

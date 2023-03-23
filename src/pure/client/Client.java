@@ -1,5 +1,6 @@
 package pure.client;
 
+import org.json.JSONObject;
 import pure.constants.Constants;
 import pure.util.Listenable;
 import pure.util.LogHelper;
@@ -15,7 +16,7 @@ import java.util.logging.Level;
 /**
  * An abstract class containing {@link ClientSocket} with {@link Listenable} undefined.
  * */
-public abstract class Client implements Listenable, AutoCloseable {
+public abstract class Client implements Listenable<JSONObject>, AutoCloseable {
     private final ClientSocket socket;
 
     /**

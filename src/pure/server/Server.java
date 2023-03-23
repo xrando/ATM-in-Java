@@ -14,7 +14,7 @@ import java.util.logging.Level;
 /**
  * An abstract class containing {@link ServerSocket} with {@link Listenable} undefined.
  * */
-public abstract class Server implements Listenable {
+public abstract class Server implements Listenable<String> {
     private final pure.server.ServerSocket serverSocket;
 
     /**
