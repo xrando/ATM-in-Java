@@ -23,6 +23,16 @@ public abstract class Client implements Listenable<JSONObject>, AutoCloseable {
      * It creates the object of {@link ClientSocket} and handles the exceptions.
      * <br><br>
      * The action to be taken ({@link Listenable}) is defined here.
+     *
+     * @param host represents the IP address to connect.
+     * @param port represents the port number to connect.
+     * @param keyStoreType represents the keystore type. null for default type.
+     * @param keyStorePath represents the storage location of the keystore.
+     * @param keyStorePass represents the password of the keystore.
+     * @param keyManagerAlgorithm set null to use default.
+     * @param trustManagerAlgorithm set null to use default.
+     * @param protocol set null to use default.
+     * @param timeout represents the time in milliseconds the client will wait for the server's response before throwing timeout exception.
      * */
     public Client(String host, int port, String keyStoreType, String keyStorePath, String keyStorePass,
                   String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol, int timeout) {

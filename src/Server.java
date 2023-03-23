@@ -20,11 +20,24 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class Server extends ServerSocket {
-    public Server(int port, String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    /**
+     * Creates the ssl server socket.
+     * <br>
+     * @param port represents the port number to connect.
+     * @param keyStoreType represents the keystore type. null for default type.
+     * @param keyStorePath represents the storage location of the keystore.
+     * @param keyStorePass represents the password of the keystore.
+     * @param keyManagerAlgorithm set null to use default.
+     * @param trustManagerAlgorithm set null to use default.
+     * @param protocol set null to use default.
+     * */
+    private Server(int port, String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         super(port, keyStoreType, keyStorePath, keyStorePass, keyManagerAlgorithm, trustManagerAlgorithm, protocol);
     }
+
+    @SafeVarargs
     @Override
-    public <T> String listen(T... input) {
+    public final <T> String listen(T... input) {
         while (this.getSslServerSocketStatus()) {
             ClientSocket socket = this.accept();
             new Thread(() -> {
