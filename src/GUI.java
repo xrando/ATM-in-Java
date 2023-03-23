@@ -10,9 +10,10 @@ import java.awt.event.WindowEvent;
 public class GUI {
     public static void main(String[] args) {
         Client client = new Client(null, Constants.Socket.PORT, null, Constants.SSL.CLIENT_KEYSTORE, Constants.SSL.CLIENT_KEYSTORE_PASS,
-                null, null, Constants.SSL.PROTOCOL) {
+                null, null, Constants.SSL.PROTOCOL, Constants.Socket.TIMEOUT) {
+            @SafeVarargs
             @Override
-            public <T> String listen(T... input) {
+            public final <T> String listen(T... input) {
                 this.getSocket().write(input);
                 return getSocket().read();
             }

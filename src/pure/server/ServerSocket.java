@@ -14,6 +14,16 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.logging.Level;
 
+/**
+ * A wrapper class for {@link SSLServerSocket}.
+ * <br><br>
+ * Initialization of this class defines the parent class {@link SSLContext} and thus creates the SSL socket object.
+ * @see ServerSocket
+ * @see SSLServerSocket
+ * @see SSLContext
+ * @see ClientSocket
+ * */
+
 public class ServerSocket extends SSLContext implements AutoCloseable {
     private final SSLServerSocket sslServerSocket;
 
@@ -28,6 +38,9 @@ public class ServerSocket extends SSLContext implements AutoCloseable {
         return sslServerSocket != null;
     }
 
+    /**
+    * Wrap the {@link SSLSocket} accepted by {@link SSLServerSocket#accept()} to {@link ClientSocket}.
+     * */
     public final ClientSocket accept() {
         ClientSocket socket = null;
         try {

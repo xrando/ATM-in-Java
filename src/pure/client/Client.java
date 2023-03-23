@@ -12,15 +12,23 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.logging.Level;
 
+/**
+ * An abstract class containing {@link ClientSocket} with {@link Listenable} undefined.
+ * */
 public abstract class Client implements Listenable, AutoCloseable {
     private final ClientSocket socket;
 
+    /**
+     * It creates the object of {@link ClientSocket} and handles the exceptions.
+     * <br><br>
+     * The action to be taken ({@link Listenable}) is defined here.
+     * */
     public Client(String host, int port, String keyStoreType, String keyStorePath, String keyStorePass,
-                  String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) {
+                  String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol, int timeout) {
         ClientSocket s = null;
         try {
             s = new ClientSocket(host, port, keyStoreType, keyStorePath, keyStorePass,
-                    keyManagerAlgorithm, trustManagerAlgorithm, protocol); //start new instance of client socket
+                    keyManagerAlgorithm, trustManagerAlgorithm, protocol, timeout); //start new instance of client socket
         } catch (IOException e) {
             LogHelper.log(Level.SEVERE, "Server is not ready, or wrong host IP / port number.", e);
         } catch (CertificateException e) {
@@ -38,10 +46,16 @@ public abstract class Client implements Listenable, AutoCloseable {
         }
     }
 
+    /**
+     * Returns the {@link ClientSocket} object.
+     * */
     public final ClientSocket getSocket() {
         return socket;
     }
 
+    /**
+     * Sends the EOS constant to Server to signal the closure of the socket, then close the socket.
+     * */
     public final void close() {
         this.socket.write(Constants.Stream.EOS);
         this.socket.close();

@@ -1,9 +1,8 @@
 package pure.test;
 
-import org.junit.jupiter.api.Test;
+import org.junit.*;
+import static org.junit.Assert.*;
 import pure.util.InputSanitisation;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class InputSanitisationTest {
 

@@ -8,6 +8,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+/**
+ * A wrapper class for {@link Logger}.
+ * <br><br>
+ * Use {@link #log(Level, String, Exception)} to record an event to the location specified in config.properties.
+ * */
 public abstract class LogHelper {
     private final static Logger LOGGER;
 

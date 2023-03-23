@@ -11,9 +11,17 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.logging.Level;
 
+/**
+ * An abstract class containing {@link ServerSocket} with {@link Listenable} undefined.
+ * */
 public abstract class Server implements Listenable {
     private final pure.server.ServerSocket serverSocket;
 
+    /**
+     * It creates the object of {@link ServerSocket} and handles its exceptions.
+     * <br><br>
+     * The action to be taken ({@link Listenable}) is defined here.
+     * */
     public Server(int port, String keyStoreType, String keyStorePath, String keyStorePass,
                   String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) {
         pure.server.ServerSocket ss = null;

@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 
+/**
+ * Read the config.properties file and retrieve values based on the key input.
+ * */
 public abstract class ConfigurationManager {
     public static String GetConfig(String Key) {
         String returnVal = null;
@@ -27,17 +30,10 @@ public abstract class ConfigurationManager {
 
     public static int GetConfigAsInt(String Key) {
         int returnVal = 0;
-        try (InputStream inputStream = ConfigurationManager.class.getClassLoader().getResourceAsStream(Constants.CONFIG_FILE_NAME)) {
-            Properties properties = new Properties();
-            if (inputStream != null)
-                properties.load(inputStream);
-            returnVal = Integer.parseInt(properties.getProperty(Key));
-        } catch (NullPointerException e) {
-            LogHelper.log(Level.SEVERE, "Could not find the config file.", e);
-        } catch (IOException e) {
-            LogHelper.log(Level.SEVERE, "Failed to read the config file.", e);
-        } catch (IllegalArgumentException e) {
-            LogHelper.log(Level.SEVERE, "Config for " + Key + " should be integer format, or the input stream contains a malformed Unicode escape sequence.", e);
+        try {
+            returnVal = Integer.parseInt(GetConfig(Key));
+        } catch (NumberFormatException e) {
+            LogHelper.log(Level.SEVERE, "Please check the config file if " + Key +  " is int format.", e);
         }
         return returnVal;
     }

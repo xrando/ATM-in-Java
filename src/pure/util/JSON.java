@@ -10,6 +10,9 @@ import org.json.JSONObject;
 import java.util.*;
 import java.util.logging.Level;
 
+/**
+ * A wrapper class for {@link JSONObject}.
+ * */
 public class JSON {
     private final JSONObject jsonObject = new JSONObject();
 
@@ -17,6 +20,11 @@ public class JSON {
         this.jsonObject.put(Constants.JSON.Type, type);
     }
 
+    /**
+     * Try to parse the string to JSONObject format.
+     * <br>
+     * returns null if failed.
+     * */
     public static JSONObject tryParse(String input) {
         JSONObject jo = null;
         try {
@@ -31,7 +39,7 @@ public class JSON {
         return parseTransactions(transactions).toString();
     }
 
-    public static JSONArray parseTransactions(ArrayList<Transaction> transactions) {
+    private static JSONArray parseTransactions(ArrayList<Transaction> transactions) {
         JSONArray ja = new JSONArray();
         transactions.forEach(transaction -> {
             HashMap<String, String> map = new HashMap<>();
@@ -49,16 +57,15 @@ public class JSON {
         Collections.reverse(list);
 
         // convert List back to JSONArray
-        JSONArray reversedJsonArray = new JSONArray(list);
 
-        return reversedJsonArray;
+        return new JSONArray(list);
     }
 
     public static String parseAccountsToString(List<Account> accounts) {
         return parseAccounts(accounts).toString();
     }
 
-    public static JSONArray parseAccounts(List<Account> accounts) {
+    private static JSONArray parseAccounts(List<Account> accounts) {
         JSONArray ja = new JSONArray();
         accounts.forEach(account -> {
             HashMap<String, String> map = new HashMap<>();
@@ -74,7 +81,7 @@ public class JSON {
         return parseAccountsSummary(accounts).toString();
     }
 
-    public static JSONArray parseAccountsSummary(List<Account> accounts) {
+    private static JSONArray parseAccountsSummary(List<Account> accounts) {
         JSONArray ja = new JSONArray();
         accounts.forEach(account -> {
             HashMap<String, String> map = new HashMap<>();

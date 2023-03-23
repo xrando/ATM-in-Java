@@ -16,7 +16,7 @@ public class ServerTest {
                 new Thread(() -> {
                     String clientInput = socket.read();
                     System.out.println(clientInput);
-                    socket.write("Received", "Message", clientInput);
+                    socket.writeRaw(clientInput.toUpperCase());
                 }).start();
             }
             return "Server Down";

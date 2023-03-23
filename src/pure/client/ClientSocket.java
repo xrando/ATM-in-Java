@@ -15,20 +15,38 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.logging.Level;
 
+/**
+ * A wrapper class for the {@link SSLSocket}.
+ * <br><br>
+ * Initialization of this class defines the parent class {@link SSLContext} and thus creates the SSL socket object.
+ * <br><br>
+ * It has basic read/write features implemented.
+ * <br>
+ * Getter provided for any further implementations if needed.
+ * @see java.net.Socket
+ * @see SSLSocket
+ * @see SSLContext
+ * */
 public class ClientSocket extends SSLContext implements AutoCloseable {
     private final SSLSocket sslSocket;
 
-    protected ClientSocket(String host, int port, String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    protected ClientSocket(String host, int port, String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol, int timeout) throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         super(keyStoreType, keyStorePath, keyStorePass, keyManagerAlgorithm, trustManagerAlgorithm, protocol);
         sslSocket = (SSLSocket) getSSLContext().getSocketFactory().createSocket(host, port);
-        sslSocket.setSoTimeout(Constants.Socket.TIMEOUT);
+        sslSocket.setSoTimeout(timeout);
+    }
+
+    public SSLSocket getSslSocket() {
+        return sslSocket;
     }
 
     public ClientSocket(SSLSocket sslSocket) {
         this.sslSocket = sslSocket;
     }
 
-    //read the input stream until hits the EOF constant
+    /**
+     * read the input stream until hits the EOF constant, return as String.
+     * */
     public String read() {
         byte[] buf = new byte[1024];
         int b;
@@ -50,8 +68,10 @@ public class ClientSocket extends SSLContext implements AutoCloseable {
         return a.toString();
     }
 
-    //push the String to output stream and add EOF
-    private void write(String s) {
+    /**
+     * push the unformatted String to output stream and add EOF.
+     * */
+    public void writeRaw(String s) {
         try {
             this.sslSocket.getOutputStream().write(s.getBytes());
             this.sslSocket.getOutputStream().write(Constants.Stream.EOF.getBytes());
@@ -64,6 +84,9 @@ public class ClientSocket extends SSLContext implements AutoCloseable {
         }
     }
 
+    /**
+     * receive generic array as input and format to Json, then parse to String and push to output stream.
+     * */
     @SafeVarargs
     public final <T> void write(T... str) {
         if (str.length < 1)
@@ -73,7 +96,7 @@ public class ClientSocket extends SSLContext implements AutoCloseable {
         for (int i = 1; i < str.length; i += 2) {
             j.add(str[i].toString(), i + 1 < str.length ? str[i + 1] : "");
         }
-        write(j.toString());
+        writeRaw(j.toString());
     }
 
     public void close() {
@@ -84,6 +107,9 @@ public class ClientSocket extends SSLContext implements AutoCloseable {
         }
     }
 
+    /**
+     * returns the IP address of the socket.
+     * */
     public String getIP() {
         return sslSocket.getRemoteSocketAddress().toString();
     }
