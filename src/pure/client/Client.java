@@ -68,7 +68,7 @@ public abstract class Client implements Listenable<JSONObject>, AutoCloseable {
      * Sends the EOS constant to Server to signal the closure of the socket, then close the socket.
      * */
     public final void close() {
-        this.socket.write(Constants.Stream.EOS);
+        this.socket.writeJSON(Constants.Stream.EOS);
         this.socket.close();
     }
 }

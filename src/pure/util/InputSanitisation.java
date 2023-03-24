@@ -3,6 +3,13 @@ package pure.util;
 import java.util.InputMismatchException;
 
 public class InputSanitisation {
+    /**
+     * Checks if the input is a valid email
+     * This is to prevent SQL injection
+     * @param email The email to be checked
+     * @return String "true" if the email is valid, else the error message
+     * @throws InputMismatchException if the email is invalid
+     */
     public static String validEmail(String email) throws InputMismatchException{
         try {
             if (email.length() < 1){
@@ -19,7 +26,13 @@ public class InputSanitisation {
         }
     }
 
-    // Probably not needed
+    /**
+     * Checks if the input is a valid Singapore phone number
+     * This is to prevent SQL injection
+     * @param phone The phone number to be checked
+     * @return String "true" if the phone number is valid, else the error message
+     * @throws InputMismatchException if the phone number is invalid
+     */
     public static String validPhone(String phone) throws InputMismatchException{
         // Phone must be 8 digits, starting with 8 or 9 or just 0
         try{
@@ -37,6 +50,13 @@ public class InputSanitisation {
         }
     }
 
+    /**
+     * Checks if the input is a valid Pin Number
+     * This is to prevent SQL injection
+     * @param pin The pin to be checked
+     * @return String "true" if the Pin number is valid, else the error message
+     * @throws InputMismatchException if the Pin number is invalid
+     */
     public static String validPin(String pin) throws InputMismatchException{
         try {
             if (pin.length() < 1) {
@@ -54,6 +74,13 @@ public class InputSanitisation {
         }
     }
 
+    /**
+     * Checks if the input is a valid name
+     * This is to prevent SQL injection
+     * @param name The name to be checked
+     * @return String "true" if the name is valid, else the error message
+     * @throws InputMismatchException if the name is invalid
+     */
     public static String validNameString(String name) throws InputMismatchException{
         try {
             if (name.length() < 1) {

@@ -32,8 +32,8 @@ public class GUI extends Client {
     @SafeVarargs
     @Override
     public final <T> JSONObject listen(T... input) {
-        this.getSocket().write(input);
-        return getSocket().read();
+        this.getSocket().writeJSON(input);
+        return getSocket().readJSON();
     }
 
     public static void main(String[] args) {

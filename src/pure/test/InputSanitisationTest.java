@@ -7,7 +7,7 @@ import pure.util.InputSanitisation;
 public class InputSanitisationTest {
 
     @Test
-    public void validEmail() {
+    public void testValidateEmail() {
         // Valid
         assertEquals("true", InputSanitisation.validEmail("test@test.com"));
 
@@ -22,7 +22,7 @@ public class InputSanitisationTest {
         assertEquals("Invalid email", InputSanitisation.validEmail("`"));
     }
     @Test
-    public void validPhone() {
+    public void testValidatePhone() {
         // Valid
         assertEquals("true", InputSanitisation.validPhone("91234567"));
         // 0 is the default phone number
@@ -43,7 +43,7 @@ public class InputSanitisationTest {
     }
 
     @Test
-    public void validPin() {
+    public void testValidatePin() {
         // Valid
         assertEquals("true", InputSanitisation.validPin("123456"));
 
@@ -62,7 +62,7 @@ public class InputSanitisationTest {
     }
 
     @Test
-    public void validNameString() {
+    public void testValidateNameString() {
         // True
         assertEquals("true", InputSanitisation.validNameString("test"));
 
