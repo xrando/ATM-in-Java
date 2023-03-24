@@ -152,6 +152,7 @@ public class GUI {
     private JButton btnOpenAccount;
     private JLabel lblNewAccountCreationValidator;
     private JScrollPane AccountSummaryScroller;
+    private JComboBox ddlTransactionLimitAccounts;
     private final Map<String, String> English = Map.ofEntries(
             entry("0", "Username:"),
             entry("1", "Password:"),
@@ -311,6 +312,7 @@ public class GUI {
                             ddlDepositAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
                             ddlTransferAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
                             ddlTransactionAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
+                            ddlTransactionLimitAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
                         });
                         //populate transaction limit labels
                         //Send request to server to get transaction limit for current user
@@ -346,6 +348,7 @@ public class GUI {
                 ddlDepositAccounts.removeAllItems();
                 ddlTransferAccounts.removeAllItems();
                 ddlTransactionAccounts.removeAllItems();
+                ddlTransactionLimitAccounts.removeAllItems();
                 txtUsername.setText("");
                 txtPassword.setText("");
                 //re-attach login screen
@@ -883,22 +886,33 @@ public class GUI {
         btnUpdateTransactionLimit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!txtNewTransactionLimitAmount.equals(""))
+                String choice = "";
+                if(ddlTransactionLimitAccounts.getItemCount() != 0)
                 {
-                    //send request to server to update transaction limit for current user
-                    JSONObject jo = client.listen(Constants.Account.CHANGE_TRANSACTION_LIMIT,
-                            Constants.Account.CHANGE_TRANSACTION_LIMIT,
-                            txtNewTransactionLimitAmount.getText());
-                    //get updated transaction limit
-                    JSONObject jo1 = client.listen(Constants.Account.GET_TRANSACTION_LIMIT);
-                    //update label with data
-                    lblCurrentTransactionLimitAmount.setText("$"+jo1.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
-                    lblTransactionLimitAmmountTransfer.setText("$"+jo1.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
-                    lblTransactionLimitAmountDeposit.setText("$"+jo1.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
-                    lblTransactionLimitAmountWithdrawal.setText("$"+jo1.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
-                    //clear input
-                    txtNewTransactionLimitAmount.setText("");
+                    choice = ddlTransactionLimitAccounts.getItemAt(ddlTransactionLimitAccounts.getSelectedIndex()).toString();
+                    //send select account request to server
+                    JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT
+                            , Constants.Account.SELECTED_ACCOUNT,
+                            ddlTransactionLimitAccounts.getSelectedIndex()));
+                    if(!txtNewTransactionLimitAmount.equals(""))
+                    {
+                        //send request to server to update transaction limit for current user
+                        JSONObject jo = client.listen(Constants.Account.CHANGE_TRANSACTION_LIMIT,
+                                Constants.Account.CHANGE_TRANSACTION_LIMIT, txtNewTransactionLimitAmount.getText(),
+                                Constants.Account.SELECTED_ACCOUNT, choice);
+                        //get updated transaction limit
+                        JSONObject jo2 = client.listen(Constants.Account.GET_TRANSACTION_LIMIT);
+                        System.out.println("DEBUG:"+jo2);
+                        //update label with data
+                        lblCurrentTransactionLimitAmount.setText("$"+jo2.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
+                        lblTransactionLimitAmmountTransfer.setText("$"+jo2.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
+                        lblTransactionLimitAmountDeposit.setText("$"+jo2.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
+                        lblTransactionLimitAmountWithdrawal.setText("$"+jo2.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
+                        //clear input
+                        txtNewTransactionLimitAmount.setText("");
+                    }
                 }
+
             }
         });
         btnViewAccountSummary.addActionListener(new ActionListener() {
@@ -946,6 +960,7 @@ public class GUI {
                 ddlDepositAccounts.removeAllItems();
                 ddlTransferAccounts.removeAllItems();
                 ddlTransactionAccounts.removeAllItems();
+                ddlTransactionLimitAccounts.removeAllItems();
                 JSONArray ja2 = new JSONArray(retrieveAccounts.get(Constants.Account.ALL_ACCOUNTS).toString());
                 ja2.forEach(record -> {
                     JSONObject joo2 = new JSONObject(record.toString());
@@ -954,7 +969,24 @@ public class GUI {
                     ddlDepositAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
                     ddlTransferAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
                     ddlTransactionAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
+                    ddlTransactionLimitAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
                 });
+            }
+        });
+        ddlTransactionLimitAccounts.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String choice = "";
+                if(ddlTransactionLimitAccounts.getItemCount() != 0)
+                {
+                    choice = ddlTransactionLimitAccounts.getItemAt(ddlTransactionLimitAccounts.getSelectedIndex()).toString();
+                    //send select account request to server
+                    JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT, Constants.Account.SELECTED_ACCOUNT, ddlTransactionLimitAccounts.getSelectedIndex()));
+                    //Onclick, send request to server to get transfer limit of accountId selected
+                    JSONObject jo = client.listen(Constants.Account.GET_TRANSACTION_LIMIT, Constants.Account.ACCOUNT_ID, choice);
+                    //update balance label to display updated balance amount
+                    lblCurrentTransactionLimitAmount.setText("$" + jo.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
+                }
             }
         });
     }
