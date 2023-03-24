@@ -403,7 +403,6 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 //clear fields on load
                 txtWithdrawalNote.setText("");
-                lblTransactionLimitAmountWithdrawal.setText("");
                 txtWithdrawalAmount.setText("");
                 lblWithdrawalAmountValidator.setText("");
 
@@ -430,7 +429,6 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 //clear fields on load
                 txtDepositNote.setText("");
-                lblTransactionLimitAmountDeposit.setText("");
                 txtDepositAmount.setText("");
                 lblDepositAmountValidator.setText("");
 
@@ -455,7 +453,6 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //clear fields
-                lblTransactionLimitAmmountTransfer.setText("");
                 txtTransferToAccount.setText("");
                 txtTransferAmount.setText("");
                 lblTransferAmountValidator.setText("");
@@ -896,7 +893,6 @@ public class GUI {
                             ddlTransactionLimitAccounts.getSelectedIndex()));
                     if(!txtNewTransactionLimitAmount.equals(""))
                     {
-                        System.out.println("DEBUG:"+Integer.toString(ddlTransactionLimitAccounts.getSelectedIndex()));
                         //send request to server to update transaction limit for current user
                         JSONObject jo = client.listen(Constants.Account.CHANGE_TRANSACTION_LIMIT,
                                 Constants.Account.CHANGE_TRANSACTION_LIMIT, txtNewTransactionLimitAmount.getText(),
