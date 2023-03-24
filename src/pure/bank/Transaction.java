@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -126,10 +127,10 @@ public class Transaction {
 
     public boolean AddTransactionToSQL(Transaction transactionDetails, Account account) throws IllegalArgumentException {
         String sql = "INSERT INTO transactions( amount, timeStamp, transactionNote, date, payee,accountID) VALUES(?,?,?,?,?,?)";
-
         // 2-way Transfer
         if (transactionDetails.payee != "") {
             try {
+//                 || (account.GetWithDrawalsBalance() + Math.abs(transactionDetails.Amount)) < Double.valueOf(account.getTransactionLimit())
                 if (Math.abs(transactionDetails.Amount) > Double.valueOf(account.getTransactionLimit())) {
                     throw new IllegalArgumentException("Value Entered is greater than transaction limit");
                 } else {

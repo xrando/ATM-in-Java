@@ -2,6 +2,11 @@ package pure.bank;
 
 import pure.util.LogHelper;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -56,9 +61,6 @@ public class Account {
         this.AccountTransactions = new ArrayList<Transaction>();
     }
 
-    public Account(String savings, User newUser) {
-    }
-
     public String getAccountType() {
         return this.accountType;
     }
@@ -98,6 +100,13 @@ public class Account {
         return true;
     }
 
+    public String getCurrentDate() {
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String strDate = dateFormat.format(date);
+        return strDate;
+    }
+
     public ArrayList<Transaction> getAccountTransactions() {
         return this.AccountTransactions;
     }
@@ -131,6 +140,22 @@ public class Account {
         AccountTransactions = this.retrieveAccountTransactions();
         for (Transaction transaction : AccountTransactions) {
             balance += transaction.getAmount();
+        }
+        return balance;
+    }
+
+    public double GetWithDrawalsBalance() throws ParseException {
+        double balance = 0;
+        Date todayDate = new SimpleDateFormat("yyyy/MM/dd").parse(getCurrentDate());
+        ArrayList<Transaction> AccountTransactions = new ArrayList<Transaction>();
+        AccountTransactions = this.retrieveAccountTransactions();
+        for (Transaction transaction : AccountTransactions) {
+            Date tDate = new SimpleDateFormat("yyyy/MM/dd").parse(transaction.getTransactionDate());
+            if (transaction.getAmount()<0 && tDate.equals(todayDate)){
+                System.out.println("Today: " + todayDate);
+                System.out.println("Transaction Date: " + tDate);
+                balance += transaction.getAmount();
+            }
         }
         return balance;
     }
