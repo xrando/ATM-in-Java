@@ -1,5 +1,11 @@
 package pure.ui;
 
+/**
+ * Represents a class that acts as both the graphical user interface and client for this application.
+ * <br><br>
+ * For server/client implementation, event listeners represents the requests to be sent to server during the communication.
+ * **/
+
 import pure.constants.Constants;
 import pure.client.Client;
 import pure.util.InputSanitisation;
