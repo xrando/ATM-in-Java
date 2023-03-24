@@ -129,10 +129,14 @@ public class Transaction {
         String sql = "INSERT INTO transactions( amount, timeStamp, transactionNote, date, payee,accountID) VALUES(?,?,?,?,?,?)";
         // 2-way Transfer
         if (transactionDetails.payee != "") {
-            try {
-//                 || (account.GetWithDrawalsBalance() + Math.abs(transactionDetails.Amount)) < Double.valueOf(account.getTransactionLimit())
+            try {//print type of object to console
+                System.out.println("GetWithdrawBalance + Transfer Amount = " + Double.valueOf(Math.abs(account.GetWithDrawalsBalance()) + Math.abs(transactionDetails.getAmount())));
                 if (Math.abs(transactionDetails.Amount) > Double.valueOf(account.getTransactionLimit())) {
                     throw new IllegalArgumentException("Value Entered is greater than transaction limit");
+                } else if (Double.valueOf(Math.abs(account.GetWithDrawalsBalance()) + Math.abs(transactionDetails.getAmount())) > Double.valueOf(account.getTransactionLimit())) {
+                    throw new IllegalArgumentException("Value Entered is greater than today's transaction limit");
+                } else if ((Double.valueOf(transactionDetails.getAmount())+account.GetAccountBalance()<0)) {
+                    throw new IllegalArgumentException("Bank Balance is in negative");
                 } else {
                     //deduct for account owner
                     try (Connection conn = sqliteDatabase.connect();
@@ -166,6 +170,8 @@ public class Transaction {
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
                 return false;
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
         }
         // 1-way Transfer
@@ -174,10 +180,16 @@ public class Transaction {
                 try {
                     if (Math.abs(transactionDetails.Amount) > Double.valueOf(account.getTransactionLimit())) {
                         throw new IllegalArgumentException("Value Entered is greater than transaction limit");
+                    } else if (Double.valueOf(Math.abs(account.GetWithDrawalsBalance()) + Math.abs(transactionDetails.getAmount())) > Double.valueOf(account.getTransactionLimit())) {
+                        throw new IllegalArgumentException("Value Entered is greater than today's transaction limit");
+                    } else if ((Double.valueOf(transactionDetails.getAmount())+account.GetAccountBalance()<0)) {
+                        throw new IllegalArgumentException("Bank Balance is in negative");
                     }
                 } catch (IllegalArgumentException e) {
                     System.out.println(e.getMessage());
                     return false;
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
                 }
             }
             try (Connection conn = sqliteDatabase.connect();

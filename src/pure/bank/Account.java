@@ -146,17 +146,18 @@ public class Account {
 
     public double GetWithDrawalsBalance() throws ParseException {
         double balance = 0;
-        Date todayDate = new SimpleDateFormat("yyyy/MM/dd").parse(getCurrentDate());
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String todayDate = dateFormat.format(date);
         ArrayList<Transaction> AccountTransactions = new ArrayList<Transaction>();
         AccountTransactions = this.retrieveAccountTransactions();
         for (Transaction transaction : AccountTransactions) {
-            Date tDate = new SimpleDateFormat("yyyy/MM/dd").parse(transaction.getTransactionDate());
+            String tDate = transaction.getTransactionDate();
             if (transaction.getAmount()<0 && tDate.equals(todayDate)){
-                System.out.println("Today: " + todayDate);
-                System.out.println("Transaction Date: " + tDate);
                 balance += transaction.getAmount();
             }
         }
+        System.out.println("Withdrawan Amount today: " + balance);
         return balance;
     }
 
