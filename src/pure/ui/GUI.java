@@ -759,7 +759,13 @@ public class GUI {
                                 , Constants.Transaction.TRANSACTION_NOTE, "Transfer"
                                 , Constants.Transaction.PAYEE, txtTransferToAccount.getText()));
                         //update lblTransferAccountBalance with updated account balance
-                        lblTransferAccountBalance.setText("$" + transfer.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                        String choice = "";
+                        if(ddlTransactionAccounts.getItemCount() != 0)
+                        {
+                            choice = ddlTransactionAccounts.getItemAt(ddlTransactionAccounts.getSelectedIndex()).toString();
+                            JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
+                            lblTransferAccountBalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                        }
                         //clear input fields
                         txtTransferToAccount.setText("");
                         txtTransferAmount.setText("");
