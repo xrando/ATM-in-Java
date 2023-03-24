@@ -2,7 +2,6 @@ package pure.test;
 
 import org.json.JSONObject;
 import org.junit.*;
-import static org.junit.Assert.*;
 import pure.client.ClientSocket;
 import pure.constants.Constants;
 import pure.server.ServerSocket;
@@ -28,9 +27,10 @@ public class ServerTest {
                     while (this.getSslServerSocketStatus()) {
                         ClientSocket socket = this.accept();
                         new Thread(() -> {
-                            JSONObject clientInput = socket.read();
+                            JSONObject clientInput = null;
+                            clientInput = socket.readJSON();
                             System.out.println(clientInput);
-                            socket.write(clientInput.getString(Constants.JSON.TYPE));
+                            socket.writeJSON(clientInput.getString(Constants.JSON.TYPE));
                         }).start();
                     }
                     return "Server Down";

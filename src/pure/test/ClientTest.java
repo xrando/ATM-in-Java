@@ -13,8 +13,9 @@ public class ClientTest {
             null, null, Constants.SSL.PROTOCOL, Constants.Socket.TIMEOUT) {
         @Override
         public <T> JSONObject listen(T... input) {
-            this.getSocket().write(input);
-            return getSocket().read();
+
+            this.getSocket().writeJSON(input);
+            return getSocket().readJSON();
         }
     };
 

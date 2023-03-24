@@ -9,6 +9,8 @@ import pure.util.SSLContext;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -58,7 +60,7 @@ public class ClientSocket implements AutoCloseable {
     /**
      * read the input stream until hits the EOF constant, return as String.
      * */
-    public String readRaw() {
+    public String readString() {
         byte[] buf = new byte[1024];
         int b;
         StringBuilder a = new StringBuilder();
@@ -81,16 +83,24 @@ public class ClientSocket implements AutoCloseable {
 
     /**
      * return the message as JSONObject from the input stream.
-     * @see #readRaw()
+     * @see #readString()
      * */
-    public JSONObject read() {
-        return JSON.tryParse(readRaw());
+    public JSONObject readJSON() {
+        return JSON.tryParse(readString());
+    }
+
+    public Object readObject() throws IOException, ClassNotFoundException {
+        return new ObjectInputStream(this.sslSocket.getInputStream()).readObject();
+    }
+
+    public void writeObject(Object o) throws IOException {
+        new ObjectOutputStream(this.sslSocket.getOutputStream()).writeObject(o);
     }
 
     /**
      * push the unformatted String to output stream and add EOF.
      * */
-    public void writeRaw(String s) {
+    public void writeString(String s) {
         try {
             this.sslSocket.getOutputStream().write(s.getBytes());
             this.sslSocket.getOutputStream().write(Constants.Stream.EOF.getBytes());
@@ -105,10 +115,10 @@ public class ClientSocket implements AutoCloseable {
 
     /**
      * receive generic array as input and format to Json, then parse to String and push to output stream.
-     * @see #writeRaw(String)
+     * @see #writeString(String)
      * */
     @SafeVarargs
-    public final <T> void write(T... str) {
+    public final <T> void writeJSON(T... str) {
         if (str.length < 1)
             return;
 
@@ -116,7 +126,7 @@ public class ClientSocket implements AutoCloseable {
         for (int i = 1; i < str.length; i += 2) {
             j.add(str[i].toString(), i + 1 < str.length ? str[i + 1] : "");
         }
-        writeRaw(j.toString());
+        writeString(j.toString());
     }
 
     public void close() {
