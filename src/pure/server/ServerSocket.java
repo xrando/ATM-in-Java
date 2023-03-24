@@ -28,6 +28,17 @@ import java.util.logging.Level;
 public abstract class ServerSocket implements Listenable<String> {
     private final SSLServerSocket sslServerSocket;
 
+    /**
+     * Creates the ssl server socket.
+     * <br>
+     * @param port represents the port number to connect.
+     * @param keyStoreType represents the keystore type. null for default type.
+     * @param keyStorePath represents the storage location of the keystore.
+     * @param keyStorePass represents the password of the keystore.
+     * @param keyManagerAlgorithm set null to use default.
+     * @param trustManagerAlgorithm set null to use default.
+     * @param protocol set null to use default.
+     * */
     public ServerSocket(int port, String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         javax.net.ssl.SSLContext sslContext = new SSLContext(keyStoreType, keyStorePath, keyStorePass, keyManagerAlgorithm, trustManagerAlgorithm, protocol).getSSLContext();
         sslServerSocket = (SSLServerSocket) sslContext.getServerSocketFactory().createServerSocket(port);
@@ -44,7 +55,7 @@ public abstract class ServerSocket implements Listenable<String> {
     }
 
     /**
-    * Wrap the {@link SSLSocket} accepted by {@link SSLServerSocket#accept()} to {@link ClientSocket}.
+     * Wrap the {@link SSLSocket} accepted by {@link SSLServerSocket#accept()} to {@link ClientSocket}.
      * */
     public final ClientSocket accept() {
         ClientSocket socket = null;
@@ -55,13 +66,5 @@ public abstract class ServerSocket implements Listenable<String> {
             LogHelper.log(Level.SEVERE, "I/O error occurred while waiting for connection.", e);
         }
         return socket;
-    }
-
-    public final void close() {
-        try {
-            this.sslServerSocket.close();
-        } catch (IOException e) {
-            LogHelper.log(Level.SEVERE, "Unable to close the server socket or the socket already closed.", e);
-        }
     }
 }

@@ -31,6 +31,16 @@ import java.util.logging.Level;
 public class ClientSocket implements AutoCloseable {
     private final SSLSocket sslSocket;
 
+    /**
+     * @param host represents the IP address to connect.
+     * @param port represents the port number to connect.
+     * @param keyStoreType represents the keystore type. null for default type.
+     * @param keyStorePath represents the storage location of the keystore.
+     * @param keyStorePass represents the password of the keystore.
+     * @param keyManagerAlgorithm set null to use default.
+     * @param trustManagerAlgorithm set null to use default.
+     * @param protocol set null to use default.
+     * @param timeout represents the time in milliseconds the client will wait for the server's response before throwing timeout exception.*/
     protected ClientSocket(String host, int port, String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol, int timeout) throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         javax.net.ssl.SSLContext sslContext = new SSLContext(keyStoreType, keyStorePath, keyStorePass, keyManagerAlgorithm, trustManagerAlgorithm, protocol).getSSLContext();
         sslSocket = (SSLSocket) sslContext.getSocketFactory().createSocket(host, port);
@@ -69,6 +79,10 @@ public class ClientSocket implements AutoCloseable {
         return a.toString();
     }
 
+    /**
+     * return the message as JSONObject from the input stream.
+     * @see #readRaw()
+     * */
     public JSONObject read() {
         return JSON.tryParse(readRaw());
     }
@@ -91,6 +105,7 @@ public class ClientSocket implements AutoCloseable {
 
     /**
      * receive generic array as input and format to Json, then parse to String and push to output stream.
+     * @see #writeRaw(String)
      * */
     @SafeVarargs
     public final <T> void write(T... str) {
