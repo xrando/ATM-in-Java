@@ -15,6 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * Account Class <br>
+ * All Account Defined Methods are defined here
+ */
 public class Account {
     private String AccountName;
     private String UID;
@@ -24,11 +28,18 @@ public class Account {
     private String accountID;
     private ArrayList<Transaction> AccountTransactions;
 
-    //Create a new account Constructor
+    /**
+     * Default Account Constructor
+     */
     public Account() {
 
     }
 
+    /**
+     * Account Constructor
+     *
+     * @param Account - Contains information of the account
+     */
     public Account(Account Account) {
         //Set Current Account ID
         this.accountID = Account.getAccountID();
@@ -73,14 +84,23 @@ public class Account {
         return this.accountID;
     }
 
+    public ArrayList<Transaction> getAccountTransactions() {
+        return this.AccountTransactions;
+    }
 
-    public boolean changeTransactionLimit(int newTransactionLimit) {
+    /**
+     * This method is used to get the login status of a user from the database
+     * @param newTransactionLimit The new transaction limit to change to for the user
+     * @param accountID The accountID of the account
+     * @return True if the user is logged in, false if the user is logged out
+     */
+    public boolean changeTransactionLimit(int newTransactionLimit, String accountID) {
         this.transactionLimit = Integer.toString(newTransactionLimit);
-        updateAccount();
+        updateAccount(accountID);
         return true;
     }
 
-    public boolean updateAccount() {
+    public boolean updateAccount(String accountID) {
         String sql = "UPDATE accounts SET accountType = ?, transactionLimit = ? , userID = ? WHERE accountID = ?";
 
         try (Connection conn = sqliteDatabase.connect();
@@ -88,24 +108,13 @@ public class Account {
             pstmt.setString(1, this.accountType);
             pstmt.setString(2, this.transactionLimit);
             pstmt.setString(3, this.userID);
-            pstmt.setString(4, this.accountID);
+            pstmt.setString(4, accountID);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             LogHelper.log(Level.SEVERE, e.getMessage());
             return false;
         }
         return true;
-    }
-
-    public String getCurrentDate() {
-        Date date = Calendar.getInstance().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String strDate = dateFormat.format(date);
-        return strDate;
-    }
-
-    public ArrayList<Transaction> getAccountTransactions() {
-        return this.AccountTransactions;
     }
 
     public ArrayList<Transaction> retrieveAccountTransactions() {
@@ -177,7 +186,6 @@ public class Account {
         }
         return accountList;
     }
-
 
     public boolean createAccount(int selection, String userID) {
         String createType = "";

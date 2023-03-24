@@ -29,10 +29,11 @@ public class AccountTest {
     @Test
     public void testChangeTransferLimit() {
         //Transaction Limit to change to
-        int newTransferLimit = 100;
-        test2.changeTransactionLimit(newTransferLimit);
+        int newTransferLimit = 10000;
+        String account = "1";
+        test2.changeTransactionLimit(newTransferLimit,account);
         assertEquals(test2.getTransactionLimit(),Integer.toString(newTransferLimit));
-        test2.changeTransactionLimit(1000);
+        test2.changeTransactionLimit(1000,account);
         assertNotEquals(test2.getTransactionLimit(),Integer.toString(newTransferLimit));
     }
 
