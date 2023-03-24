@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact name="BankingSystem:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/BankingSystem_jar</output-path>
+    <root id="root">
+      <element id="archive" name="BankingSystem.jar">
+        <element id="module-output" name="BankingSystem" />
+      </element>
+      <element id="file-copy" path="$PROJECT_DIR$/External Libraries/json-20220924.jar" />
+    </root>
+  </artifact>
+</component>

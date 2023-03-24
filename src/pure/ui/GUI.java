@@ -306,10 +306,6 @@ public class GUI {
                         JSONArray ja2 = new JSONArray(retrieveAccounts.get(Constants.Account.ALL_ACCOUNTS).toString());
                         ja2.forEach(record -> {
                             JSONObject joo2 = new JSONObject(record.toString());
-                            /*System.out.print(Constants.Account.AccountId + " : " + joo2.get(Constants.Account.AccountId) + "\t");
-                            System.out.print(Constants.Account.AccountType + " : " + joo2.get(Constants.Account.AccountType) + "\t");
-                            System.out.print(Constants.Account.UserID + " : " + joo2.get(Constants.Account.UserID) + "\n");*/
-
                             //populate dropdownlists with user accounts
                             ddlWithdrawAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
                             ddlDepositAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
@@ -345,6 +341,11 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 //sent request to server to logout
                 JSONObject logout = client.listen(Constants.User.LOGOUT);
+                //clear ddl
+                ddlWithdrawAccounts.removeAllItems();
+                ddlDepositAccounts.removeAllItems();
+                ddlTransferAccounts.removeAllItems();
+                ddlTransactionAccounts.removeAllItems();
                 txtUsername.setText("");
                 txtPassword.setText("");
                 //re-attach login screen
@@ -363,31 +364,30 @@ public class GUI {
         btnViewTransactions.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String choice = "";
                 //populate records
-                String choice = ddlTransactionAccounts.getItemAt(ddlTransactionAccounts.getSelectedIndex()).toString();
-                //send select acc request to server
-                JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT, Constants.Account.SELECTED_ACCOUNT, ddlTransactionAccounts.getSelectedIndex()));
-                //Onclick, send request to server to get transaction history of accountId selected
-                JSONObject jo = client.listen(Constants.Account.TRANSACTION_HISTORY, Constants.Account.ACCOUNT_ID, choice);
-                //populate date to screen
-                JSONArray ja = new JSONArray(jo.get(Constants.Account.TRANSACTION_HISTORY).toString());
-                //clear text area
-                AllTransactions.setText("");
-                ja.forEach(record -> {
-                    JSONObject joo = new JSONObject(record.toString());
-                    //debug
-                    /*System.out.print(Constants.Transaction.TransactionNote + " : " + joo.get(Constants.Transaction.TransactionNote) + "\t");
-                    System.out.print(Constants.Transaction.Amount + " : " + joo.get(Constants.Transaction.Amount) + "\t");
-                    System.out.print(Constants.Transaction.date + " : " + joo.get(Constants.Transaction.date) + "\n");
-                    System.out.print(Constants.Transaction.TimeStamp + " : " + joo.get(Constants.Transaction.TimeStamp) + "\n");*/
+                if(ddlTransactionAccounts.getItemCount() != 0)
+                {
+                    choice = ddlTransactionAccounts.getItemAt(ddlTransactionAccounts.getSelectedIndex()).toString();
+                    //send select acc request to server
+                    JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT, Constants.Account.SELECTED_ACCOUNT, ddlTransactionAccounts.getSelectedIndex()));
+                    //Onclick, send request to server to get transaction history of accountId selected
+                    JSONObject jo = client.listen(Constants.Account.TRANSACTION_HISTORY, Constants.Account.ACCOUNT_ID, choice);
+                    //populate date to screen
+                    JSONArray ja = new JSONArray(jo.get(Constants.Account.TRANSACTION_HISTORY).toString());
+                    //clear text area
+                    AllTransactions.setText("");
+                    ja.forEach(record -> {
+                        JSONObject joo = new JSONObject(record.toString());
+                        //append new transactions to text area
+                        AllTransactions.append("  Transaction Note: " + joo.get(Constants.Transaction.TRANSACTION_NOTE) + "\n");
+                        AllTransactions.append("  Amount: $" + joo.get(Constants.Transaction.AMOUNT) + "\n");
+                        AllTransactions.append("  Transaction Date: " + joo.get(Constants.Transaction.DATE) + "\n");
+                        AllTransactions.append("  Transaction Time: " + joo.get(Constants.Transaction.TIME_STAMP) + "\n");
+                        AllTransactions.append("\n\n");
+                    });
+                }
 
-                    //append new transactions to text area
-                    AllTransactions.append("  Transaction Note: " + joo.get(Constants.Transaction.TRANSACTION_NOTE) + "\n");
-                    AllTransactions.append("  Amount: $" + joo.get(Constants.Transaction.AMOUNT) + "\n");
-                    AllTransactions.append("  Transaction Date: " + joo.get(Constants.Transaction.DATE) + "\n");
-                    AllTransactions.append("  Transaction Time: " + joo.get(Constants.Transaction.TIME_STAMP) + "\n");
-                    AllTransactions.append("\n\n");
-                });
                 //set scroller to focus to top
                 AllTransactions.setCaretPosition(0);
                 //attach view transaction screen
@@ -398,45 +398,78 @@ public class GUI {
         btnWithdrawal.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //clear fields on load
+                txtWithdrawalNote.setText("");
+                lblTransactionLimitAmountWithdrawal.setText("");
+                txtWithdrawalAmount.setText("");
+                lblWithdrawalAmountValidator.setText("");
+
                 //attach withdrawal screen
                 setScreen(screen, Withdrawal);
-                String choice = ddlWithdrawAccounts.getItemAt(ddlWithdrawAccounts.getSelectedIndex()).toString();
-                //send select account request to server
-                new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT, Constants.Account.SELECTED_ACCOUNT, String.valueOf(ddlWithdrawAccounts.getSelectedIndex())));
-                //Onclick, send request to server to get balance of accountId selected
-                JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
-                //update balance label to display updated balance amount
-                lblWithdrawAccountBalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                String choice = "";
+                if(ddlWithdrawAccounts.getItemCount() != 0)
+                {
+                    choice = ddlWithdrawAccounts.getItemAt(ddlWithdrawAccounts.getSelectedIndex()).toString();
+                    //send select account request to server
+                    new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT, Constants.Account.SELECTED_ACCOUNT, String.valueOf(ddlWithdrawAccounts.getSelectedIndex())));
+                    //Onclick, send request to server to get balance of accountId selected
+                    JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
+                    //update balance label to display updated balance amount
+                    lblWithdrawAccountBalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                }
+
+
             }
         });
         //Create event listener for deposit button
         btnDeposit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //clear fields on load
+                txtDepositNote.setText("");
+                lblTransactionLimitAmountDeposit.setText("");
+                txtDepositAmount.setText("");
+                lblDepositAmountValidator.setText("");
+
                 //attach deposit screen
                 setScreen(screen, Deposit);
-                String choice = ddlDepositAccounts.getItemAt(ddlDepositAccounts.getSelectedIndex()).toString();
-                //send select account request to server
-                new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT, Constants.Account.SELECTED_ACCOUNT, ddlDepositAccounts.getSelectedIndex()));
-                //Onclick, send request to server to get balance of accountId selected
-                JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
-                //update balance label to display updated balance amount
-                lblDepositAccountbalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                String choice = "";
+                if(ddlDepositAccounts.getItemCount() != 0)
+                {
+                    choice = ddlDepositAccounts.getItemAt(ddlDepositAccounts.getSelectedIndex()).toString();
+                    //send select account request to server
+                    new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT, Constants.Account.SELECTED_ACCOUNT, ddlDepositAccounts.getSelectedIndex()));
+                    //Onclick, send request to server to get balance of accountId selected
+                    JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
+                    //update balance label to display updated balance amount
+                    lblDepositAccountbalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                }
+
             }
         });
         //Create event listener for bank transfer button
         btnBankTransfer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //clear fields
+                lblTransactionLimitAmmountTransfer.setText("");
+                txtTransferToAccount.setText("");
+                txtTransferAmount.setText("");
+                lblTransferAmountValidator.setText("");
                 //attach bank transfer screen
                 setScreen(screen, BankTransfer);
-                String choice = ddlTransactionAccounts.getItemAt(ddlTransactionAccounts.getSelectedIndex()).toString();
-                //send select account request to server
-                new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT, Constants.Account.SELECTED_ACCOUNT, ddlTransactionAccounts.getSelectedIndex()));
-                //Onclick, send request to server to get balance of accountId selected
-                JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
-                //update balance label to display updated balance amount
-                lblTransferAccountBalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                String choice = "";
+                if(ddlTransactionAccounts.getItemCount() != 0)
+                {
+                    choice = ddlTransactionAccounts.getItemAt(ddlTransactionAccounts.getSelectedIndex()).toString();
+                    //send select account request to server
+                    new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT, Constants.Account.SELECTED_ACCOUNT, ddlTransactionAccounts.getSelectedIndex()));
+                    //Onclick, send request to server to get balance of accountId selected
+                    JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
+                    //update balance label to display updated balance amount
+                    lblTransferAccountBalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                }
+
             }
         });
         //Create event listener for settings button
@@ -726,7 +759,13 @@ public class GUI {
                                 , Constants.Transaction.TRANSACTION_NOTE, "Transfer"
                                 , Constants.Transaction.PAYEE, txtTransferToAccount.getText()));
                         //update lblTransferAccountBalance with updated account balance
-                        lblTransferAccountBalance.setText("$" + transfer.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                        String choice = "";
+                        if(ddlTransactionAccounts.getItemCount() != 0)
+                        {
+                            choice = ddlTransactionAccounts.getItemAt(ddlTransactionAccounts.getSelectedIndex()).toString();
+                            JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
+                            lblTransferAccountBalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                        }
                         //clear input fields
                         txtTransferToAccount.setText("");
                         txtTransferAmount.setText("");
@@ -747,43 +786,47 @@ public class GUI {
         ddlWithdrawAccounts.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String choice = ddlWithdrawAccounts.getItemAt(ddlWithdrawAccounts.getSelectedIndex()).toString();
-                //send select account request to server
-                JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT, Constants.Account.SELECTED_ACCOUNT, ddlWithdrawAccounts.getSelectedIndex()));
-                //Onclick, send request to server to get balance of accountId selected
-                JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
-                //update balance label to display updated balance amount
-                lblWithdrawAccountBalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                String choice = "";
+                if(ddlWithdrawAccounts.getItemCount() != 0)
+                {
+                    choice = ddlWithdrawAccounts.getItemAt(ddlWithdrawAccounts.getSelectedIndex()).toString();
+                    //send select account request to server
+                    JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT, Constants.Account.SELECTED_ACCOUNT, ddlWithdrawAccounts.getSelectedIndex()));
+                    //Onclick, send request to server to get balance of accountId selected
+                    JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
+                    //update balance label to display updated balance amount
+                    lblWithdrawAccountBalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                }
+
             }
         });
         //add action listener for transaction history dropdownlist
         ddlTransactionAccounts.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String choice = ddlTransactionAccounts.getItemAt(ddlTransactionAccounts.getSelectedIndex()).toString();
-                //send select acc request to server
-                JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT, Constants.Account.SELECTED_ACCOUNT, ddlTransactionAccounts.getSelectedIndex()));
-                //Onclick, send request to server to get transaction history of accountId selected
-                JSONObject jo = client.listen(Constants.Account.TRANSACTION_HISTORY, Constants.Account.ACCOUNT_ID, choice);
-                //populate date to screen
-                JSONArray ja = new JSONArray(jo.get(Constants.Account.TRANSACTION_HISTORY).toString());
-                //clear text area
-                AllTransactions.setText("");
-                ja.forEach(record -> {
-                    JSONObject joo = new JSONObject(record.toString());
-                    //debug
-                    System.out.print(Constants.Transaction.TRANSACTION_NOTE + " : " + joo.get(Constants.Transaction.TRANSACTION_NOTE) + "\t");
-                    System.out.print(Constants.Transaction.AMOUNT + " : " + joo.get(Constants.Transaction.AMOUNT) + "\t");
-                    System.out.print(Constants.Transaction.DATE + " : " + joo.get(Constants.Transaction.DATE) + "\n");
-                    System.out.print(Constants.Transaction.TIME_STAMP + " : " + joo.get(Constants.Transaction.TIME_STAMP) + "\n");
+                String choice = "";
+                if(ddlTransactionAccounts.getItemCount() != 0)
+                {
+                    choice = ddlTransactionAccounts.getItemAt(ddlTransactionAccounts.getSelectedIndex()).toString();
+                    //send select acc request to server
+                    client.listen(Constants.Account.SELECT_ACCOUNT, Constants.Account.SELECTED_ACCOUNT, ddlTransactionAccounts.getSelectedIndex());
+                    //Onclick, send request to server to get transaction history of accountId selected
+                    JSONObject jo = client.listen(Constants.Account.TRANSACTION_HISTORY, Constants.Account.ACCOUNT_ID, choice);
+                    //populate date to screen
+                    JSONArray ja = new JSONArray(jo.get(Constants.Account.TRANSACTION_HISTORY).toString());
+                    //clear text area
+                    AllTransactions.setText("");
+                    ja.forEach(record -> {
+                        JSONObject joo = new JSONObject(record.toString());
+                        //append new transactions to text area
+                        AllTransactions.append("  Transaction Note: " + joo.get(Constants.Transaction.TRANSACTION_NOTE) + "\n");
+                        AllTransactions.append("  Amount: $" + joo.get(Constants.Transaction.AMOUNT) + "\n");
+                        AllTransactions.append("  Transaction Date: " + joo.get(Constants.Transaction.DATE) + "\n");
+                        AllTransactions.append("  Transaction Time: " + joo.get(Constants.Transaction.TIME_STAMP) + "\n");
+                        AllTransactions.append("\n\n");
+                    });
+                }
 
-                    //append new transactions to text area
-                    AllTransactions.append("  Transaction Note: " + joo.get(Constants.Transaction.TRANSACTION_NOTE) + "\n");
-                    AllTransactions.append("  Amount: $" + joo.get(Constants.Transaction.AMOUNT) + "\n");
-                    AllTransactions.append("  Transaction Date: " + joo.get(Constants.Transaction.DATE) + "\n");
-                    AllTransactions.append("  Transaction Time: " + joo.get(Constants.Transaction.TIME_STAMP) + "\n");
-                    AllTransactions.append("\n\n");
-                });
                 //set scroller to focus to top
                 AllTransactions.setCaretPosition(0);
             }
@@ -792,14 +835,19 @@ public class GUI {
         ddlDepositAccounts.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String choice = ddlDepositAccounts.getItemAt(ddlDepositAccounts.getSelectedIndex()).toString();
-                //send select account request to server
-                JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT
-                        , Constants.Account.SELECTED_ACCOUNT, ddlDepositAccounts.getSelectedIndex()));
-                //Onclick, send request to server to get balance of accountId selected
-                JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
-                //update balance label to display updated balance amount
-                lblDepositAccountbalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                String choice = "";
+                if(ddlDepositAccounts.getItemCount() != 0)
+                {
+                    choice = ddlDepositAccounts.getItemAt(ddlDepositAccounts.getSelectedIndex()).toString();
+                    //send select account request to server
+                    JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT
+                            , Constants.Account.SELECTED_ACCOUNT, ddlDepositAccounts.getSelectedIndex()));
+                    //Onclick, send request to server to get balance of accountId selected
+                    JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
+                    //update balance label to display updated balance amount
+                    lblDepositAccountbalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                }
+
             }
         });
         //add event listener for forget password
@@ -817,14 +865,19 @@ public class GUI {
         ddlTransferAccounts.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String choice = ddlTransferAccounts.getItemAt(ddlTransferAccounts.getSelectedIndex()).toString();
-                //send select account request to server
-                JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT
-                        , Constants.Account.SELECTED_ACCOUNT, ddlTransferAccounts.getSelectedIndex()));
-                //Onclick, send request to server to get balance of accountId selected
-                JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
-                //update balance label to display updated balance amount
-                lblTransferAccountBalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                String choice = "";
+                if(ddlTransferAccounts.getItemCount() != 0)
+                {
+                    choice = ddlTransferAccounts.getItemAt(ddlTransferAccounts.getSelectedIndex()).toString();
+                    //send select account request to server
+                    JSONObject jo1 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT
+                            , Constants.Account.SELECTED_ACCOUNT, ddlTransferAccounts.getSelectedIndex()));
+                    //Onclick, send request to server to get balance of accountId selected
+                    JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
+                    //update balance label to display updated balance amount
+                    lblTransferAccountBalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                }
+
             }
         });
         btnUpdateTransactionLimit.addActionListener(new ActionListener() {
@@ -888,12 +941,20 @@ public class GUI {
                 //Send request to server to get all accounts of current users
                 //update dropdownlists
                 JSONObject retrieveAccounts = client.listen(Constants.Account.ALL_ACCOUNTS);
+                //clear and reload ddl
+                ddlWithdrawAccounts.removeAllItems();
+                ddlDepositAccounts.removeAllItems();
+                ddlTransferAccounts.removeAllItems();
+                ddlTransactionAccounts.removeAllItems();
                 JSONArray ja2 = new JSONArray(retrieveAccounts.get(Constants.Account.ALL_ACCOUNTS).toString());
-                JSONObject joo3 = new JSONObject(ja2.get(ja2.length()-1).toString());
-                ddlWithdrawAccounts.addItem(joo3.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo3.get(Constants.Account.ACCOUNT_ID));
-                ddlDepositAccounts.addItem(joo3.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo3.get(Constants.Account.ACCOUNT_ID));
-                ddlTransferAccounts.addItem(joo3.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo3.get(Constants.Account.ACCOUNT_ID));
-                ddlTransactionAccounts.addItem(joo3.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo3.get(Constants.Account.ACCOUNT_ID));
+                ja2.forEach(record -> {
+                    JSONObject joo2 = new JSONObject(record.toString());
+                    //populate dropdownlists with user accounts
+                    ddlWithdrawAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
+                    ddlDepositAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
+                    ddlTransferAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
+                    ddlTransactionAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
+                });
             }
         });
     }

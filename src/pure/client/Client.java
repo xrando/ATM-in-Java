@@ -41,7 +41,7 @@ public abstract class Client implements Listenable<JSONObject>, AutoCloseable {
             s = new ClientSocket(host, port, keyStoreType, keyStorePath, keyStorePass,
                     keyManagerAlgorithm, trustManagerAlgorithm, protocol, timeout); //start new instance of client socket
         } catch (IOException e) {
-            LogHelper.log(Level.SEVERE, "Server is not ready, or wrong host IP / port number.", e);
+            LogHelper.log(Level.SEVERE, "Server is not ready, or wrong host IP // port number: " + host + "//" + port + ".", e);
         } catch (CertificateException e) {
             LogHelper.log(Level.SEVERE, "Could not load certificate.", e);
         } catch (NoSuchAlgorithmException e) {
