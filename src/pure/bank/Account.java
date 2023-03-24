@@ -97,6 +97,7 @@ public class Account {
      * @return True if transaction limit is changed successfully, false otherwise
      */
     public boolean changeTransactionLimit(int newTransactionLimit, String accountID) {
+        System.out.println("Account: Changing Transaction Limit to " + newTransactionLimit + " for account " + accountID);
         this.transactionLimit = Integer.toString(newTransactionLimit);
         updateAccount(accountID);
         return true;

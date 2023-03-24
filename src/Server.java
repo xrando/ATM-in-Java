@@ -135,8 +135,8 @@ public class Server extends ServerSocket {
 
                         case Constants.Account.CHANGE_TRANSACTION_LIMIT -> {
                             int newLimit = request.getInt(Constants.Account.CHANGE_TRANSACTION_LIMIT);
-                            String accountId = request.getString(Constants.Account.SELECTED_ACCOUNT);
-                            socket.writeJSON(Constants.Stream.RES, Constants.Account.CHANGE_TRANSACTION_LIMIT, account != null && account.changeTransactionLimit(newLimit,accountId));
+                            int selectAccount = request.getInt(Constants.Account.SELECTED_ACCOUNT);
+                            socket.writeJSON(Constants.Stream.RES, Constants.Account.CHANGE_TRANSACTION_LIMIT, account != null && account.changeTransactionLimit(newLimit,user.getAccounts().get(selectAccount).getAccountID()));
                         }
 
                         case Constants.Account.GET_TRANSACTION_LIMIT -> socket.writeJSON(Constants.Stream.RES, Constants.Account.GET_TRANSACTION_LIMIT, account != null ? account.getTransactionLimit() : null);
