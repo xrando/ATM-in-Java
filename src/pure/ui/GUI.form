@@ -1117,7 +1117,11 @@
           </component>
           <component id="35c6a" class="javax.swing.JButton" binding="btnCreateNewUser">
             <constraints>
-              <grid row="9" column="0" row-span="2" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="9" column="0" row-span="2" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                <minimum-size width="200" height="-1"/>
+                <preferred-size width="200" height="-1"/>
+                <maximum-size width="200" height="-1"/>
+              </grid>
             </constraints>
             <properties>
               <text value="Create new user"/>
@@ -1125,7 +1129,11 @@
           </component>
           <component id="aa3db" class="javax.swing.JButton" binding="btnNewUserBack">
             <constraints>
-              <grid row="7" column="0" row-span="2" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="7" column="0" row-span="2" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                <minimum-size width="200" height="-1"/>
+                <preferred-size width="200" height="-1"/>
+                <maximum-size width="200" height="-1"/>
+              </grid>
             </constraints>
             <properties>
               <text value="Back"/>
@@ -1157,14 +1165,6 @@
               <text value="Number:"/>
             </properties>
           </component>
-          <component id="681d4" class="javax.swing.JTextField" binding="txtNewUserPhoneNumber">
-            <constraints>
-              <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="-1"/>
-              </grid>
-            </constraints>
-            <properties/>
-          </component>
           <component id="5945a" class="javax.swing.JLabel" binding="lblNewUserAccount">
             <constraints>
               <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -1192,6 +1192,14 @@
           <component id="c0820" class="javax.swing.JPasswordField" binding="txtNewUserPassword">
             <constraints>
               <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+            </constraints>
+            <properties/>
+          </component>
+          <component id="681d4" class="javax.swing.JTextField" binding="txtNewUserPhoneNumber">
+            <constraints>
+              <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>

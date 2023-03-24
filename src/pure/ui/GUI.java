@@ -902,7 +902,6 @@ public class GUI {
                                 Constants.Account.SELECTED_ACCOUNT, choice);
                         //get updated transaction limit
                         JSONObject jo2 = client.listen(Constants.Account.GET_TRANSACTION_LIMIT);
-                        System.out.println("DEBUG:"+jo2);
                         //update label with data
                         lblCurrentTransactionLimitAmount.setText("$"+jo2.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
                         lblTransactionLimitAmmountTransfer.setText("$"+jo2.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
