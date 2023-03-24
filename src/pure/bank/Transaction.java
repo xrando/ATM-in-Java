@@ -10,6 +10,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.lang.Math;
 
+/**
+ * Transaction Class <br>
+ * All Transaction Defined Methods are defined here
+ */
 public class Transaction {
     private final double Amount;
     private String timeStamp;
@@ -17,6 +21,17 @@ public class Transaction {
     private final String TransactionNote;
     private final String accountID;
     private final String payee;
+
+    /**
+     * Transaction Constructor
+     */
+    public Transaction() {
+        this.Amount = 0;
+        //Set new transaction note
+        this.TransactionNote = "NewTransactionNote";
+        this.accountID = null;
+        this.payee = "";
+    }
 
     //Create a new transaction
     public Transaction(double NewAmount, String NewTransactionNote, String accountID) {
@@ -46,16 +61,6 @@ public class Transaction {
         this.payee = payee;
     }
 
-    public Transaction() {
-        this.Amount = 0;
-        //Set new transaction note
-        this.TransactionNote = "NewTransactionNote";
-        this.accountID = null;
-        this.payee = "";
-    }
-
-    // Perhaps ATM.ATM.Bank.Bank.Transaction constructor can add a date and time stamp so that we don't have to access the database to get it for each transaction
-    // Add a transaction ID as well
     public Transaction(double amount, String transactionNote, String date, String timeStamp, String payee, String accountID) {
         this.Amount = amount;
         this.date = date;
@@ -63,28 +68,6 @@ public class Transaction {
         this.TransactionNote = transactionNote;
         this.accountID = accountID;
         this.payee = payee;
-    }
-
-    public static void transactionEmail(Transaction transactionDetails, String username, String email) {
-        // Send email to user with new password
-        String subject = "Transaction Alert";
-        String body = "Dear " + username + ",\n\n" +
-                "We refer to your Transaction dated " + transactionDetails.getTransactionDate() + ". We are pleased to confirm that the transaction was completed.\n\n" +
-                "Date & Time: " + transactionDetails.getTransactionDate() + " , " + transactionDetails.getTransactionTime() + "\n" +
-                "Amount: " + (-transactionDetails.getAmount()) + "\n" +
-                "From: " + transactionDetails.getAccountID() + "\n" +
-                "To: " + transactionDetails.getPayee() + "\n\n" +
-                "To view your transactions, login to your account to view your transaction history.\n" +
-                "If you did not request a password change, please contact us immediately.\n\n" +
-                "Pure Bank LTD\n" +
-                "pureinc933@gmail.com\n\n" +
-                "Please do not reply to this email as it is automatically generated.";
-        // Send email
-        //Helper.SendMail(email , subject, body);
-    }
-
-    public static void main(String[] args) {
-
     }
 
     public double getAmount() {
@@ -125,6 +108,39 @@ public class Transaction {
         return TransactionNote;
     }
 
+    /**
+     * This method is used to email the user after a transaction has been made
+     * @param transactionDetails Contains details of the transaction for the email
+     * @param username The username of the user
+     * @param email The email of the user
+     */
+    public static void transactionEmail(Transaction transactionDetails, String username, String email) {
+        // Send email to user with new password
+        String subject = "Transaction Alert";
+        String body = "Dear " + username + ",\n\n" +
+                "We refer to your Transaction dated " + transactionDetails.getTransactionDate() + ". We are pleased to confirm that the transaction was completed.\n\n" +
+                "Date & Time: " + transactionDetails.getTransactionDate() + " , " + transactionDetails.getTransactionTime() + "\n" +
+                "Amount: " + (-transactionDetails.getAmount()) + "\n" +
+                "From: " + transactionDetails.getAccountID() + "\n" +
+                "To: " + transactionDetails.getPayee() + "\n\n" +
+                "To view your transactions, login to your account to view your transaction history.\n" +
+                "If you did not request a password change, please contact us immediately.\n\n" +
+                "Pure Bank LTD\n" +
+                "pureinc933@gmail.com\n\n" +
+                "Please do not reply to this email as it is automatically generated.";
+        // Send email
+        //Helper.SendMail(email , subject, body);
+    }
+
+    /**
+     * This method is used to email the user after a transaction has been made
+     * The amount to be transacted is checked against the transaction limit as well as the daily transaction limit
+     * before it is added to the database, if it exceeds the limit an exception is thrown
+     * An email is sent to the user if a transfer is made from one account to another
+     * @param transactionDetails Contains details of the transaction for the email
+     * @param account The username of the user
+     * @return Returns true if the transaction was successful, false otherwise
+     */
     public boolean AddTransactionToSQL(Transaction transactionDetails, Account account) throws IllegalArgumentException {
         String sql = "INSERT INTO transactions( amount, timeStamp, transactionNote, date, payee,accountID) VALUES(?,?,?,?,?,?)";
         // 2-way Transfer

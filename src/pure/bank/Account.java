@@ -37,7 +37,6 @@ public class Account {
 
     /**
      * Account Constructor
-     *
      * @param Account - Contains information of the account
      */
     public Account(Account Account) {
@@ -66,10 +65,12 @@ public class Account {
         this.AccountTransactions = new ArrayList<Transaction>();
     }
 
+    //Get Account Type of the account
     public String getAccountType() {
         return this.accountType;
     }
 
+    //Get Transaction Limit of the account
     public String getTransactionLimit() {
         return this.transactionLimit;
     }
@@ -84,15 +85,16 @@ public class Account {
         return this.accountID;
     }
 
+    //Get List of Transactions of the account
     public ArrayList<Transaction> getAccountTransactions() {
         return this.AccountTransactions;
     }
 
     /**
-     * This method is used to get the login status of a user from the database
+     * This method is used to change the transaction limit of the bank account
      * @param newTransactionLimit The new transaction limit to change to for the user
      * @param accountID The accountID of the account
-     * @return True if the user is logged in, false if the user is logged out
+     * @return True if transaction limit is changed successfully, false otherwise
      */
     public boolean changeTransactionLimit(int newTransactionLimit, String accountID) {
         this.transactionLimit = Integer.toString(newTransactionLimit);
@@ -100,6 +102,11 @@ public class Account {
         return true;
     }
 
+    /**
+     * This method is used to update the account information to the database
+     * @param accountID The accountID of the account to be updated
+     * @return True if connection to database and update successfully, false otherwise
+     */
     public boolean updateAccount(String accountID) {
         String sql = "UPDATE accounts SET accountType = ?, transactionLimit = ? , userID = ? WHERE accountID = ?";
 
@@ -117,6 +124,10 @@ public class Account {
         return true;
     }
 
+    /**
+     * This method is used to retrieve the list of transactions for the account from the database
+     * @return Returns the list of transactions for the account from the database
+     */
     public ArrayList<Transaction> retrieveAccountTransactions() {
         ArrayList<Transaction> AccountTransactions = new ArrayList<Transaction>();
         try {
@@ -140,6 +151,10 @@ public class Account {
         return AccountTransactions;
     }
 
+    /**
+     * This method is used to calculate the balance of the account based off the transactions list
+     * @return Returns the balance calculated of the account else 0 if there are no transactions
+     */
     public double GetAccountBalance() {
         double balance = 0;
         ArrayList<Transaction> AccountTransactions = new ArrayList<Transaction>();
@@ -150,6 +165,10 @@ public class Account {
         return balance;
     }
 
+    /**
+     * This method is get the total amount of withdrawals made today
+     * @return Returns the balance calculated of the account else 0 if there are no transactions
+     */
     public double GetWithDrawalsBalance() throws ParseException {
         double balance = 0;
         Date date = Calendar.getInstance().getTime();
@@ -163,10 +182,14 @@ public class Account {
                 balance += transaction.getAmount();
             }
         }
-        System.out.println("Withdrawan Amount today: " + balance);
         return balance;
     }
 
+    /**
+     * This method is get the all accounts for the user from the database
+     * @param userID The userID of the user
+     * @return Returns the list of accounts for the user from the database
+     */
     public List<Account> getTransactionAccount(String userID) {
         List<Account> accountList = new ArrayList<Account>();
         try {
@@ -187,6 +210,12 @@ public class Account {
         return accountList;
     }
 
+    /**
+     * This method is used to create a new account type for the user
+     * @param selection The selection of the account type
+     * @param userID The userID of the user
+     * @return Returns true if account is created successfully, false otherwise
+     */
     public boolean createAccount(int selection, String userID) {
         String createType = "";
         switch (selection) {
@@ -208,6 +237,7 @@ public class Account {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            return false;
         }
         System.out.println("Account " + createType + " Created");
         return true;
