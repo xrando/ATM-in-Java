@@ -23,8 +23,8 @@ public class Account {
     private String userID;
     private String accountID;
     private ArrayList<Transaction> AccountTransactions;
-    //Create a new account
 
+    //Create a new account Constructor
     public Account() {
 
     }
@@ -46,12 +46,6 @@ public class Account {
         this.AccountTransactions = new ArrayList<Transaction>();
     }
 
-    public Account(int accountID) { //Created a new constructor to accept accountID
-        this.AccountName = "Default";
-        this.accountID = Integer.toString(accountID);
-
-    }
-
     public Account(String accountID, String accountType, String transactionLimit, String userID) {
         //Set account name and account holder
         this.accountID = accountID;
@@ -69,13 +63,16 @@ public class Account {
         return this.transactionLimit;
     }
 
+    //Get User ID of the account
     public String getUID() {
         return this.userID;
     }
 
+    //Get Account ID of the account
     public String getAccountID() {
         return this.accountID;
     }
+
 
     public boolean changeTransactionLimit(int newTransactionLimit) {
         this.transactionLimit = Integer.toString(newTransactionLimit);
@@ -153,7 +150,7 @@ public class Account {
         AccountTransactions = this.retrieveAccountTransactions();
         for (Transaction transaction : AccountTransactions) {
             String tDate = transaction.getTransactionDate();
-            if (transaction.getAmount()<0 && tDate.equals(todayDate)){
+            if (transaction.getAmount() < 0 && tDate.equals(todayDate)) {
                 balance += transaction.getAmount();
             }
         }
@@ -181,6 +178,7 @@ public class Account {
         return accountList;
     }
 
+
     public boolean createAccount(int selection, String userID) {
         String createType = "";
         switch (selection) {
@@ -203,6 +201,7 @@ public class Account {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        System.out.println("Account " + createType + " Created");
         return true;
     }
 
