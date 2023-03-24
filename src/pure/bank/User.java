@@ -36,20 +36,25 @@ public class User {
 //        System.out.printf("UserName: %s\nUID: %s", Username, UID);
 //    }
 
-    public User(String username, String password, String email, String phone) {
-        this.Username = username;
-        this.email = email;
-        this.phone = phone;
-        this.UID = genUID();
-        //this.Salt = generateSalt();
-        //this.Password = generatePasswordHash(Password, Salt);
-        //this.Password = generatePasswordHash(password, Salt);
-        this.loginStatus = false;
-        //ATM.Bank.Bank CurrentBank = new ATM.Bank.Bank("ATM.Bank.Bank of Testing");
-        this.Accounts = new ArrayList<Account>();
+//    public User(String username, String password, String email, String phone) {
+//        this.Username = username;
+//        this.email = email;
+//        this.phone = phone;
+//        this.UID = genUID();
+//        //this.Salt = generateSalt();
+//        //this.Password = generatePasswordHash(Password, Salt);
+//        //this.Password = generatePasswordHash(password, Salt);
+//        this.loginStatus = false;
+//        //ATM.Bank.Bank CurrentBank = new ATM.Bank.Bank("ATM.Bank.Bank of Testing");
+//        this.Accounts = new ArrayList<Account>();
+//
+//    }
 
-    }
-
+    /**
+     * User Constructor
+     * @param username - Username of the user
+     * @param password - Password of the user
+     */
     public User(String username, String password) {
         this.Username = username;
         this.email = " ";
@@ -309,6 +314,11 @@ public class User {
         this.loginStatus = b;
     }
 
+    /**
+     * This method is used to get the login status of a user from the database
+     * @param username The username of the user
+     * @return The login status of the user
+     */
     public boolean getLoginStatusFromDB(String username) {
         String query = "Select loginStatus from users where username = ?";
         boolean loginStatus = false;
@@ -341,7 +351,12 @@ public class User {
         this.phone = phone;
     }
 
-    // Returns a incremented UID
+    /**
+     * This method is used to generate a UID for a new user
+     * This method will select the maximum UID from the database and increment it by 1
+     * This method will be used when a new user is created
+     * @return String UID
+     */
     public String genUID() {
         String UID = "";
         String query = "Select max(UID) as MAXUID from users";
@@ -401,6 +416,15 @@ public class User {
 //        return true;
 //    }
 
+    /**
+     * This method is used to change the pin of a user
+     * Both parameters will be sanitized before being used
+     * Both parameters will be verified before being used
+     * Email will be sent to user's email address upon successful pin change
+     * @param oldPin User's Current Pin
+     * @param newPin User's New Pin
+     * @return String Message
+     */
     public String changePin(String oldPin, String newPin) { //Use this for GUI
         // Get user Info from DB
         // If user is not logged in, return false
@@ -455,11 +479,24 @@ public class User {
 //        return BCrypt.gensalt();
 //    }
 
+    /**
+     * This method is used to generate a salt for a new user
+     * This method uses BCrypt to generate a salt
+     * Gensalt will use the default log_rounds (10)
+     * @return String Salt
+     */
     public String generateSalt() {
         //String Salt = hash(username + UID);
         return BCrypt.gensalt();
     }
 
+    /**
+     * This method is used to generate a salt for a new user
+     * This method uses BCrypt to generate the password hash
+     * @param password User's password in plain text
+     * @param salt User's salt
+     * @return String Password Hash
+     */
     public String generatePasswordHash(String password, String salt) {
         return BCrypt.hashpw(password, salt);
     }
@@ -484,6 +521,13 @@ public class User {
 //        return Accounts;
 //    }
 
+    /**
+     * This method is used to get the password and salt from the database
+     * First element of the array is the password
+     * Second element of the array is the salt
+     * @param UID User's UID
+     * @return String[] Password and Salt
+     */
     public String[] getPasswordFromDatabase(String UID) {
         String getPasswordQuery = "SELECT password, salt FROM users WHERE uid = ?";
         String password = "";
@@ -502,6 +546,13 @@ public class User {
         }
         return new String[]{password, Salt};
     }
+
+    /**
+     * This method is used to get the email from the database
+     * Used to send email to user
+     * @param UID User's UID
+     * @return String Email of the user from the database
+     */
 
     public String getEmailFromDatabase(String UID) {
         String getEmailQuery = "SELECT email FROM users WHERE uid = ?";
@@ -523,6 +574,14 @@ public class User {
     /////////////////////////////////
     // Validation methods
     ////////////////////////////////
+    /**
+     * This method is used to validate the password
+     * The UID will be use to get the password and salt from the database
+     * The password will be hashed using BCrypt and salted with the salt from the database
+     * @param password User's password in plain text
+     * @param UID User's UID
+     * @return boolean True if password is correct, false if password is incorrect
+     */
     public boolean validatePassword(String password, String UID) {
         // get password and Salt from database
         String[] passwordAndSalt = getPasswordFromDatabase(UID);
@@ -542,6 +601,13 @@ public class User {
     // User Creation Functions
     /////////////////////////////////////////////////////////////////////////
 
+    /**
+     * This method is used to check if the user already exists in the database
+     * If the user does not exist, the method will return null
+     * If the user exists, the method will return the UID of the user
+     * @param username Username of the user
+     * @return String UID of the user or null if the user does not exist
+     */
     public String CheckUserExist(String username) {
         String sql = "SELECT UID FROM users WHERE Username = ?";
         String UID = "";
@@ -561,6 +627,14 @@ public class User {
         return UID;
     }
 
+    /**
+     * This method is used to check if the username already exists in the database
+     * If the username does not exist, the method will return false
+     * If the username exists, the method will return true
+     * Used during user creation
+     * @param username Username to check
+     * @return boolean True if username exists, false if username does not exist
+     */
     public boolean checkUsername(String username) {
         String sql = "SELECT Username FROM users WHERE Username = ?";
         String Username = "";
@@ -576,7 +650,15 @@ public class User {
         return !Username.equals("");
     }
 
-    // These functions are used to validate user input
+    /**
+     * This method is used to validate the username
+     * The username must be alphanumeric and less than 10 characters
+     * The username must not already exist in the database
+     * Used during user creation
+     * Regex: [a-zA-Z0-9]+
+     * @param username Username to validate
+     * @return boolean True if username is valid, false if username is invalid
+     */
     public boolean ValidateUserName(String username) {
         return !checkUsername(username) && username.matches("[a-zA-Z0-9]+") && username.length() <= 10 && username.length() >= 1;
     }
@@ -588,15 +670,40 @@ public class User {
     //    return true;
     //}
 
+    /**
+     * This method is used to validate the pin
+     * The pin must be 6 digits long
+     * The pin must be numbers only
+     * Regex: [0-9]+
+     * @param pin Pin to validate
+     * @return boolean True if pin is valid, false if pin is invalid
+     */
     public boolean ValidatePin(String pin) {
         return pin.length() == 6 && pin.matches("[0-9]+");
     }
 
+    /**
+     * This method is used to validate the email
+     * The email must be a valid email address
+     * Regex: ^[A-Za-z0-9+_.-]+@(.+)$
+     * @param email Email to validate
+     * @return boolean True if email is valid, false if email is invalid
+     */
     public boolean ValidateEmail(String email) {
         return !(email.length() < 1) && email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
     }
 
     // Checks for 8 digit Singapore phone numbers
+
+    /**
+     * This method is used to validate the phone number
+     * The phone number must be 8 digits long (Singapore phone number)
+     * The phone number must be numbers only or 0
+     * Regex: ^([8-9][0-9]{7}|0)$
+     *
+     * @param phone Phone number to validate
+     * @return boolean True if phone number is valid, false if phone number is invalid
+     */
     public boolean ValidatePhone(String phone) {
         return !(phone.length() < 1) &&phone.matches("^([8-9][0-9]{7}|0)$");
     }
@@ -713,6 +820,16 @@ public class User {
 //        }
 //    }
 
+    /**
+     * User Creation Function
+     * All fields will be validated before creating user
+     * @param username - Username of user
+     * @param password - Password of user
+     * @param email - Email of user
+     * @param phone - Phone number of user
+     * @param AccType - Account type of user
+     * @return - True if user is created, false if user is not created
+     */
     public boolean CreateUser(String username, String password, String email,String phone, int AccType) {
         User user = new User(username, password);
         Account account = new Account();
@@ -746,7 +863,12 @@ public class User {
         }
     }
 
-    // Insert user into database (New users only)
+    /**
+     *  Insert user into database
+     *  New users only
+     *
+     * @param user - User object to be inserted into database
+     */
     public void insertUser(User user) {
         String sql = "INSERT INTO users(UID, Username, Password, Salt, email, phone, loginStatus) VALUES(?,?,?,?,?,?,?)";
 
@@ -766,6 +888,7 @@ public class User {
     }
 
     // Updates user in database (Existing users only)
+
     public boolean updateUser(User user) {
         String sql = "UPDATE users SET Username = ?, Password = ?, Salt = ?, email = ?, phone = ?, loginStatus = ? WHERE UID = ?";
 
@@ -786,6 +909,11 @@ public class User {
         return true;
     }
 
+    /**
+     * Update user in database
+     * This function is used to update user information with the current user object
+     * Existing users only
+     */
     public void updateUser() {
         String sql = "UPDATE users SET Username = ?, Password = ?, Salt = ?, email = ?, phone = ?, loginStatus = ? WHERE UID = ?";
 
@@ -804,6 +932,11 @@ public class User {
         }
     }
 
+    /**
+     * Get user from database
+     * This function is used to get user information from database
+     * Used to populate User object with information from database
+     */
     public void getUserFromDatabase() {
         String UID = this.UID;
 
@@ -831,6 +964,15 @@ public class User {
         }
     }
 
+    /**
+     * Login Function for User
+     * This function is used to login user
+     * ALl fields will be checked, if any field is incorrect, login will fail
+     * An email will be sent to the user if login is successful
+     * @param username - Username of user
+     * @param password - Password of user
+     * @return - Returns true if login is successful, false if login is unsuccessful
+     */
     public boolean Login(String username, String password) {
         //check if user exists
         String UID = CheckUserExist(username);
@@ -903,6 +1045,12 @@ public class User {
 //    }
 
     //Logout Function
+
+    /**
+     * Logout Function for User
+     * This function will check if user is logged in, if user is logged in, it will set login status to false
+     * @return - Returns true if logout is successful, false if logout is unsuccessful
+     */
     public boolean logout() {
         if (!this.loginStatus) {
             return true;
@@ -931,6 +1079,16 @@ public class User {
 //    }
 
     //Forget Pin
+
+    /**
+     * Forget Pin Function for User
+     * This function will check if user exists, if user exists, it will generate a random password with SecureRandom
+     * It will then send an email to the user with the new password
+     * The new password will be hashed and salted before being stored in the database
+     * The email will prompt user to change password on the next login
+     * @param name - Username of user
+     * @return - Returns true if forget pin is successful, false if forget pin is unsuccessful
+     */
     public boolean forgetPin(String name) {
         //check if user exists
         String UID = CheckUserExist(name);
