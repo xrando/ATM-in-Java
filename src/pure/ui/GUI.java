@@ -896,10 +896,11 @@ public class GUI {
                             ddlTransactionLimitAccounts.getSelectedIndex()));
                     if(!txtNewTransactionLimitAmount.equals(""))
                     {
+                        System.out.println("DEBUG:"+Integer.toString(ddlTransactionLimitAccounts.getSelectedIndex()));
                         //send request to server to update transaction limit for current user
                         JSONObject jo = client.listen(Constants.Account.CHANGE_TRANSACTION_LIMIT,
                                 Constants.Account.CHANGE_TRANSACTION_LIMIT, txtNewTransactionLimitAmount.getText(),
-                                Constants.Account.SELECTED_ACCOUNT, choice);
+                                Constants.Account.SELECTED_ACCOUNT, Integer.toString(ddlTransactionLimitAccounts.getSelectedIndex()));
                         //get updated transaction limit
                         JSONObject jo2 = client.listen(Constants.Account.GET_TRANSACTION_LIMIT);
                         //update label with data
