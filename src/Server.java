@@ -130,6 +130,7 @@ public class Server extends ServerSocket {
                         case Constants.Account.CREATE_ACCOUNT -> {
                             int selection = request.getInt(Constants.Account.CREATE_ACCOUNT);
                             socket.writeJSON(Constants.Stream.RES, Constants.Account.CREATE_ACCOUNT, account != null && account.createAccount(selection, user.getUID()));
+                            user.getUserFromDatabase();
                         }
 
                         case Constants.Account.CHANGE_TRANSACTION_LIMIT -> {
