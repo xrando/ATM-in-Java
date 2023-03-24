@@ -4,7 +4,7 @@ import java.util.InputMismatchException;
 
 public class InputSanitisation {
     /**
-     * Checks if the input is a valid email
+     * Checks if the input is a valid email <br>
      * This is to prevent SQL injection
      * @param email The email to be checked
      * @return String "true" if the email is valid, else the error message
@@ -27,7 +27,7 @@ public class InputSanitisation {
     }
 
     /**
-     * Checks if the input is a valid Singapore phone number
+     * Checks if the input is a valid Singapore phone number <br>
      * This is to prevent SQL injection
      * @param phone The phone number to be checked
      * @return String "true" if the phone number is valid, else the error message
@@ -51,11 +51,11 @@ public class InputSanitisation {
     }
 
     /**
-     * Checks if the input is a valid Pin Number
+     * Checks if the input is a valid Pin <br>
      * This is to prevent SQL injection
      * @param pin The pin to be checked
-     * @return String "true" if the Pin number is valid, else the error message
-     * @throws InputMismatchException if the Pin number is invalid
+     * @return String "true" if the Pin is valid, else the error message
+     * @throws InputMismatchException if the Pin is invalid
      */
     public static String validPin(String pin) throws InputMismatchException{
         try {
@@ -75,7 +75,7 @@ public class InputSanitisation {
     }
 
     /**
-     * Checks if the input is a valid name
+     * Checks if the input is a valid name <br>
      * This is to prevent SQL injection
      * @param name The name to be checked
      * @return String "true" if the name is valid, else the error message
