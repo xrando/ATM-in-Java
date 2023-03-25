@@ -274,9 +274,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 //Input validation
                 String pinValid = InputSanitisation.validPin(txtPassword.getText());
-                //System.out.println(pinValid);
                 String nameValid = InputSanitisation.validNameString(txtUsername.getText());
-                //System.out.println(nameValid);
                 //if input pass validation
                 if (pinValid.equals("true") && nameValid.equals("true")) {
                     //test account username: test, pw:123123
@@ -492,6 +490,8 @@ public class GUI {
         btnChangePassword.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //clear validator
+                lblConfirmPasswordValidator.setText("");
                 //attach change password screen
                 setScreen(screen, ChangePassword);
             }
