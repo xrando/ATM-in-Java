@@ -1,6 +1,6 @@
 package pure.bank;
 
-import pure.util.Helper;
+import pure.util.EmailHelper;
 import pure.util.LogHelper;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Level;
 
 /**
@@ -423,7 +422,7 @@ public class User {
                 "pureinc933@gmail.com\n\n" +
                 "Please do not reply to this email as it is automatically generated.";
         // Send email
-        Helper.SendMail(email, subject, body);
+        EmailHelper.SendMail(email, subject, body);
 
 
         System.out.println("Pin changed successfully.");
@@ -839,7 +838,7 @@ public class User {
                         "Pure Bank LTD\n" +
                         "pureinc933@gmail.com\n\n" +
                         "Please do not reply to this email as it is automatically generated.";
-                Helper.SendMail(email, subject, body);
+                EmailHelper.SendMail(email, subject, body);
 
             } catch (SQLException e) {
                 LogHelper.log(Level.SEVERE, e.getMessage(), e);

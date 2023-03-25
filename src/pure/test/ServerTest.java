@@ -1,7 +1,7 @@
 package pure.test;
 
 import org.json.JSONObject;
-import org.junit.*;
+import org.junit.Test;
 import pure.client.ClientSocket;
 import pure.constants.Constants;
 import pure.server.ServerSocket;
@@ -15,8 +15,11 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.logging.Level;
 
+import static org.junit.Assert.assertEquals;
+
 public class ServerTest {
     static ServerSocket s;
+    static boolean flag = true;
 
     static {
         try {
@@ -24,25 +27,19 @@ public class ServerTest {
                     null, null, Constants.SSL.PROTOCOL) {
                 @Override
                 public <T> String listen(T... input) {
-                    while (this.getSslServerSocketStatus()) {
+                    JSONObject clientInput = null;
+                    while (flag) {
                         ClientSocket socket;
                         try {
                             socket = this.accept();
+                            clientInput = socket.readJSON();
+                            socket.writeJSON(clientInput.getString(Constants.JSON.TYPE));
+                            flag = false;
                         } catch (IOException e) {
-                            throw new RuntimeException(e);
+                            System.out.println("error");
                         }
-                        new Thread(() -> {
-                            try {
-                                JSONObject clientInput;
-                                clientInput = socket.readJSON();
-                                System.out.println(clientInput);
-                                socket.writeJSON(clientInput.getString(Constants.JSON.TYPE));
-                            } catch (IOException e) {
-                                System.out.println("error");
-                            }
-                        }).start();
                     }
-                    return "Server Down";
+                    return clientInput.getString(Constants.JSON.TYPE);
                 }
             };
         } catch (IOException e) {
@@ -63,7 +60,7 @@ public class ServerTest {
     }
 
     @Test
-    public void startServer(){
-        s.listen();
+    public void startServer() {
+        assertEquals("Hello", s.listen());
     }
 }

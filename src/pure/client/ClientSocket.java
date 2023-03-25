@@ -31,7 +31,7 @@ import java.util.logging.Level;
  * @see SSLSocket
  * @see SSLContext
  * */
-public class ClientSocket implements AutoCloseable {
+public final class ClientSocket implements AutoCloseable {
     private final SSLSocket sslSocket;
 
     /**

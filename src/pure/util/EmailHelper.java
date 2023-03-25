@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
 
-public class Helper {
+public class EmailHelper {
     public static void WriteDoc(String content) {
         try {
             File file = new File("Invoice.txt");
