@@ -48,6 +48,7 @@ public class ClientSocket implements AutoCloseable {
         javax.net.ssl.SSLContext sslContext = new SSLContext(keyStoreType, keyStorePath, keyStorePass, keyManagerAlgorithm, trustManagerAlgorithm, protocol).getSSLContext();
         sslSocket = (SSLSocket) sslContext.getSocketFactory().createSocket(host, port);
         sslSocket.setSoTimeout(timeout);
+        sslSocket.startHandshake();
     }
 
     public SSLSocket getSslSocket() {
