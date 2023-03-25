@@ -31,8 +31,16 @@ public class Server extends ServerSocket {
      * @param keyManagerAlgorithm set null to use default.
      * @param trustManagerAlgorithm set null to use default.
      * @param protocol set null to use default.
+     * @throws KeyManagementException    if this operation failed.
+     * @throws KeyStoreException         if no Provider supports a KeyStoreSpi implementation for the specified type, or KeyManageFactory/TrustManageFactory failed to init.
+     * @throws IOException               if there is an I/O or format problem with the keystore data, if a password is required but not given, or if the given password was incorrect.
+     * @throws CertificateException      if any of the certificates in the keystore could not be loaded.
+     * @throws NoSuchAlgorithmException  if no Provider supports a SSLContextSpi implementation for the specified protocol. Check Config if "Protocol=TLSV1.3" exists.
+     * @throws UnrecoverableKeyException if the key cannot be recovered (e.g. the given password is wrong).
+     * @see ServerSocket
      * */
-    private Server(int port, String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    private Server(int port, String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol)
+            throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         super(port, keyStoreType, keyStorePath, keyStorePass, keyManagerAlgorithm, trustManagerAlgorithm, protocol);
     }
 
