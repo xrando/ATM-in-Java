@@ -32,7 +32,8 @@ public class SSLContext {
      * @throws NoSuchAlgorithmException  if no Provider supports a SSLContextSpi implementation for the specified protocol. Check Config if "Protocol=TLSV1.3" exists
      * @throws UnrecoverableKeyException if the key cannot be recovered (e.g. the given password is wrong).
      */
-    public SSLContext(String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol) throws KeyManagementException, KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
+    public SSLContext(String keyStoreType, String keyStorePath, String keyStorePass, String keyManagerAlgorithm, String trustManagerAlgorithm, String protocol)
+            throws KeyManagementException, KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
         KeyStore keyStore;
         InputStream stream;
         char[] trustStorePassword;

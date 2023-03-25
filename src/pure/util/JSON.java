@@ -16,6 +16,9 @@ import java.util.logging.Level;
 public class JSON {
     private final JSONObject jsonObject = new JSONObject();
 
+    /**
+     * Format the JSONObject to force it to have the key "Type" to represent the message header.
+     * */
     public <T> JSON(T type) {
         this.jsonObject.put(Constants.JSON.TYPE, type);
     }
@@ -93,6 +96,9 @@ public class JSON {
         return ja;
     }
 
+    /**
+     * @see JSONObject#put(String, Object)
+     * */
     public <T> JSON add(String key, T t) {
         try {
             this.jsonObject.put(key, t);

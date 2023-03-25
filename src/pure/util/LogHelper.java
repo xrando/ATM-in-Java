@@ -29,10 +29,16 @@ public abstract class LogHelper {
         }
     }
 
+    /**
+     * Store the log at "LogLocation" in config.properties
+     * */
     public static void log(Level level, String message, Exception exception) {
         LOGGER.log(level, message, exception);
     }
 
+    /**
+     * Store the log at "LogLocation" in config.properties
+     * */
     public static void log(Level level, String message) {
         LOGGER.log(level, message);
     }

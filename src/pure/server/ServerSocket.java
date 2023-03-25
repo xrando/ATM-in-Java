@@ -2,7 +2,6 @@ package pure.server;
 
 import pure.client.ClientSocket;
 import pure.util.Listenable;
-import pure.util.LogHelper;
 import pure.util.SSLContext;
 
 import javax.net.ssl.SSLServerSocket;
@@ -14,7 +13,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.logging.Level;
 
 /**
  * A wrapper class for {@link SSLServerSocket}.
@@ -48,6 +46,9 @@ public abstract class ServerSocket implements Listenable<String> {
         sslServerSocket.setNeedClientAuth(true);
     }
 
+    /**
+     * Indicates if the server socket is created.
+     * */
     public boolean getSslServerSocketStatus() {
         return sslServerSocket != null;
     }
@@ -59,13 +60,13 @@ public abstract class ServerSocket implements Listenable<String> {
     /**
      * Wrap the {@link SSLSocket} accepted by {@link SSLServerSocket#accept()} to {@link ClientSocket}.
      * */
-    public final ClientSocket accept() {
-        ClientSocket socket = null;
+    public final ClientSocket accept() throws IOException {
+        ClientSocket socket;
         try {
             SSLSocket sslSocket = (SSLSocket) sslServerSocket.accept();
             socket = new ClientSocket(sslSocket);
         } catch (IOException e) {
-            LogHelper.log(Level.SEVERE, "I/O error occurred while waiting for connection.", e);
+            throw new IOException(e);
         }
         return socket;
     }

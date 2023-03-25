@@ -25,10 +25,15 @@ public class ServerTest {
                 @Override
                 public <T> String listen(T... input) {
                     while (this.getSslServerSocketStatus()) {
-                        ClientSocket socket = this.accept();
+                        ClientSocket socket;
+                        try {
+                            socket = this.accept();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                         new Thread(() -> {
                             try {
-                                JSONObject clientInput = null;
+                                JSONObject clientInput;
                                 clientInput = socket.readJSON();
                                 System.out.println(clientInput);
                                 socket.writeJSON(clientInput.getString(Constants.JSON.TYPE));

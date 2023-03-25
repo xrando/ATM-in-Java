@@ -10,6 +10,7 @@ import pure.util.JSON;
 import pure.util.LogHelper;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -39,7 +40,13 @@ public class Server extends ServerSocket {
     @Override
     public final <T> String listen(T... input) {
         while (this.getSslServerSocketStatus()) {
-            ClientSocket socket = this.accept();
+            ClientSocket socket;
+            try {
+                socket = this.accept();
+            } catch (IOException e) {
+                LogHelper.log(Level.SEVERE, "I/O error occurred while waiting for connection.", e);
+                continue;
+            }
             new Thread(() -> {
                 boolean flag = true;
                 User user = null;
@@ -50,6 +57,9 @@ public class Server extends ServerSocket {
                     JSONObject request;
                     try {
                         request = socket.readJSON();
+                    } catch (SocketException e){
+                        LogHelper.log(Level.SEVERE, "Socket connection lost.", e);
+                        break;
                     } catch (IOException e) {
                         LogHelper.log(Level.WARNING, "There are no bytes buffered on the socket, or all buffered bytes have been consumed by read.", e);
                         continue;
