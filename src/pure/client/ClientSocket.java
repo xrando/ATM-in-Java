@@ -60,7 +60,7 @@ public class ClientSocket implements AutoCloseable {
     /**
      * read the input stream until hits the EOF constant, return as String.
      * */
-    public String readString() {
+    public String readString() throws IOException {
         byte[] buf = new byte[1024];
         int b;
         StringBuilder a = new StringBuilder();
@@ -75,8 +75,10 @@ public class ClientSocket implements AutoCloseable {
             }
         } catch (SSLHandshakeException e) {
             LogHelper.log(Level.SEVERE, "Secure connection cannot be established with host " + this.sslSocket.getRemoteSocketAddress().toString(), e);
+            System.exit(-1);
         } catch (IOException e) {
-            LogHelper.log(Level.WARNING, "There are no bytes buffered on the socket, or all buffered bytes have been consumed by read.", e);
+            //LogHelper.log(Level.WARNING, "There are no bytes buffered on the socket, or all buffered bytes have been consumed by read.", e);
+            throw new IOException(e);
         }
         return a.toString();
     }
@@ -85,7 +87,7 @@ public class ClientSocket implements AutoCloseable {
      * return the message as JSONObject from the input stream.
      * @see #readString()
      * */
-    public JSONObject readJSON() {
+    public JSONObject readJSON() throws IOException {
         return JSON.tryParse(readString());
     }
 
@@ -100,7 +102,7 @@ public class ClientSocket implements AutoCloseable {
     /**
      * push the unformatted String to output stream and add EOF.
      * */
-    public void writeString(String s) {
+    public void writeString(String s) throws IOException {
         try {
             this.sslSocket.getOutputStream().write(s.getBytes());
             this.sslSocket.getOutputStream().write(Constants.Stream.EOF.getBytes());
@@ -109,7 +111,8 @@ public class ClientSocket implements AutoCloseable {
             LogHelper.log(Level.SEVERE, "Secure connection cannot be established with host " + this.sslSocket.getRemoteSocketAddress().toString(), e);
             System.exit(-1);
         } catch (IOException e) {
-            LogHelper.log(Level.SEVERE, "I/O error occurs when creating the output stream or the socket is not connected.", e);
+            //LogHelper.log(Level.SEVERE, "I/O error occurs when creating the output stream or the socket is not connected.", e);
+            throw new IOException(e);
         }
     }
 
@@ -118,7 +121,7 @@ public class ClientSocket implements AutoCloseable {
      * @see #writeString(String)
      * */
     @SafeVarargs
-    public final <T> void writeJSON(T... str) {
+    public final <T> void writeJSON(T... str) throws IOException {
         if (str.length < 1)
             return;
 
@@ -129,11 +132,12 @@ public class ClientSocket implements AutoCloseable {
         writeString(j.toString());
     }
 
-    public void close() {
+    public void close() throws IOException {
         try {
             this.sslSocket.close();
         } catch (IOException e) {
-            LogHelper.log(Level.WARNING, "I/O error occurs when closing this socket.", e);
+            //LogHelper.log(Level.WARNING, "I/O error occurs when closing this socket.", e);
+            throw new IOException(e);
         }
     }
 

@@ -27,10 +27,14 @@ public class ServerTest {
                     while (this.getSslServerSocketStatus()) {
                         ClientSocket socket = this.accept();
                         new Thread(() -> {
-                            JSONObject clientInput = null;
-                            clientInput = socket.readJSON();
-                            System.out.println(clientInput);
-                            socket.writeJSON(clientInput.getString(Constants.JSON.TYPE));
+                            try {
+                                JSONObject clientInput = null;
+                                clientInput = socket.readJSON();
+                                System.out.println(clientInput);
+                                socket.writeJSON(clientInput.getString(Constants.JSON.TYPE));
+                            } catch (IOException e) {
+                                System.out.println("error");
+                            }
                         }).start();
                     }
                     return "Server Down";

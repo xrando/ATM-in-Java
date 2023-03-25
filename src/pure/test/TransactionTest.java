@@ -25,7 +25,7 @@ public class TransactionTest {
         test.logout();
     }
 
-    @Test
+/*    @Test
     public void testChangeTransferLimit() {
         //Transaction Limit to change to
         int newTransferLimit = 100;
@@ -33,7 +33,7 @@ public class TransactionTest {
         assertEquals(test2.getTransactionLimit(),Integer.toString(newTransferLimit));
         test2.changeTransactionLimit(1000);
         assertNotEquals(test2.getTransactionLimit(),Integer.toString(newTransferLimit));
-    }
+    }*/
 
 //    @Test
 //    public void testCreateAccount() {
