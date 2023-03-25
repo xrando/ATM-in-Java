@@ -43,6 +43,7 @@ public class Server extends ServerSocket {
             ClientSocket socket;
             try {
                 socket = this.accept();
+                System.out.println("Connected to client: " + socket.getIP());
             } catch (IOException e) {
                 LogHelper.log(Level.SEVERE, "I/O error occurred while waiting for connection.", e);
                 continue;

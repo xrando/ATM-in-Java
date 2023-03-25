@@ -56,7 +56,7 @@ public class GUI extends Client {
             ui = new GUI(Constants.Socket.HOST, Constants.Socket.PORT, null, Constants.SSL.CLIENT_KEYSTORE, Constants.SSL.CLIENT_KEYSTORE_PASS,
                     null, null, Constants.SSL.PROTOCOL, Constants.Socket.TIMEOUT);
         } catch (IOException e) {
-            LogHelper.log(Level.SEVERE, "Server is not ready, or wrong host IP // port number: " + Constants.Socket.HOST + "//" + Constants.Socket.PORT + ".", e);
+            LogHelper.log(Level.SEVERE, "Server is not ready, or wrong host IP or port number: " + Constants.Socket.HOST + ":" + Constants.Socket.PORT + ".", e);
         } catch (CertificateException e) {
             LogHelper.log(Level.SEVERE, "Could not load certificate.", e);
         } catch (NoSuchAlgorithmException e) {
