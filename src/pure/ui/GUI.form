@@ -410,7 +410,11 @@
                   </component>
                   <component id="6a91" class="javax.swing.JButton" binding="btnConfirmWithdrawal">
                     <constraints>
-                      <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                        <minimum-size width="200" height="-1"/>
+                        <preferred-size width="200" height="-1"/>
+                        <maximum-size width="200" height="-1"/>
+                      </grid>
                     </constraints>
                     <properties>
                       <text value="Withdraw"/>
@@ -498,7 +502,11 @@
                   </component>
                   <component id="d861" class="javax.swing.JButton" binding="btnConfirmDeposit">
                     <constraints>
-                      <grid row="9" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="9" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                        <minimum-size width="200" height="-1"/>
+                        <preferred-size width="200" height="-1"/>
+                        <maximum-size width="200" height="-1"/>
+                      </grid>
                     </constraints>
                     <properties>
                       <text value="Deposit"/>
@@ -647,7 +655,11 @@
                   </component>
                   <component id="612ce" class="javax.swing.JButton" binding="btnTransfer">
                     <constraints>
-                      <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                        <minimum-size width="200" height="-1"/>
+                        <preferred-size width="200" height="-1"/>
+                        <maximum-size width="200" height="-1"/>
+                      </grid>
                     </constraints>
                     <properties>
                       <text value="Transfer"/>
@@ -746,7 +758,11 @@
                   </component>
                   <component id="4dc5f" class="javax.swing.JButton" binding="btnChangePassword">
                     <constraints>
-                      <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                        <minimum-size width="200" height="-1"/>
+                        <preferred-size width="200" height="-1"/>
+                        <maximum-size width="200" height="-1"/>
+                      </grid>
                     </constraints>
                     <properties>
                       <foreground color="-16777216"/>
@@ -755,7 +771,11 @@
                   </component>
                   <component id="b5542" class="javax.swing.JButton" binding="btnSaveChanges">
                     <constraints>
-                      <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                        <minimum-size width="200" height="-1"/>
+                        <preferred-size width="200" height="-1"/>
+                        <maximum-size width="200" height="-1"/>
+                      </grid>
                     </constraints>
                     <properties>
                       <text value="Save Changes"/>
@@ -811,7 +831,11 @@
                   </component>
                   <component id="164fc" class="javax.swing.JButton" binding="btnUpdatePassword">
                     <constraints>
-                      <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                        <minimum-size width="200" height="-1"/>
+                        <preferred-size width="200" height="-1"/>
+                        <maximum-size width="200" height="-1"/>
+                      </grid>
                     </constraints>
                     <properties>
                       <text value="Update Password"/>
@@ -926,7 +950,11 @@
                   </component>
                   <component id="c7fef" class="javax.swing.JButton" binding="btnUpdateTransactionLimit">
                     <constraints>
-                      <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                        <minimum-size width="200" height="-1"/>
+                        <preferred-size width="200" height="-1"/>
+                        <maximum-size width="200" height="-1"/>
+                      </grid>
                     </constraints>
                     <properties>
                       <text value="Update Transaction Limit"/>
@@ -961,7 +989,11 @@
                   </component>
                   <component id="2d7bf" class="javax.swing.JButton" binding="btnOpenNewAccount">
                     <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                        <minimum-size width="200" height="-1"/>
+                        <preferred-size width="200" height="-1"/>
+                        <maximum-size width="200" height="-1"/>
+                      </grid>
                     </constraints>
                     <properties>
                       <text value="Open New Account"/>
@@ -1054,7 +1086,11 @@
           </component>
           <component id="73602" class="javax.swing.JButton" binding="btnEnglish">
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                <minimum-size width="200" height="-1"/>
+                <preferred-size width="200" height="-1"/>
+                <maximum-size width="200" height="-1"/>
+              </grid>
             </constraints>
             <properties>
               <text value="English"/>
@@ -1062,7 +1098,11 @@
           </component>
           <component id="9730c" class="javax.swing.JButton" binding="btnChinese">
             <constraints>
-              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                <minimum-size width="200" height="-1"/>
+                <preferred-size width="200" height="-1"/>
+                <maximum-size width="200" height="-1"/>
+              </grid>
             </constraints>
             <properties>
               <text value="Chinese"/>
