@@ -20,6 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * This class works as the server of the ATM.
+ * <br>
+ * The implementation of the {@link pure.util.Listenable} is here to handle client requests.
+ * <br>
+ * It has a main class to execute the {@link pure.util.Listenable#listen(Object[])} and handle the exceptions.
+ * @see ServerSocket
+ * */
 public class Server extends ServerSocket {
     /**
      * Creates the ssl server socket.

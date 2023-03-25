@@ -35,6 +35,7 @@ public class ClientSocket implements AutoCloseable {
     private final SSLSocket sslSocket;
 
     /**
+     * Creates the client socket and set timeout, then start SSL handshake.
      * @param host represents the IP address to connect.
      * @param port represents the port number to connect.
      * @param keyStoreType represents the keystore type. null for default type.

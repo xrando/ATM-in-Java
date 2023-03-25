@@ -16,6 +16,15 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.logging.Level;
 
+/**
+ * This class works as the client of the ATM.
+ * <br>
+ * The implementation of the {@link Listenable} is here to identify the client actions.
+ * <br>
+ * It has a main class to execute the {@link Listenable#listen(Object[])} and handle its exceptions.
+ * @see Client
+ * @see ClientSocket
+ * */
 public class GUI extends Client {
 
     /**

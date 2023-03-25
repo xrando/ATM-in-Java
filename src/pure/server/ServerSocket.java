@@ -18,7 +18,7 @@ import java.security.cert.CertificateException;
  * A wrapper class for {@link SSLServerSocket}.
  * <br><br>
  * Initialization of this class defines the parent class {@link SSLContext} and thus creates the SSL socket object.
- * @see ServerSocket
+ * @see java.net.ServerSocket
  * @see SSLServerSocket
  * @see SSLContext
  * @see ClientSocket
@@ -28,7 +28,7 @@ public abstract class ServerSocket implements Listenable<String> {
     private final SSLServerSocket sslServerSocket;
 
     /**
-     * Creates the ssl server socket.
+     * Creates the ssl server socket. Enforce client authentication.
      * <br>
      * @param port represents the port number to connect.
      * @param keyStoreType represents the keystore type. null for default type.

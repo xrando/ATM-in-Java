@@ -19,7 +19,7 @@ public abstract class Client implements Listenable<JSONObject>, AutoCloseable {
     private final ClientSocket socket;
 
     /**
-     * It creates the object of {@link ClientSocket} and handles the exceptions.
+     * It creates the object of {@link ClientSocket}.
      * <br><br>
      * The action to be taken ({@link Listenable}) is defined here.
      *
