@@ -11,6 +11,7 @@ import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.SocketException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -75,9 +76,9 @@ public class ClientSocket implements AutoCloseable {
             }
         } catch (SSLHandshakeException e) {
             LogHelper.log(Level.SEVERE, "Secure connection cannot be established with host " + this.sslSocket.getRemoteSocketAddress().toString(), e);
-            System.exit(-1);
-        } catch (IOException e) {
-            //LogHelper.log(Level.WARNING, "There are no bytes buffered on the socket, or all buffered bytes have been consumed by read.", e);
+        } catch (SocketException e){
+            throw new SocketException(e);
+        }catch (IOException e) {
             throw new IOException(e);
         }
         return a.toString();
@@ -111,7 +112,6 @@ public class ClientSocket implements AutoCloseable {
             LogHelper.log(Level.SEVERE, "Secure connection cannot be established with host " + this.sslSocket.getRemoteSocketAddress().toString(), e);
             System.exit(-1);
         } catch (IOException e) {
-            //LogHelper.log(Level.SEVERE, "I/O error occurs when creating the output stream or the socket is not connected.", e);
             throw new IOException(e);
         }
     }
@@ -136,7 +136,6 @@ public class ClientSocket implements AutoCloseable {
         try {
             this.sslSocket.close();
         } catch (IOException e) {
-            //LogHelper.log(Level.WARNING, "I/O error occurs when closing this socket.", e);
             throw new IOException(e);
         }
     }
