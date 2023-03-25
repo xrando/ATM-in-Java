@@ -2,40 +2,10 @@ package pure.util;//mail
 
 import javax.mail.*;
 import javax.mail.internet.*;
-import javax.speech.AudioException;
-import javax.speech.Central;
-import javax.speech.EngineException;
-import javax.speech.synthesis.Synthesizer;
-import javax.speech.synthesis.SynthesizerModeDesc;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Locale;
 import java.util.Properties;
 
 public class EmailHelper {
-    public static void WriteDoc(String content) {
-        try {
-            File file = new File("Invoice.txt");
-
-            // If file doesn't exist, then create it
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-
-            FileWriter fw = new FileWriter(file.getAbsoluteFile());
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(content);
-            bw.close();
-
-            System.out.println("File created successfully!");
-        } catch (IOException e) {
-            System.out.println("IO exception caught: " + e.getMessage());
-        }
-
-    }
-
     /*Sample message body for invoice
     StringBuilder str = new StringBuilder();
         str.append("ATM.ATM.Bank.Bank.Transaction Ref: " + "UID" + "\n\n");
@@ -73,7 +43,7 @@ public class EmailHelper {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(ReceiverEmail));
             message.setSubject(Subject);
             //Format email body
-            if (Body != "") {
+            if (!Body.equals("")) {
                 //Add text to email
                 message.setText(Body);
             } else {
@@ -99,35 +69,6 @@ public class EmailHelper {
             System.out.println("Messaging exception caught: " + e.getMessage());
         } catch (IOException e) {
             System.out.println("IO exception caught: " + e.getMessage());
-        }
-
-    }
-
-    //sample
-    //TextToSpeech.TTS("Hi my name is benjamin");
-    public static void TTS(String Text) {
-        try {
-            //setting properties as Kevin Dictionary
-            System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us" + ".cmu_us_kal.KevinVoiceDirectory");
-            //registering speech engine
-            Central.registerEngineCentral("com.sun.speech.freetts" + ".jsapi.FreeTTSEngineCentral");
-            //create a Synthesizer that generates voice
-            Synthesizer synthesizer = Central.createSynthesizer(new SynthesizerModeDesc(Locale.US));
-            //allocates a synthesizer
-            synthesizer.allocate();
-            //resume a Synthesizer
-            synthesizer.resume();
-            //speak the specified text until the QUEUE become empty
-            synthesizer.speakPlainText(Text, null);
-            synthesizer.waitEngineState(Synthesizer.QUEUE_EMPTY);
-            //deallocating the Synthesizer
-            synthesizer.deallocate();
-        } catch (AudioException e) {
-            System.out.println("Audio exception caught: " + e.getMessage());
-        } catch (EngineException e) {
-            System.out.println("Engine exception caught: " + e.getMessage());
-        } catch (InterruptedException e) {
-            System.out.println("Interrupted exception caught: " + e.getMessage());
         }
     }
 }
