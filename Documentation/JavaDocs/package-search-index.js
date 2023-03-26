@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"pure.bank"},{"l":"pure.client"},{"l":"pure.constants"},{"l":"pure.server"},{"l":"pure.test"},{"l":"pure.ui"},{"l":"pure.util"}];updateSearchResults();
