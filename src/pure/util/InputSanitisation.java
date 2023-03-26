@@ -2,6 +2,10 @@ package pure.util;
 
 import java.util.InputMismatchException;
 
+/**
+ * Input Sanitisation Class <br>
+ * Used to validate user input with regex
+ */
 public class InputSanitisation {
     /**
      * Checks if the input is a valid email <br>
