@@ -142,7 +142,7 @@ public class Transaction {
      * @return Returns true if the transaction was successful, false otherwise
      */
     public boolean AddTransactionToSQL(Transaction transactionDetails, Account account) throws IllegalArgumentException {
-        String sql = "INSERT INTO transactions( amount, timeStamp, transactionNote, date, payee,accountID) VALUES(?,?,?,?,?,?)";
+        String sql = "INSERT INTO transactions( amount, timeStamp, transactionNote, date, payee, accountID) VALUES(?,?,?,?,?,?)";
         // 2-way Transfer
         if (transactionDetails.payee != "") {
             try {//print type of object to console
@@ -153,7 +153,9 @@ public class Transaction {
                     throw new IllegalArgumentException("Value Entered is greater than today's transaction limit");
                 } else if ((Double.valueOf(transactionDetails.getAmount())+account.GetAccountBalance()<0)) {
                     throw new IllegalArgumentException("Bank Balance is in negative");
-                } else {
+                } else if (account.CheckAccountExist(transactionDetails.accountID) == false) {
+                    throw new IllegalArgumentException("Payee Account does not exist");
+                }else {
                     //deduct for account owner
                     try (Connection conn = sqliteDatabase.connect();
                          PreparedStatement pstmt = conn.prepareStatement(sql)) {

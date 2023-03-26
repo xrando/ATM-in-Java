@@ -212,6 +212,32 @@ public class Account {
     }
 
     /**
+     * This method is to check if account exist in database
+     * @param AccountID The userID of the user
+     * @return Returns false if account does not exist, true if account exist
+     */
+    public boolean CheckAccountExist(String AccountID) {
+        String sql = "SELECT accountID FROM accounts WHERE accountID = ?";
+        String account = "";
+        System.out.println("Account: Checking if account exists");
+        try (Connection conn = sqliteDatabase.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, AccountID);
+            ResultSet rs = pstmt.executeQuery();
+            account = rs.getString("accountID");
+
+        } catch (SQLException e) {
+            LogHelper.log(Level.SEVERE, e.getMessage());
+        }
+        if (account.equals("")) {
+            LogHelper.log(Level.INFO, "Account does not exist");
+            return false;
+        }
+        System.out.println("Accoutn exist: " + account);
+        return true;
+    }
+
+    /**
      * This method is used to create a new account type for the user
      * @param selection The selection of the account type
      * @param userID The userID of the user
