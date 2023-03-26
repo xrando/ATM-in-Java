@@ -1109,7 +1109,7 @@ public class GUI {
         btnUpdateTransactionLimit.setText(language.get("49"));
         //transaction lbl
         lblTransactionLimitTransfer.setText(language.get("47"));
-        lblTransactionLimitDeposit.setText(language.get("47"));
+
         lblTransactionLimitWithdrawal.setText(language.get("47"));
         //view account summary
         btnViewAccountSummary.setText(language.get("50"));
