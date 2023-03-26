@@ -416,10 +416,6 @@ public class GUI {
                     //update balance label to display updated balance amount
                     lblWithdrawAccountBalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
                     //get limit for account
-                    //send select account request to server
-                    JSONObject jo2 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT
-                            , Constants.Account.SELECTED_ACCOUNT,
-                            ddlWithdrawAccounts.getSelectedIndex()));
                     JSONObject jo4 = client.listen(Constants.Account.GET_TRANSACTION_LIMIT);
                     //populate label with data
                     lblTransactionLimitAmountWithdrawal.setText("$"+jo4.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
@@ -465,20 +461,16 @@ public class GUI {
                 //attach bank transfer screen
                 setScreen(screen, BankTransfer);
                 String choice = "";
-                if(ddlTransactionAccounts.getItemCount() != 0)
+                if(ddlTransferAccounts.getItemCount() != 0)
                 {
-                    choice = ddlTransactionAccounts.getItemAt(ddlTransactionAccounts.getSelectedIndex()).toString();
+                    choice = ddlTransferAccounts.getItemAt(ddlTransferAccounts.getSelectedIndex()).toString();
                     //send select account request to server
-                    new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT, Constants.Account.SELECTED_ACCOUNT, ddlTransactionAccounts.getSelectedIndex()));
+                    new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT, Constants.Account.SELECTED_ACCOUNT, ddlTransferAccounts.getSelectedIndex()));
                     //Onclick, send request to server to get balance of accountId selected
                     JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
                     //update balance label to display updated balance amount
                     lblTransferAccountBalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
                     //get limit for account
-                    //send select account request to server
-                    JSONObject jo2 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT
-                            , Constants.Account.SELECTED_ACCOUNT,
-                            ddlTransferAccounts.getSelectedIndex()));
                     JSONObject jo4 = client.listen(Constants.Account.GET_TRANSACTION_LIMIT);
                     //populate label with data
                     lblTransactionLimitAmmountTransfer.setText("$"+jo4.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
@@ -897,7 +889,6 @@ public class GUI {
                 } else {
                     //send request to server to change password
                     JSONObject jo = client.listen(Constants.User.FORGET_PIN, Constants.User.USERNAME, txtUsername.getText());
-                    lblLoginValidator.setText("Email sent to " + txtUsername.getText());
                 }
             }
         });
@@ -919,7 +910,7 @@ public class GUI {
                     //send select account request to server
                     JSONObject jo2 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT
                             , Constants.Account.SELECTED_ACCOUNT,
-                            ddlTransferAccounts.getSelectedIndex()));
+                            Integer.toString(ddlTransferAccounts.getSelectedIndex())));
                     JSONObject jo4 = client.listen(Constants.Account.GET_TRANSACTION_LIMIT);
                     //populate label with data
                     lblTransactionLimitAmmountTransfer.setText("$"+jo4.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
@@ -948,8 +939,6 @@ public class GUI {
                         JSONObject jo2 = client.listen(Constants.Account.GET_TRANSACTION_LIMIT);
                         //update label with data
                         lblCurrentTransactionLimitAmount.setText("$"+jo2.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
-                        lblTransactionLimitAmmountTransfer.setText("$"+jo2.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
-                        lblTransactionLimitAmountWithdrawal.setText("$"+jo2.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
                         //clear input
                         txtNewTransactionLimitAmount.setText("");
                     }
