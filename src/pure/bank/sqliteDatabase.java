@@ -4,11 +4,15 @@ import java.io.File;
 import java.sql.*;
 
 /**
- * @author sqlitetutorial.net
+ * SqliteDatabase Class <br>
+ * All SqliteDatabase Defined Methods are defined here
  */
 public class sqliteDatabase {
 
-    //Made this static so that I can call it from other classes
+    /**
+     * This method is used to connect with the sqlite database
+     * @return Returns the connection to the database
+     */
     public static Connection connect() {
         try {
             Class.forName("org.sqlite.JDBC");
@@ -30,34 +34,10 @@ public class sqliteDatabase {
         return conn;
     }
 
-    public static void disconnect() {
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        Connection conn = null;
-        try {
-            // db parameters
-            String url = "jdbc:sqlite:Resources/db/atm.db";
-            // create a connection to the database
-            conn = DriverManager.getConnection(url);
-
-            System.out.println("Connection to SQLite has been established.");
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-            }
-        }
-    }
-
+    /**
+     * This method is used to generate a new database
+     * @param fileName The name of the database file
+     */
     public static void createNewDatabase(String fileName) {
         try {
             Class.forName("org.sqlite.JDBC");
@@ -78,7 +58,9 @@ public class sqliteDatabase {
         }
     }
 
-    //Modified this to create the ATM.ATM.Bank.Bank.User table
+    /**
+     * This method is used to populate the database with the tables (Users, Accounts, Transactions)
+     */
     public static void createNewTable() {
         // SQLite connection string
         String url = "jdbc:sqlite:Resources/db/atm.db";
@@ -110,41 +92,6 @@ public class sqliteDatabase {
             createNewDatabase("atm.db");
             System.out.print("Creating Table");
             createNewTable();
-        }
-    }
-
-    public void insert(String username, String password, String salt, String email, String phone, boolean loginStatus) {
-        String sql = "INSERT INTO users(username,password,salt,email,phone,loginStatus) VALUES(?,?,?,?,?,?)";
-
-        try (Connection conn = connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-            pstmt.setString(3, salt);
-            pstmt.setString(4, email);
-            pstmt.setString(5, phone);
-            pstmt.setBoolean(6, loginStatus);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void selectAll() {
-        String sql = "SELECT username, email, phone FROM users";
-
-        try (Connection conn = connect();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            // loop through the result set
-            while (rs.next()) {
-                System.out.println(rs.getString("username") + "\t" +
-                        rs.getString("email") + "\t" +
-                        rs.getString("phone"));
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
         }
     }
 }
