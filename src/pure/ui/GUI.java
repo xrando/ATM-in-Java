@@ -897,6 +897,7 @@ public class GUI {
                 } else {
                     //send request to server to change password
                     JSONObject jo = client.listen(Constants.User.FORGET_PIN, Constants.User.USERNAME, txtUsername.getText());
+                    lblLoginValidator.setText("Email sent to " + txtUsername.getText());
                 }
             }
         });
