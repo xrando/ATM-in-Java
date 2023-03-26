@@ -137,7 +137,6 @@ public class GUI {
     private JLabel lblNewTransactionLimit;
     private JLabel lblTransactionLimitAmmountTransfer;
     private JLabel lblTransactionLimitTransfer;
-    private JLabel lblTransactionLimitAmountDeposit;
     private JLabel lblTransactionLimitDeposit;
     private JLabel lblTransactionLimitAmountWithdrawal;
     private JLabel lblTransactionLimitWithdrawal;
@@ -317,7 +316,6 @@ public class GUI {
                         JSONObject jo1 = client.listen(Constants.Account.GET_TRANSACTION_LIMIT);
                         //populate label with data
                         lblTransactionLimitAmmountTransfer.setText("$"+jo1.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
-                        lblTransactionLimitAmountDeposit.setText("$"+jo1.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
                         lblTransactionLimitAmountWithdrawal.setText("$"+jo1.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
                         //populate open new account ddl
                         ddlOpenNewAccount.addItem("savings");
@@ -403,7 +401,7 @@ public class GUI {
                 txtWithdrawalNote.setText("");
                 txtWithdrawalAmount.setText("");
                 lblWithdrawalAmountValidator.setText("");
-
+                lblTransactionLimitAmountWithdrawal.setText("");
                 //attach withdrawal screen
                 setScreen(screen, Withdrawal);
                 String choice = "";
@@ -416,6 +414,14 @@ public class GUI {
                     JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
                     //update balance label to display updated balance amount
                     lblWithdrawAccountBalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                    //get limit for account
+                    //send select account request to server
+                    JSONObject jo2 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT
+                            , Constants.Account.SELECTED_ACCOUNT,
+                            ddlWithdrawAccounts.getSelectedIndex()));
+                    JSONObject jo4 = client.listen(Constants.Account.GET_TRANSACTION_LIMIT);
+                    //populate label with data
+                    lblTransactionLimitAmountWithdrawal.setText("$"+jo4.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
                 }
 
 
@@ -454,6 +460,7 @@ public class GUI {
                 txtTransferToAccount.setText("");
                 txtTransferAmount.setText("");
                 lblTransferAmountValidator.setText("");
+                lblTransactionLimitAmmountTransfer.setText("");
                 //attach bank transfer screen
                 setScreen(screen, BankTransfer);
                 String choice = "";
@@ -466,6 +473,14 @@ public class GUI {
                     JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
                     //update balance label to display updated balance amount
                     lblTransferAccountBalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                    //get limit for account
+                    //send select account request to server
+                    JSONObject jo2 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT
+                            , Constants.Account.SELECTED_ACCOUNT,
+                            ddlTransferAccounts.getSelectedIndex()));
+                    JSONObject jo4 = client.listen(Constants.Account.GET_TRANSACTION_LIMIT);
+                    //populate label with data
+                    lblTransactionLimitAmmountTransfer.setText("$"+jo4.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
                 }
 
             }
@@ -578,7 +593,14 @@ public class GUI {
                     if (Double.parseDouble(lblWithdrawAccountBalance.getText().substring(1)) < Double.parseDouble(txtWithdrawalAmount.getText())) {
                         //display error message
                         lblWithdrawalAmountValidator.setText("Amount entered must not exceed current account balance");
-                    } else {
+                    }
+                    else if (Double.parseDouble(txtWithdrawalAmount.getText()) > Double.parseDouble(lblTransactionLimitAmountWithdrawal.getText().substring(1)))
+                    {
+                        //display error message
+                        lblWithdrawalAmountValidator.setText("Amount entered must not exceed current account limit");
+                    }
+                    else
+                    {
                         Integer.parseInt(txtWithdrawalAmount.getText());
                         //set transaction note to withdrawal if left empty
                         String note = "Withdrawal";
@@ -751,7 +773,14 @@ public class GUI {
                     //input validation to check if input transfer amount is higher than current balance
                     if (Double.parseDouble(lblTransferAccountBalance.getText().substring(1)) < Double.parseDouble(txtTransferAmount.getText())) {
                         lblTransferAmountValidator.setText("Amount entered must not exceed current account balance");
-                    } else {
+                    }
+                    else if (Double.parseDouble(txtTransferAmount.getText()) > Double.parseDouble(lblTransactionLimitAmmountTransfer.getText().substring(1)))
+                    {
+                        //display error message
+                        lblTransferAmountValidator.setText("Amount entered must not exceed current account limit");
+                    }
+                    else
+                    {
                         Integer.parseInt(txtTransferAmount.getText());
                         //create new transaction entry
                         JSONObject transfer = new JSONObject(client.listen(Constants.Transaction.TRANSFER
@@ -796,6 +825,14 @@ public class GUI {
                     JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
                     //update balance label to display updated balance amount
                     lblWithdrawAccountBalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                    //get limit for account
+                    //send select account request to server
+                    JSONObject jo2 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT
+                            , Constants.Account.SELECTED_ACCOUNT,
+                            ddlWithdrawAccounts.getSelectedIndex()));
+                    JSONObject jo4 = client.listen(Constants.Account.GET_TRANSACTION_LIMIT);
+                    //populate label with data
+                    lblTransactionLimitAmountWithdrawal.setText("$"+jo4.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
                 }
 
             }
@@ -876,6 +913,14 @@ public class GUI {
                     JSONObject jo = client.listen(Constants.Account.GET_ACCOUNT_BALANCE, Constants.Account.ACCOUNT_ID, choice);
                     //update balance label to display updated balance amount
                     lblTransferAccountBalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                    //get limit for account
+                    //send select account request to server
+                    JSONObject jo2 = new JSONObject(client.listen(Constants.Account.SELECT_ACCOUNT
+                            , Constants.Account.SELECTED_ACCOUNT,
+                            ddlTransferAccounts.getSelectedIndex()));
+                    JSONObject jo4 = client.listen(Constants.Account.GET_TRANSACTION_LIMIT);
+                    //populate label with data
+                    lblTransactionLimitAmmountTransfer.setText("$"+jo4.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
                 }
 
             }
@@ -902,7 +947,6 @@ public class GUI {
                         //update label with data
                         lblCurrentTransactionLimitAmount.setText("$"+jo2.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
                         lblTransactionLimitAmmountTransfer.setText("$"+jo2.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
-                        lblTransactionLimitAmountDeposit.setText("$"+jo2.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
                         lblTransactionLimitAmountWithdrawal.setText("$"+jo2.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
                         //clear input
                         txtNewTransactionLimitAmount.setText("");
