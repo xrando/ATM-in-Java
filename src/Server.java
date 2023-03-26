@@ -121,7 +121,6 @@ public class Server extends ServerSocket {
                                     socket.writeJSON(Constants.Stream.RES, Constants.Account.SELECTED_ACCOUNT, account.getAccountID());
                                     account.retrieveAccountTransactions();
                                 }
-
                             }
                             case Constants.Account.TRANSACTION_HISTORY -> {
                                 ArrayList<Transaction> transactions = account != null ? account.getAccountTransactions() : null;

@@ -72,6 +72,19 @@ public class Account {
 
     //Get Transaction Limit of the account
     public String getTransactionLimit() {
+        try {
+            Connection conn = sqliteDatabase.connect();
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM accounts WHERE accountID = ?");
+            ps.setString(1, this.accountID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                this.transactionLimit = rs.getString("transactionLimit");
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("Account: Getting Transaction Limit for account " + this.accountID + " is " + this.transactionLimit);
         return this.transactionLimit;
     }
 
@@ -99,6 +112,7 @@ public class Account {
     public boolean changeTransactionLimit(int newTransactionLimit, String accountID) {
         System.out.println("Account: Changing Transaction Limit to " + newTransactionLimit + " for account " + accountID);
         this.transactionLimit = Integer.toString(newTransactionLimit);
+        System.out.println("Account: New Transaction Limit is " + this.transactionLimit + " for account " + accountID);
         updateAccount(accountID);
         return true;
     }
