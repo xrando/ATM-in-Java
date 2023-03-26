@@ -117,7 +117,7 @@ public class Server extends ServerSocket {
                                 int selectAccount = request.getInt(Constants.Account.SELECTED_ACCOUNT);
                                 if (user != null && user.getAccounts().size() > 0) {
                                     account = new Account(user.getAccounts().get(selectAccount));
-                                    System.out.println("Selected AccountID:" + account.getAccountID() + ", Account type:" + account.getAccountType());
+//                                    System.out.println("Selected AccountID:" + account.getAccountID() + ", Account type:" + account.getAccountType());
                                     socket.writeJSON(Constants.Stream.RES, Constants.Account.SELECTED_ACCOUNT, account.getAccountID());
                                     account.retrieveAccountTransactions();
                                 }
@@ -135,9 +135,9 @@ public class Server extends ServerSocket {
                                 }
 
                                 List<Account> accounts = account.getTransactionAccount(user.getUID());
-                                for (Account value : accounts) {
-                                    System.out.println(value.getAccountID() + " " + value.getAccountType() + " " + value.getUID());
-                                }
+//                                for (Account value : accounts) {
+//                                    System.out.println(value.getAccountID() + " " + value.getAccountType() + " " + value.getUID());
+//                                }
                                 socket.writeJSON(Constants.Stream.RES, Constants.Account.ALL_ACCOUNTS, JSON.parseAccountsToString(accounts));
                             }
 
