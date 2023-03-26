@@ -318,6 +318,7 @@ public class GUI {
                         lblTransactionLimitAmmountTransfer.setText("$"+jo1.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
                         lblTransactionLimitAmountWithdrawal.setText("$"+jo1.get(Constants.Account.GET_TRANSACTION_LIMIT).toString());
                         //populate open new account ddl
+                        ddlOpenNewAccount.removeAllItems();
                         ddlOpenNewAccount.addItem("savings");
                         ddlOpenNewAccount.addItem("current");
 
@@ -988,29 +989,33 @@ public class GUI {
         btnOpenAccount.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //send request to open account for current user
-                JSONObject jo = client.listen(Constants.Account.CREATE_ACCOUNT
-                        , Constants.Account.CREATE_ACCOUNT, ddlOpenNewAccount.getSelectedIndex());
-                lblNewAccountCreationValidator.setText("Account Opened Successfully!");
-                //Send request to server to get all accounts of current users
-                //update dropdownlists
-                JSONObject retrieveAccounts = client.listen(Constants.Account.ALL_ACCOUNTS);
-                //clear and reload ddl
-                ddlWithdrawAccounts.removeAllItems();
-                ddlDepositAccounts.removeAllItems();
-                ddlTransferAccounts.removeAllItems();
-                ddlTransactionAccounts.removeAllItems();
-                ddlTransactionLimitAccounts.removeAllItems();
-                JSONArray ja2 = new JSONArray(retrieveAccounts.get(Constants.Account.ALL_ACCOUNTS).toString());
-                ja2.forEach(record -> {
-                    JSONObject joo2 = new JSONObject(record.toString());
-                    //populate dropdownlists with user accounts
-                    ddlWithdrawAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
-                    ddlDepositAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
-                    ddlTransferAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
-                    ddlTransactionAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
-                    ddlTransactionLimitAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
-                });
+                if(ddlOpenNewAccount.getItemCount()!=0)
+                {
+                    //send request to open account for current user
+                    JSONObject jo = client.listen(Constants.Account.CREATE_ACCOUNT
+                            , Constants.Account.CREATE_ACCOUNT, ddlOpenNewAccount.getSelectedIndex());
+                    lblNewAccountCreationValidator.setText("Account Opened Successfully!");
+                    //Send request to server to get all accounts of current users
+                    //update dropdownlists
+                    JSONObject retrieveAccounts = client.listen(Constants.Account.ALL_ACCOUNTS);
+                    //clear and reload ddl
+                    ddlWithdrawAccounts.removeAllItems();
+                    ddlDepositAccounts.removeAllItems();
+                    ddlTransferAccounts.removeAllItems();
+                    ddlTransactionAccounts.removeAllItems();
+                    ddlTransactionLimitAccounts.removeAllItems();
+                    JSONArray ja2 = new JSONArray(retrieveAccounts.get(Constants.Account.ALL_ACCOUNTS).toString());
+                    ja2.forEach(record -> {
+                        JSONObject joo2 = new JSONObject(record.toString());
+                        //populate dropdownlists with user accounts
+                        ddlWithdrawAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
+                        ddlDepositAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
+                        ddlTransferAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
+                        ddlTransactionAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
+                        ddlTransactionLimitAccounts.addItem(joo2.get(Constants.Account.ACCOUNT_TYPE) + " : " + joo2.get(Constants.Account.ACCOUNT_ID));
+                    });
+                }
+
             }
         });
         ddlTransactionLimitAccounts.addActionListener(new ActionListener() {
