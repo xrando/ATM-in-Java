@@ -440,7 +440,7 @@
                   </component>
                 </children>
               </grid>
-              <grid id="666e3" binding="Deposit" layout-manager="GridLayoutManager" row-count="10" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="666e3" binding="Deposit" layout-manager="GridLayoutManager" row-count="9" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <card name="Card4"/>
@@ -485,7 +485,7 @@
                   </component>
                   <component id="de2c2" class="javax.swing.JLabel" binding="lblDepositAmount">
                     <constraints>
-                      <grid row="6" column="0" row-span="2" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="5" column="0" row-span="2" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <foreground color="-16777216"/>
@@ -494,7 +494,7 @@
                   </component>
                   <component id="182d0" class="javax.swing.JTextField" binding="txtDepositAmount">
                     <constraints>
-                      <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                      <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
                       </grid>
                     </constraints>
@@ -502,7 +502,7 @@
                   </component>
                   <component id="d861" class="javax.swing.JButton" binding="btnConfirmDeposit">
                     <constraints>
-                      <grid row="9" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                      <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
                         <minimum-size width="200" height="-1"/>
                         <preferred-size width="200" height="-1"/>
                         <maximum-size width="200" height="-1"/>
@@ -540,25 +540,7 @@
                   </component>
                   <component id="5eda3" class="javax.swing.JLabel" binding="lblDepositAmountValidator">
                     <constraints>
-                      <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <foreground color="-64762"/>
-                      <text value=""/>
-                    </properties>
-                  </component>
-                  <component id="54d2" class="javax.swing.JLabel" binding="lblTransactionLimitDeposit">
-                    <constraints>
-                      <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <foreground color="-16777216"/>
-                      <text value="Transaction Limit:"/>
-                    </properties>
-                  </component>
-                  <component id="a0326" class="javax.swing.JLabel" binding="lblTransactionLimitAmountDeposit">
-                    <constraints>
-                      <grid row="5" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <foreground color="-64762"/>
