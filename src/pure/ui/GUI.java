@@ -515,10 +515,10 @@ public class GUI {
                     JSONObject jo = client.listen(Constants.User.CHANGE_PIN
                             , Constants.User.OLD_PIN, txtOldPassword.getText()
                             , Constants.User.NEW_PIN, txtNewPassword.getText());
-                    if (jo.toString().equals(null)) {
-                        lblConfirmPasswordValidator.setText("Password change failed");
+                    if (!jo.toString().equals("Pin changed successfully.")) {
+                        lblConfirmPasswordValidator.setText(jo.get(Constants.User.CHANGE_PIN).toString());
                     } else {
-                        lblConfirmPasswordValidator.setText("Password changed successfully");
+                        lblConfirmPasswordValidator.setText(jo.get(Constants.User.CHANGE_PIN).toString());
                     }
                 } else {
                     lblConfirmPasswordValidator.setText("Ensure that new password and confirm password entered are the same");

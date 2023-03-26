@@ -26,34 +26,6 @@ public class User {
     private String phone;
     private List<Account> Accounts;
     private boolean loginStatus;
-
-    //Create a new user
-//    public User(String Username, String Password, String email, String phone, Bank CurrentBank) {
-//        this.Username = Username;
-//        this.email = email;
-//        this.phone = phone;
-//        this.UID = genUID();
-//        //this.Salt = generateSalt();
-//        //this.Password = generatePasswordHash(Password, Salt);
-//        this.Accounts = new ArrayList<Account>();
-//        this.loginStatus = false;
-//        System.out.printf("UserName: %s\nUID: %s", Username, UID);
-//    }
-
-//    public User(String username, String password, String email, String phone) {
-//        this.Username = username;
-//        this.email = email;
-//        this.phone = phone;
-//        this.UID = genUID();
-//        //this.Salt = generateSalt();
-//        //this.Password = generatePasswordHash(Password, Salt);
-//        //this.Password = generatePasswordHash(password, Salt);
-//        this.loginStatus = false;
-//        //ATM.Bank.Bank CurrentBank = new ATM.Bank.Bank("ATM.Bank.Bank of Testing");
-//        this.Accounts = new ArrayList<Account>();
-//
-//    }
-
     /**
      * User Constructor
      * @param username - Username of the user
@@ -63,9 +35,7 @@ public class User {
         this.Username = username;
         this.email = " ";
         this.phone = " ";
-        //this.UID = "9999";
         this.Salt = generateSalt();
-        //this.Password = generatePasswordHash(password, Salt);
         this.Password = password;
         this.loginStatus = false;
         this.Accounts = new ArrayList<Account>();
@@ -422,7 +392,9 @@ public class User {
                 "pureinc933@gmail.com\n\n" +
                 "Please do not reply to this email as it is automatically generated.";
         // Send email
-        EmailHelper.SendMail(email, subject, body);
+        new Thread(() -> {
+            EmailHelper.SendMail(email, subject, body);
+        }).start();
 
 
         System.out.println("Pin changed successfully.");
@@ -490,7 +462,7 @@ public class User {
             Salt = rs.getString("salt");
             conn.close();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            LogHelper.log(Level.SEVERE, e.getMessage());
         }
         return new String[]{password, Salt};
     }
@@ -513,7 +485,7 @@ public class User {
             email = rs.getString("email");
             conn.close();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            LogHelper.log(Level.SEVERE, e.getMessage());
         }
         return email;
     }
@@ -527,16 +499,10 @@ public class User {
      * @return boolean True if password is correct, false if password is incorrect
      */
     public boolean validatePassword(String password, String UID) {
-        // get password and Salt from database
         String[] passwordAndSalt = getPasswordFromDatabase(UID);
-        //System.out.println(passwordAndSalt[0]);
-        //System.out.println(passwordAndSalt[1]);
-        //System.out.println("Password: " + password);
         String hashedPassword = BCrypt.hashpw(password, passwordAndSalt[1]);
-        //System.out.println("Hashed Password: " + hashedPassword);
 
         String passwordFromDatabase = passwordAndSalt[0];
-        //System.out.println("Password from DB:" + passwordFromDatabase);
 
         return hashedPassword.equalsIgnoreCase(passwordFromDatabase);
     }
@@ -558,10 +524,10 @@ public class User {
             UID = rs.getString("UID");
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            LogHelper.log(Level.SEVERE, e.getMessage());
         }
         if (UID.equals("")) {
-            System.out.println("User does not exist!");
+            LogHelper.log(Level.INFO, "User does not exist");
             return null;
         }
         return UID;
@@ -585,7 +551,7 @@ public class User {
             Username = rs.getString("Username");
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            LogHelper.log(Level.SEVERE, e.getMessage());
         }
         return !Username.equals("");
     }
@@ -614,12 +580,12 @@ public class User {
 
     /**
      * This method is used to validate a valid email address <br>
-     * Regex: ^[A-Za-z0-9+_.-]+@(.+)$
+     * Regex: ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$
      * @param email Email to validate
      * @return boolean True if email is valid, false if email is invalid
      */
     public boolean ValidateEmail(String email) {
-        return !(email.length() < 1) && email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
+        return !(email.length() < 1) && email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$");
     }
 
     /**
@@ -658,7 +624,7 @@ public class User {
             user.phone = phone;
             account.createAccount(AccType, user.UID);
             insertUser(user);
-            System.out.println("User created!\n Proceed to login!");
+            LogHelper.log(Level.INFO, "User: " + username + " created successfully");
 
             // Send email to new User
             String subject = "Welcome to Pure Bank LTD!";
@@ -670,11 +636,15 @@ public class User {
                     "pureinc933@gmail.com\n\n" +
                     "Please do not reply to this email as it is automatically generated.";
 
-            //Helper.SendMail(email, subject, body);
+            // Send mail in a separate thread
+            new Thread(() -> {
+                EmailHelper.SendMail(email, subject, body);
+            }).start();
+
 
             return true;
         } else {
-            System.out.println("Invalid input!");
+            LogHelper.log(Level.INFO, "User: " + username + " creation failed");
             return false;
         }
     }
@@ -697,7 +667,7 @@ public class User {
             pstmt.setString(7, "0");
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            LogHelper.log(Level.SEVERE, e.getMessage());
         }
     }
 
@@ -721,7 +691,7 @@ public class User {
             pstmt.setString(7, user.getUID());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            LogHelper.log(Level.SEVERE, e.getMessage());
             return false;
         }
         return true;
@@ -769,13 +739,14 @@ public class User {
             this.email = rs.getString("email");
             this.phone = rs.getString("phone");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            LogHelper.log(Level.SEVERE, e.getMessage());
         }
         //Populate User.List
         Account TransactionAccount = new Account();
         this.Accounts = TransactionAccount.getTransactionAccount(this.UID);
         for (Account account : this.Accounts) {
-            System.out.println("Account ID: " + account.getAccountID() + " Transaction Limit: " + account.getTransactionLimit() + " Account Type: " + account.getAccountType());
+            LogHelper.log(Level.INFO, "Account ID: " + account.getAccountID() + " Transaction Limit: " + account.getTransactionLimit() + " Account Type: " + account.getAccountType());
+//            System.out.println("Account ID: " + account.getAccountID() + " Transaction Limit: " + account.getTransactionLimit() + " Account Type: " + account.getAccountType());
         }
     }
 
@@ -803,7 +774,7 @@ public class User {
 
         //check if password is correct
         if (validatePassword(password, UID)) {
-            System.out.println("Login successful!");
+            LogHelper.log(Level.INFO, "Login Successful, Username: " + username);
             //set login status to true
             try {
                 Connection conn = sqliteDatabase.connect();
@@ -838,7 +809,9 @@ public class User {
                         "Pure Bank LTD\n" +
                         "pureinc933@gmail.com\n\n" +
                         "Please do not reply to this email as it is automatically generated.";
-                EmailHelper.SendMail(email, subject, body);
+                new Thread(() -> {
+                    EmailHelper.SendMail(email, subject, body);
+                }).start();
 
             } catch (SQLException e) {
                 LogHelper.log(Level.SEVERE, e.getMessage(), e);
@@ -847,7 +820,7 @@ public class User {
             return true;
 
         } else {
-            System.out.println("Incorrect password!");
+            LogHelper.log(Level.SEVERE, "Failed Login attempt, Attempted Username: " + username);
             return false;
         }
     }
@@ -859,15 +832,18 @@ public class User {
      */
     public boolean logout() {
         if (!this.loginStatus) {
+            LogHelper.log(Level.SEVERE, "Attempted Logout when user is not logged in, Username: " + this.Username);
             return true;
         }
         if (this.UID == null) {
+            LogHelper.log(Level.SEVERE, "Attempted Logout when user is not logged in, Username: " + this.Username);
             return false;
         }
 
         if (this.loginStatus) {
             this.setLoginStatus(false);
             this.updateUser();
+            LogHelper.log(Level.INFO, "Logout Successful, Username: " + this.Username);
             return true;
         }
         return false;
@@ -882,6 +858,7 @@ public class User {
         try {
             user.setLoginStatus(false);
             updateUser(user);
+            LogHelper.log(Level.INFO, "Logout Successful, Username: " + user.getUsername());
         } catch (Exception e) {
             LogHelper.log(Level.SEVERE, e.getMessage());
             return false;
@@ -889,7 +866,6 @@ public class User {
         return true;
     }
 
-    //Forget Pin
 
     /**
      * Forget Pin Function for User <br><br>
@@ -919,7 +895,6 @@ public class User {
         // Generate a random password
         // Generate a 6 digit random number all digits should be different with SecureRandom
         String clearPin = String.format("%06d", new SecureRandom().nextInt(999999));
-        System.out.println("Clear Pin: " + clearPin);
 
         String newPassword = generatePasswordHash(clearPin, salt);
         // Send email to user with new password
@@ -933,7 +908,9 @@ public class User {
                 "pureinc933@gmail.com\n\n" +
                 "Please do not reply to this email as it is automatically generated.";
         // Send email
-        //Helper.SendMail(email, subject, body);
+        new Thread(() -> {
+            EmailHelper.SendMail(email, subject, body);
+        }).start();
 
         // Update password in database
         try {

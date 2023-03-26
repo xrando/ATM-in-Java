@@ -104,8 +104,6 @@ public class Server extends ServerSocket {
 
                             case Constants.User.CHANGE_PIN -> {
                                 socket.writeJSON(Constants.Stream.RES, Constants.User.CHANGE_PIN, user != null ? user.changePin(request.getString(Constants.User.OLD_PIN), request.getString(Constants.User.NEW_PIN)) : null);
-                                System.out.println(request.getString(Constants.User.OLD_PIN));
-                                System.out.println(request.getString(Constants.User.NEW_PIN));
                             }
                             case Constants.User.CREATE_USER -> {
                                 User tmpuser = new User();

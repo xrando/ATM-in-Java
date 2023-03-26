@@ -10,6 +10,7 @@ public class InputSanitisationTest {
     public void testValidateEmail() {
         // Valid
         assertEquals("true", InputSanitisation.validEmail("test@test.com"));
+        assertEquals("true", InputSanitisation.validEmail("test_test@test.com"));
 
         // Test for Empty String
         assertEquals("Email cannot be empty", InputSanitisation.validEmail(""));

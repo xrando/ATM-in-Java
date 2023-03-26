@@ -15,7 +15,7 @@ public class InputSanitisation {
             if (email.length() < 1){
                 throw new InputMismatchException("Email cannot be empty");
             }
-            else if (!email.matches("[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+")) {
+            else if (!email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")) {
                 throw new InputMismatchException("Invalid email");
             } else {
                 return "true";

@@ -66,6 +66,7 @@ public class UserTest {
         test.changePin(newPin, oldpin);
         test.logout();
         assertTrue(test.Login("test", oldpin));
+        assertEquals("New pin must be different from old pin.", test.changePin(oldpin, oldpin), "New pin must be different from old pin.");
     }
 
     // Test create user
