@@ -1044,11 +1044,6 @@ public class GUI {
             }
         });
     }
-
-    public static void main(String[] args) throws Exception {
-
-    }
-
     //setLanguage for all buttons and labels
     protected void setLanguage(Map<String, String> language) {
         //login
