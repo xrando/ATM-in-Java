@@ -592,6 +592,11 @@ public class GUI {
                         //display error message
                         lblWithdrawalAmountValidator.setText("Amount entered must not exceed current account limit");
                     }
+                    else if (Double.parseDouble(txtWithdrawalAmount.getText())<0)
+                    {
+                        //display error message
+                        lblWithdrawalAmountValidator.setText("Amount entered must not be negative");
+                    }
                     else
                     {
                         Integer.parseInt(txtWithdrawalAmount.getText());
@@ -727,25 +732,34 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //catch if amount entered is not integer (incorrect format)
-                try {
-                    Integer.parseInt(txtDepositAmount.getText());
-                    //create new transaction entry
-                    //set transaction note to deposit if left empty
-                    String note = "Deposit";
-                    if (!txtDepositNote.getText().equals("")) {
-                        note = txtDepositNote.getText();
+                try
+                {
+                    if (Double.parseDouble(txtDepositAmount.getText())<0)
+                    {
+                        //display error message
+                        lblDepositAmountValidator.setText("Amount entered must not be negative");
                     }
-                    //create new transaction entry
-                    JSONObject jo = client.listen(Constants.Transaction.DEPOSIT, Constants.Transaction.AMOUNT, txtDepositAmount.getText(), Constants.Transaction.TRANSACTION_NOTE, note);
+                    else
+                    {
+                        Integer.parseInt(txtDepositAmount.getText());
+                        //create new transaction entry
+                        //set transaction note to deposit if left empty
+                        String note = "Deposit";
+                        if (!txtDepositNote.getText().equals("")) {
+                            note = txtDepositNote.getText();
+                        }
+                        //create new transaction entry
+                        JSONObject jo = client.listen(Constants.Transaction.DEPOSIT, Constants.Transaction.AMOUNT, txtDepositAmount.getText(), Constants.Transaction.TRANSACTION_NOTE, note);
 
-                    //update lblDepositAccountbalance with updated account balance
-                    lblDepositAccountbalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
-                    //clear input fields
-                    txtDepositNote.setText("");
-                    txtDepositAmount.setText("");
-
-
-                } catch (NumberFormatException ex) {
+                        //update lblDepositAccountbalance with updated account balance
+                        lblDepositAccountbalance.setText("$" + jo.get(Constants.Account.GET_ACCOUNT_BALANCE).toString());
+                        //clear input fields
+                        txtDepositNote.setText("");
+                        txtDepositAmount.setText("");
+                    }
+                }
+                catch (NumberFormatException ex)
+                {
                     //log
                     LogHelper.log(Level.SEVERE, "Deposit amount must be in integer.", ex);
                     //validator label
@@ -771,6 +785,11 @@ public class GUI {
                     {
                         //display error message
                         lblTransferAmountValidator.setText("Amount entered must not exceed current account limit");
+                    }
+                    else if (Double.parseDouble(txtTransferAmount.getText())<0)
+                    {
+                        //display error message
+                        lblTransferAmountValidator.setText("Amount entered must not be negative");
                     }
                     else
                     {
