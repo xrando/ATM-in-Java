@@ -32,7 +32,7 @@ public class EmailHelper {
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
                         //Gmail account used to send email, SMTP password generated
-                        return new PasswordAuthentication("pureinc933@gmail.com", "xcgwpviomczpknrb");
+                        return new PasswordAuthentication("pureinc933@gmail.com", "dnmttxedjzlwjbdr");
                     }
                 });
         //Create email message
